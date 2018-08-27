@@ -2,7 +2,7 @@
 #include "TM4C129.h"                    // Device header
 #include <stdbool.h>
 #include "grlib/grlib.h"
-
+ float primo = 0;
 /*----------------------------------------------------------------------------
  *  Transforming int to string
  *---------------------------------------------------------------------------*/
@@ -94,8 +94,94 @@ static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, 
 }
 
 /*----------------------------------------------------------------------------
+ *      Threads
+ *---------------------------------------------------------------------------*/
+ 
+
+void geracao_thread(void const *args){
+	primo++; 
+	//envia para verificação de numero primo
+	osDelay(1000);	
+}
+
+void decodificacao_thread(void const *args){
+	
+	osDelay(1000);	
+}
+
+void antepenultima_thread(void const *args){
+	osDelay(1000);	
+}
+
+void penultima_thread(void const *args){
+	osDelay(1000);	
+}
+
+void ultima_thread(void const *args){
+	osDelay(1000);	
+}
+
+void primo_thread(void const *args){
+	float aux;
+	int cont = 0;
+	for (aux = 2; aux < primo; aux++){
+		if(primo%aux == 0){
+			cont++;
+		}
+	}
+	if (cont > 0){
+		//retorna geração	
+	}
+		
+	osDelay(1000);	
+	
+}
+
+void fibonacci_thread(void const *args){
+	int num1 = 0,num2 = 1,num3;
+	bool flagcorreto = true;
+	num3 = num1 + num2;
+	
+	while}(){
+		num3 = num1 + num2;
+		num1 = num2;
+		num2 = num3;
+		if(num3 = antepenultima){
+			flagcorreto = true;
+			break;
+		}
+		else if(num3 > antepenultima)
+			flagcorreto = false;
+			break;
+		
+	}
+	osDelay(1000);	
+}
+
+void exibir_thread(void const *args){
+	osDelay(1000);	
+}
+ /*----------------------------------------------------------------------------
+ *      ThreadsDef
+ *---------------------------------------------------------------------------*/
+osThreadDef(geracao_thread, osPriorityNormal, 1, 0);
+osThreadDef(decodificacao_thread, osPriorityNormal, 1, 0);
+osThreadDef(antepenultima_thread, osPriorityNormal, 1, 0);
+osThreadDef(penultima_thread, osPriorityNormal, 1, 0);
+osThreadDef(ultima_thread, osPriorityNormal, 1, 0);
+osThreadDef(primo_thread, osPriorityNormal, 1, 0);
+osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
+osThreadDef(exibir_thread, osPriorityNormal, 1, 0);
+/*----------------------------------------------------------------------------
  *      Main
  *---------------------------------------------------------------------------*/
 int main (void) {
-
+	osThreadCreate(osThread(geracao_thread), NULL);
+	osThreadCreate(osThread(decodificacao_thread), NULL);
+	osThreadCreate(osThread(antepenultima_thread), NULL);
+	osThreadCreate(osThread(penultima_thread), NULL);
+	osThreadCreate(osThread(ultima_thread), NULL);
+	osThreadCreate(osThread(primo_thread), NULL);
+	osThreadCreate(osThread(fibonacci_thread), NULL);
+	osThreadCreate(osThread(exibir_thread), NULL);
 }
