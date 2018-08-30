@@ -3,6 +3,16 @@
 #include <stdbool.h>
 #include "grlib/grlib.h"
  float primo = 0;
+ int fluxo;
+ /*
+	fluxo = 1	geração
+	fluxo = 2	verifica se é primo
+	fluxo = 3	decodifica
+	fluxo = 4	verificação da antepenultima word
+	fluxo = 5	verificação da serie de fibonacci
+	fluxo = 6	verificação da penultima
+	fluxo = 7	verificação da ultima 
+*/
 /*----------------------------------------------------------------------------
  *  Transforming int to string
  *---------------------------------------------------------------------------*/
@@ -99,31 +109,61 @@ static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, 
  
 
 void geracao_thread(void const *args){
+	if(fluxo!=1)
+	{
+		return;
+	}
 	primo++; 
 	//envia para verificação de numero primo
 	osDelay(1000);	
+	fluxo = 2;
 }
 
 void decodificacao_thread(void const *args){
+	if(fluxo != 3)
+	{
+		return;
+	}
 	
 	osDelay(1000);	
+	fluxo = 4;
 }
 
 void antepenultima_thread(void const *args){
+		if(fluxo != 4)
+	{
+		return;
+	}
+	
 	osDelay(1000);	
+	fluxo = 5;
 }
 
 void penultima_thread(void const *args){
+	if(fluxo != 6)
+	{
+		return;
+	}
 	osDelay(1000);	
+	fluxo = 7;
 }
 
 void ultima_thread(void const *args){
+	if(fluxo != 7)
+	{
+		return;
+	}
 	osDelay(1000);	
+	osWaitForever();
 }
 
 void primo_thread(void const *args){
 	float aux;
 	int cont = 0;
+	if(fluxo != 2)
+	{
+		return;
+	}
 	for (aux = 2; aux < primo; aux++){
 		if(primo%aux == 0){
 			cont++;
@@ -131,15 +171,21 @@ void primo_thread(void const *args){
 	}
 	if (cont > 0){
 		//retorna geração	
+		fluxo = 1;
+		return
 	}
 		
 	osDelay(1000);	
-	
+	fluxo = 3;
 }
 
 void fibonacci_thread(void const *args){
 	int num1 = 0,num2 = 1,num3;
 	bool flagcorreto = true;
+	if(fluxo != 5)
+	{
+		return;
+	}
 	num3 = num1 + num2;
 	
 	while}(){
@@ -155,7 +201,8 @@ void fibonacci_thread(void const *args){
 			break;
 		
 	}
-	osDelay(1000);	
+	osDelay(1000);
+	fluxo = 6;
 }
 
 void exibir_thread(void const *args){
@@ -176,6 +223,11 @@ osThreadDef(exibir_thread, osPriorityNormal, 1, 0);
  *      Main
  *---------------------------------------------------------------------------*/
 int main (void) {
+	//inicializações
+	
+	
+	
+	//criação das threads
 	osThreadCreate(osThread(geracao_thread), NULL);
 	osThreadCreate(osThread(decodificacao_thread), NULL);
 	osThreadCreate(osThread(antepenultima_thread), NULL);
@@ -184,4 +236,6 @@ int main (void) {
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
 	osThreadCreate(osThread(exibir_thread), NULL);
+	fluxo = 1;
+	osWaitForever();
 }
