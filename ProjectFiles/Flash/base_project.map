@@ -33,6 +33,13 @@ Section Cross References
     exemplotiva.o(.text) refers to dfixu.o(x$fpl$dfixu) for __aeabi_d2uiz
     exemplotiva.o(.text) refers to dflt_clz.o(x$fpl$dflt) for __aeabi_i2d
     exemplotiva.o(.data) refers to exemplotiva.o(.conststring) for .conststring
+    main.o(.text) refers to rt_cmsis.o(i.osDelay) for osDelay
+    main.o(.text) refers to rt_cmsis.o(i.osKernelInitialize) for osKernelInitialize
+    main.o(.text) refers to rt_cmsis.o(i.osThreadCreate) for osThreadCreate
+    main.o(.text) refers to rt_cmsis.o(i.osKernelStart) for osKernelStart
+    main.o(.text) refers to main.o(.data) for .data
+    main.o(.text) refers to main.o(.constdata) for .constdata
+    main.o(.constdata) refers to main.o(.text) for geracao_thread
     buzzer.o(.text) refers to pwm.o(i.PWMClockSet) for PWMClockSet
     buzzer.o(.text) refers to pwm.o(i.PWMOutputState) for PWMOutputState
     buzzer.o(.text) refers to pwm.o(i.PWMGenPeriodGet) for PWMGenPeriodGet

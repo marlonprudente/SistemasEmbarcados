@@ -2,8 +2,12 @@
 #include "TM4C129.h"                    // Device header
 #include <stdbool.h>
 #include "grlib/grlib.h"
- float primo = 0;
+ int primo = 0;
  int fluxo;
+ int flag;
+ int antepenultima;
+ int penultima;
+ int ultima;
  /*
 	fluxo = 1	geração
 	fluxo = 2	verifica se é primo
@@ -127,6 +131,7 @@ void decodificacao_thread(void const *args){
 	
 	osDelay(1000);	
 	fluxo = 4;
+	flag = 1;
 }
 
 void antepenultima_thread(void const *args){
@@ -154,11 +159,11 @@ void ultima_thread(void const *args){
 		return;
 	}
 	osDelay(1000);	
-	osWaitForever();
+	osDelay(osWaitForever);
 }
 
 void primo_thread(void const *args){
-	float aux;
+	int aux;
 	int cont = 0;
 	if(fluxo != 2)
 	{
@@ -172,7 +177,7 @@ void primo_thread(void const *args){
 	if (cont > 0){
 		//retorna geração	
 		fluxo = 1;
-		return
+		return;
 	}
 		
 	osDelay(1000);	
@@ -186,13 +191,13 @@ void fibonacci_thread(void const *args){
 	{
 		return;
 	}
-	num3 = num1 + num2;
+	//num3 = num1 + num2;
 	
-	while}(){
+	while(1){
 		num3 = num1 + num2;
 		num1 = num2;
 		num2 = num3;
-		if(num3 = antepenultima){
+		if(num3 == antepenultima){
 			flagcorreto = true;
 			break;
 		}
@@ -206,7 +211,12 @@ void fibonacci_thread(void const *args){
 }
 
 void exibir_thread(void const *args){
+	if(flag == 0)
+	{
+		return;
+	}
 	osDelay(1000);	
+	flag = 0;
 }
  /*----------------------------------------------------------------------------
  *      ThreadsDef
@@ -219,12 +229,13 @@ osThreadDef(ultima_thread, osPriorityNormal, 1, 0);
 osThreadDef(primo_thread, osPriorityNormal, 1, 0);
 osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 osThreadDef(exibir_thread, osPriorityNormal, 1, 0);
+
 /*----------------------------------------------------------------------------
  *      Main
  *---------------------------------------------------------------------------*/
 int main (void) {
 	//inicializações
-	
+	osKernelInitialize();
 	
 	
 	//criação das threads
@@ -237,5 +248,7 @@ int main (void) {
 	osThreadCreate(osThread(fibonacci_thread), NULL);
 	osThreadCreate(osThread(exibir_thread), NULL);
 	fluxo = 1;
-	osWaitForever();
+	
+	osKernelStart();
+	osDelay(osWaitForever);
 }
