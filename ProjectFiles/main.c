@@ -261,7 +261,6 @@ void primo_thread(void const *args){
 
 void fibonacci_thread(void const *args){
 	int num1 = 0,num2 = 1,num3;
-	bool flagcorreto = true;
 	if(fluxo != 5)
 	{
 		return;
@@ -273,16 +272,15 @@ void fibonacci_thread(void const *args){
 		num1 = num2;
 		num2 = num3;
 		if(num3 == antepenultima){
-			flagcorreto = true;
-			break;
+			fluxo = 6;
+			return;
 		}
 		else if(num3 > antepenultima)
-			flagcorreto = false;
-			break;
+			fluxo = 1;
+			return;
 		
 	}
 	osDelay(1000);
-	fluxo = 6;
 }
 
 void exibir_thread(void const *args){
