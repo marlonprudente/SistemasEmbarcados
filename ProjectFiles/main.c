@@ -23,12 +23,15 @@
 #include "UART_CONSOLE_F.h"
 #include "Colors.h"
 
- uint8_t fluxo;
- uint8_t flag;
- uint16_t primo = 1;
- uint32_t antepenultima;
- uint32_t penultima;
- uint32_t ultima;
+ uint8_t fluxo; //saber qual thread deve ser a proxima
+ uint8_t flag; //saber se deve imprimir ou não na tela
+ uint16_t primo = 1; //chave
+ uint32_t antepenultima; //antepenultima word
+ uint32_t penultima; //penultima word
+ uint32_t ultima; //ultima word
+ uint32_t mensagemo[35];
+ uint32_t mensagemd[35];
+
  //To print on the screen
 tContext sContext;
  /*
@@ -203,6 +206,12 @@ void decodificacao_thread(void const *args){
 	{
 		return;
 	}	
+	for(uint8_t i = 0; i <= 100; i++){
+		if(i%2==0)
+			mensagemo[i] = mensagemd[i] + primo;
+		else
+			mensagemo[i] = mensagemd[i] - primo;
+	}
 	osDelay(1000);	
 	fluxo = 4;
 	flag = 1;
@@ -213,6 +222,7 @@ void antepenultima_thread(void const *args){
 	{
 		return;
 	}	
+	antepenultima = mensagemd[32];
 	osDelay(1000);	
 	fluxo = 5;
 }
@@ -242,21 +252,19 @@ void primo_thread(void const *args){
 	{
 		return;
 	}
-	for (aux = 1; aux < primo; aux++){
+	for (aux = 1; aux <= primo; aux++){
 		if(primo%aux == 0){
 			cont++;
 		}
 	}
-	if (cont == 1){	
+	if (cont == 2){	
 		fluxo = 3;
 	}
 	else{
 		fluxo = 1;
 		return;
-		
-	osDelay(1000);	
-	fluxo = 3;
 	}
+	osDelay(1000);		
 }
 
 void fibonacci_thread(void const *args){
@@ -288,6 +296,7 @@ void exibir_thread(void const *args){
 	{
 		return;
 	}
+	//colocar função de exibir
 	osDelay(1000);	
 	flag = 0;
 }
