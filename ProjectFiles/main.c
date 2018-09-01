@@ -2,7 +2,7 @@
 #include "TM4C129.h"                    // Device header
 #include <stdbool.h>
 #include "grlib/grlib.h"
- uint16_t primo = 0;
+ uint16_t primo = 1;
  uint8_t fluxo;
  uint8_t flag;
  uint32_t antepenultima;
@@ -169,19 +169,21 @@ void primo_thread(void const *args){
 	{
 		return;
 	}
-	for (aux = 2; aux < primo; aux++){
+	for (aux = 1; aux < primo; aux++){
 		if(primo%aux == 0){
 			cont++;
 		}
 	}
-	if (cont > 0){
-		//retorna geração	
+	if (cont == 1){	
+		fluxo = 3;
+	}
+	else{
 		fluxo = 1;
 		return;
-	}
 		
 	osDelay(1000);	
 	fluxo = 3;
+	}
 }
 
 void fibonacci_thread(void const *args){
