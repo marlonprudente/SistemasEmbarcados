@@ -1,6 +1,8 @@
 #include "cmsis_os.h"
 #include "TM4C129.h"                    // Device header
 #include <stdbool.h>
+#include <math.h>
+#include <stdio.h>
 #include "grlib/grlib.h"
 #include "driverlib/uart.h"
 
@@ -120,7 +122,20 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 			value /= base;
 	} while(value > 0);
 }
-
+//=============Fibbonacci Test==============
+bool isPerfectSquare(int x)
+{
+    int s = sqrt(x);
+    return (s*s == x);
+}
+bool isFibonacci(int n)
+{
+    // n is Fibinacci if one of 5*n*n + 4 or 5*n*n - 4 or both
+    // is a perferct square
+    return isPerfectSquare(5*n*n + 4) ||
+           isPerfectSquare(5*n*n - 4);
+}
+//==========================================
 static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, uint8_t zeros, uint8_t precision){
 	static const char* pAscii = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	uint8_t start = 0xFF;
@@ -206,8 +221,6 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 /*----------------------------------------------------------------------------
  *      Threads
  *---------------------------------------------------------------------------*/
- 
-
 void geracao_thread(void const *args){
 	if(fluxo!=1)
 	{
@@ -224,7 +237,7 @@ void decodificacao_thread(void const *args){
 	if(fluxo != 3)
 	{
 		return;
-	}	
+	}
 	for(i = 0; i <= 35; i++){
 		if(i%2==0)
 			mensagemo[i] = mensagemd[i] + primo;
