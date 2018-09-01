@@ -216,11 +216,11 @@ void geracao_thread(void const *args){
 }
 
 void decodificacao_thread(void const *args){
+	uint8_t i;
 	if(fluxo != 3)
 	{
 		return;
 	}
-	uint8_t i;
 	for(i = 0; i <= 35; i++){
 		if(i%2==0)
 			mensagemo[i] = mensagemd[i] + primo;
@@ -290,7 +290,7 @@ void fibonacci_thread(void const *args){
 	}
 	//num3 = num1 + num2;
 	
-	while(1){
+	while(num3 <= antepenultima){
 		num3 = num1 + num2;
 		num1 = num2;
 		num2 = num3;
@@ -298,11 +298,9 @@ void fibonacci_thread(void const *args){
 			fluxo = 6;
 			return;
 		}
-		else if(num3 > antepenultima)
+	}
 			fluxo = 1;
 			return;
-		
-	}
 	osDelay(1000);
 }
 
