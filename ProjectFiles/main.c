@@ -2,12 +2,12 @@
 #include "TM4C129.h"                    // Device header
 #include <stdbool.h>
 #include "grlib/grlib.h"
- int primo = 0;
- int fluxo;
- int flag;
- int antepenultima;
- int penultima;
- int ultima;
+ uint16_t primo = 0;
+ uint8_t fluxo;
+ uint8_t flag;
+ uint32_t antepenultima;
+ uint32_t penultima;
+ uint32_t ultima;
  /*
 	fluxo = 1	geração
 	fluxo = 2	verifica se é primo
