@@ -2,12 +2,35 @@
 #include "TM4C129.h"                    // Device header
 #include <stdbool.h>
 #include "grlib/grlib.h"
- uint16_t primo = 1;
+#include "driverlib/uart.h"
+
+/*----------------------------------------------------------------------------
+ * include libraries from drivers
+ *----------------------------------------------------------------------------*/
+
+#include "rgb.h"
+#include "cfaf128x128x16.h"
+#include "servo.h"
+#include "temp.h"
+#include "opt.h"
+#include "buttons.h"
+#include "buzzer.h"
+#include "joy.h"
+#include "mic.h"
+#include "accel.h"
+#include "led.h"
+#include "UARTDriver.h"
+#include "UART_CONSOLE_F.h"
+#include "Colors.h"
+
  uint8_t fluxo;
  uint8_t flag;
+ uint16_t primo = 1;
  uint32_t antepenultima;
  uint32_t penultima;
  uint32_t ultima;
+ //To print on the screen
+tContext sContext;
  /*
 	fluxo = 1	geração
 	fluxo = 2	verifica se é primo
@@ -106,7 +129,59 @@ static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, 
 		pBuf[start++] = pAscii[(uint32_t) value];
 	}
 }
+/*----------------------------------------------------------------------------
+ *    Initializations
+ *---------------------------------------------------------------------------*/
 
+void init_all(){
+rgb_init();
+	init_UART_J();
+		cfaf128x128x16Init();
+		GrContextInit(&sContext, &g_sCfaf128x128x16);
+	
+	GrFlush(&sContext);
+	GrContextFontSet(&sContext, g_psFontFixed6x8);
+	
+	GrContextForegroundSet(&sContext, ClrWhite);
+	GrContextBackgroundSet(&sContext, ClrBlack);
+}
+
+void init_sidelong_menu(){
+	uint8_t i;
+	GrContextInit(&sContext, &g_sCfaf128x128x16);
+	
+	GrFlush(&sContext);
+	GrContextFontSet(&sContext, g_psFontFixed6x8);
+	
+	GrContextForegroundSet(&sContext, ClrWhite);
+	GrContextBackgroundSet(&sContext, ClrBlack);
+
+	//Escreve menu lateral:
+	GrStringDraw(&sContext,"Exemplo EK-TM4C1294XL", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
+	GrStringDraw(&sContext,"---------------------", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
+	UARTprintstring("TESTE");
+}
+	
+uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
+	uint8_t *max = &r, 
+					*mid = &g, 
+					*min = &b,
+					*aux, 
+					div, num;
+	if (*mid > *max){ aux = max; max = mid; mid = aux; }
+	if (*min > *mid){ aux = mid; mid = min; min = aux; }
+	if (*mid > *max){	aux = max; max = mid; mid = aux; }
+	if(*max != *min){
+		div = *max-*min;
+		num = *mid-*min;
+		*max = 0xFF;
+		*min = 0x00;
+		*mid = (uint8_t) num*0xFF/div;
+	}
+	return 	(((uint32_t) r) << 16) | 
+					(((uint32_t) g) <<  8) | 
+					( (uint32_t) b       );
+}
 /*----------------------------------------------------------------------------
  *      Threads
  *---------------------------------------------------------------------------*/
@@ -127,19 +202,17 @@ void decodificacao_thread(void const *args){
 	if(fluxo != 3)
 	{
 		return;
-	}
-	
+	}	
 	osDelay(1000);	
 	fluxo = 4;
 	flag = 1;
 }
 
 void antepenultima_thread(void const *args){
-		if(fluxo != 4)
+	if(fluxo != 4)
 	{
 		return;
-	}
-	
+	}	
 	osDelay(1000);	
 	fluxo = 5;
 }
@@ -236,6 +309,10 @@ osThreadDef(exibir_thread, osPriorityNormal, 1, 0);
  *      Main
  *---------------------------------------------------------------------------*/
 int main (void) {
+		//Initializing all peripherals
+	init_all();
+	//Sidelong menu creation
+	init_sidelong_menu();
 	//inicializações
 	osKernelInitialize();
 	
@@ -252,5 +329,10 @@ int main (void) {
 	fluxo = 1;
 	
 	osKernelStart();
+	
+	while(true){
+		//GrStringDraw(&sContext,"TESTE", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
+	}
+	
 	osDelay(osWaitForever);
 }
