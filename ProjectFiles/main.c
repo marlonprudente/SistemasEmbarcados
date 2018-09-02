@@ -259,7 +259,7 @@ void antepenultima_thread(void const *args){
 	{
 		return;
 	}	
-	antepenultima = mensagemo[137];
+	antepenultima = mensagemd[137];
 	osDelay(1000);	
 	fluxo = 5;
 }
@@ -269,7 +269,7 @@ void penultima_thread(void const *args){
 	{
 		return;
 	}
-	if(mensagemo[138] == 2*primo){
+	if(mensagemd[138] == 2*primo){
 		fluxo = 7;
 		return;
 	}
@@ -284,7 +284,7 @@ void ultima_thread(void const *args){
 	{
 		return;
 	}
-	if(mensagemo[139] ==(primo + primoanterior)/antepenultima)
+	if(mensagemd[139] ==(primo + primoanterior)/antepenultima)
 		osDelay(osWaitForever);
 	else
 		fluxo = 1;
