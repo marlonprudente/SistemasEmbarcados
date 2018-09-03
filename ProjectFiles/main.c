@@ -72,18 +72,15 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 	bool n = false;
 	int pos = 0, d = 0;
 	int64_t tmpValue = value;
-
 	// the buffer must not be null and at least have a length of 2 to handle one
 	// digit and null-terminator
 	if (pBuf == NULL || len < 2)
 			return;
-
 	// a valid base cannot be less than 2 or larger than 36
 	// a base value of 2 means binary representation. A value of 1 would mean only zeros
 	// a base larger than 36 can only be used if a larger alphabet were used.
 	if (base < 2 || base > 36)
 			return;
-
 	if (zeros > len)
 		return;
 	
@@ -196,7 +193,7 @@ void init_sidelong_menu(){
 	//Escreve menu lateral:
 	GrStringDraw(&sContext,"Exemplo EK-TM4C1294XL", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
 	GrStringDraw(&sContext,"---------------------", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
-	UARTprintstring("TESTE");
+	UARTprintstring("TESTE1");
 }
 	
 uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
@@ -223,7 +220,7 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
  *      Threads
  *---------------------------------------------------------------------------*/
 void geracao_thread(void const *args){
-	
+	UARTprintstring("GeracaoThread");	
 	if(fluxo == 1){
 		primo++; 
 		//envia para verificação de numero primo
@@ -233,8 +230,9 @@ void geracao_thread(void const *args){
 	}
 }
 
-void decodificacao_thread(void const *args){
+void decodificacao_thread(void const *args){	
 	uint8_t i;
+	UARTprintstring("DecodeThread");	
 	if(fluxo == 3){
 		for(i = 0; i <= 35; i++){
 			if(i%2==0)
@@ -249,6 +247,7 @@ void decodificacao_thread(void const *args){
 }
 
 void antepenultima_thread(void const *args){
+	UARTprintstring("AntepenultimaThread");	
 	if(fluxo == 4){
 		antepenultima = mensagemd[33];
 		fluxo = 5;
@@ -257,6 +256,7 @@ void antepenultima_thread(void const *args){
 }
 
 void penultima_thread(void const *args){
+	UARTprintstring("PenultimaThread");	
 	if(fluxo == 6){
 		if(mensagemd[34] == 2*primo){
 			fluxo = 7;
@@ -272,6 +272,7 @@ void penultima_thread(void const *args){
 }
 
 void ultima_thread(void const *args){
+	UARTprintstring("UltimaThread");	
 	if(fluxo == 7){
 		if(mensagemd[35] ==(primo + primoanterior)/antepenultima)
 			osDelay(osWaitForever);
@@ -285,6 +286,7 @@ void ultima_thread(void const *args){
 void primo_thread(void const *args){
 	int aux;
 	int cont = 0;
+	UARTprintstring("PrimoThread");	
 	if(fluxo == 2){
 		for (aux = 1; aux <= primo; aux++){
 			if(primo%aux == 0){
@@ -305,6 +307,7 @@ void primo_thread(void const *args){
 void fibonacci_thread(void const *args){
 	int num1 = 0,num2 = 1,num3;
 	bool teste;
+	UARTprintstring("FibonacciThread");	
 	if(fluxo == 5){
 		if(isFibonacci(antepenultima)){
 			fluxo = 6;
@@ -317,11 +320,15 @@ void fibonacci_thread(void const *args){
 }
 
 void exibir_thread(void const *args){
+	uint8_t n;
+	UARTprintstring("ExibirThread");	
 	if(flag == 0)
 	{
 		osThreadYield();
 	}
-	//colocar função de exibir
+	for(n = 0;n<36;n++){
+	UARTprintstring((char*)mensagemd[n]);
+	}
 	flag = 0;
 }
  /*----------------------------------------------------------------------------
@@ -341,9 +348,9 @@ osThreadDef(exibir_thread, osPriorityNormal, 1, 0);
  *---------------------------------------------------------------------------*/
 int main (void) {
 		//Initializing all peripherals
-	//init_all();
+	init_all();
 	//Sidelong menu creation
-	//init_sidelong_menu();
+	init_sidelong_menu();
 	//inicializações
 	osKernelInitialize();
 	
