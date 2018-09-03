@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Flash\base_project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Flash\base_project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Sep 03 09:13:49 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Sep 03 10:26:45 2018
 <BR><P>
 <H3>Maximum Stack Usage =        144 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -264,7 +264,7 @@ Function Pointers
  <LI><a href="#[8]">UsageFault_Handler</a> from startup_tm4c129.o(.text) referenced from startup_tm4c129.o(RESET)
  <LI><a href="#[1f]">WDT0_Handler</a> from startup_tm4c129.o(.text) referenced from startup_tm4c129.o(RESET)
  <LI><a href="#[9e]">__main</a> from __main.o(!!!main) referenced from startup_tm4c129.o(.text)
- <LI><a href="#[8e]">antepenultima_thread</a> from main.o(.text) referenced from main.o(.constdata)
+ <LI><a href="#[8f]">antepenultima_thread</a> from main.o(.text) referenced from main.o(.constdata)
  <LI><a href="#[99]">cfaf128x128x16ColorTranslate</a> from cfaf128x128x16.o(.text) referenced from cfaf128x128x16.o(.constdata)
  <LI><a href="#[9a]">cfaf128x128x16Flush</a> from cfaf128x128x16.o(.text) referenced from cfaf128x128x16.o(.constdata)
  <LI><a href="#[96]">cfaf128x128x16LineDrawH</a> from cfaf128x128x16.o(.text) referenced from cfaf128x128x16.o(.constdata)
@@ -272,16 +272,16 @@ Function Pointers
  <LI><a href="#[94]">cfaf128x128x16PixelDraw</a> from cfaf128x128x16.o(.text) referenced from cfaf128x128x16.o(.constdata)
  <LI><a href="#[95]">cfaf128x128x16PixelDrawMultiple</a> from cfaf128x128x16.o(.text) referenced from cfaf128x128x16.o(.constdata)
  <LI><a href="#[98]">cfaf128x128x16RectFill</a> from cfaf128x128x16.o(.text) referenced from cfaf128x128x16.o(.constdata)
- <LI><a href="#[8d]">decodificacao_thread</a> from main.o(.text) referenced from main.o(.constdata)
+ <LI><a href="#[8e]">decodificacao_thread</a> from main.o(.text) referenced from main.o(.constdata)
  <LI><a href="#[93]">exibir_thread</a> from main.o(.text) referenced from main.o(.constdata)
- <LI><a href="#[92]">fibonacci_thread</a> from main.o(.text) referenced from main.o(.constdata)
+ <LI><a href="#[90]">fibonacci_thread</a> from main.o(.text) referenced from main.o(.constdata)
  <LI><a href="#[8c]">geracao_thread</a> from main.o(.text) referenced from main.o(.constdata)
  <LI><a href="#[9c]">main</a> from main.o(.text) referenced from rtx_conf_cm.o(.constdata)
  <LI><a href="#[8b]">osThreadExit</a> from rt_cmsis.o(i.osThreadExit) referenced from rt_cmsis.o(i.svcThreadCreate)
  <LI><a href="#[9b]">osTimerThread</a> from rt_cmsis.o(i.osTimerThread) referenced from rtx_conf_cm.o(.constdata)
  <LI><a href="#[8a]">os_idle_demon</a> from rtx_conf_cm.o(.text) referenced from rt_task.o(i.rt_sys_init)
- <LI><a href="#[8f]">penultima_thread</a> from main.o(.text) referenced from main.o(.constdata)
- <LI><a href="#[91]">primo_thread</a> from main.o(.text) referenced from main.o(.constdata)
+ <LI><a href="#[91]">penultima_thread</a> from main.o(.text) referenced from main.o(.constdata)
+ <LI><a href="#[8d]">primo_thread</a> from main.o(.text) referenced from main.o(.constdata)
  <LI><a href="#[7a]">rt_alloc_box</a> from rt_membox.o(i.rt_alloc_box) referenced from hal_cm4.o(.emb_text)
  <LI><a href="#[7b]">rt_free_box</a> from rt_membox.o(i.rt_free_box) referenced from hal_cm4.o(.emb_text)
  <LI><a href="#[7d]">rt_mut_release</a> from rt_mutex.o(i.rt_mut_release) referenced from rtx_conf_cm.o(.text)
@@ -295,7 +295,7 @@ Function Pointers
  <LI><a href="#[87]">svcThreadTerminate</a> from rt_cmsis.o(i.svcThreadTerminate) referenced from rt_cmsis.o(i.osThreadExit)
  <LI><a href="#[88]">svcThreadYield</a> from rt_cmsis.o(i.svcThreadYield) referenced from rt_cmsis.o(i.osThreadYield)
  <LI><a href="#[89]">svcTimerCall</a> from rt_cmsis.o(i.svcTimerCall) referenced from rt_cmsis.o(i.osTimerCall)
- <LI><a href="#[90]">ultima_thread</a> from main.o(.text) referenced from main.o(.constdata)
+ <LI><a href="#[92]">ultima_thread</a> from main.o(.text) referenced from main.o(.constdata)
 </UL>
 <P>
 <H3>
@@ -418,7 +418,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[af]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 88 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; osKernelInitialize &rArr; svcKernelInitialize &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -517,71 +517,59 @@ Global Symbols
 
 <P><STRONG><a name="[169]"></a>saturate</STRONG> (Thumb, 114 bytes, Stack size 24 bytes, main.o(.text), UNUSED)
 
-<P><STRONG><a name="[8c]"></a>geracao_thread</STRONG> (Thumb, 34 bytes, Stack size 8 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = geracao_thread
+<P><STRONG><a name="[8c]"></a>geracao_thread</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
+</UL>
+<P><STRONG><a name="[8e]"></a>decodificacao_thread</STRONG> (Thumb, 72 bytes, Stack size 8 bytes, main.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = decodificacao_thread
+</UL>
+<BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
+</UL>
+<P><STRONG><a name="[8f]"></a>antepenultima_thread</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, main.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
+</UL>
+<P><STRONG><a name="[91]"></a>penultima_thread</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, main.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
+</UL>
+<P><STRONG><a name="[92]"></a>ultima_thread</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, main.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = ultima_thread
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
 </UL>
-<P><STRONG><a name="[8d]"></a>decodificacao_thread</STRONG> (Thumb, 76 bytes, Stack size 16 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = decodificacao_thread
-</UL>
-<BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-</UL>
-<BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
-</UL>
-<P><STRONG><a name="[8e]"></a>antepenultima_thread</STRONG> (Thumb, 36 bytes, Stack size 8 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = antepenultima_thread
-</UL>
-<BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-</UL>
-<BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
-</UL>
-<P><STRONG><a name="[8f]"></a>penultima_thread</STRONG> (Thumb, 54 bytes, Stack size 8 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = penultima_thread
+<P><STRONG><a name="[8d]"></a>primo_thread</STRONG> (Thumb, 64 bytes, Stack size 8 bytes, main.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = primo_thread
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
 </UL>
-<P><STRONG><a name="[90]"></a>ultima_thread</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = ultima_thread
+<P><STRONG><a name="[90]"></a>fibonacci_thread</STRONG> (Thumb, 58 bytes, Stack size 16 bytes, main.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = fibonacci_thread
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
 </UL>
-<P><STRONG><a name="[91]"></a>primo_thread</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = primo_thread
-</UL>
-<BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-</UL>
-<BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
-</UL>
-<P><STRONG><a name="[92]"></a>fibonacci_thread</STRONG> (Thumb, 74 bytes, Stack size 24 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = fibonacci_thread
-</UL>
-<BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-</UL>
-<BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
-</UL>
-<P><STRONG><a name="[93]"></a>exibir_thread</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, main.o(.text))
+<P><STRONG><a name="[93]"></a>exibir_thread</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, main.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = exibir_thread
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadYield
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(.constdata)
 </UL>
-<P><STRONG><a name="[9c]"></a>main</STRONG> (Thumb, 94 bytes, Stack size 0 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = main &rArr; osKernelInitialize &rArr; svcKernelInitialize &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
+<P><STRONG><a name="[9c]"></a>main</STRONG> (Thumb, 98 bytes, Stack size 8 bytes, main.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = main &rArr; osKernelInitialize &rArr; svcKernelInitialize &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadCreate
 <LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelStart
@@ -1894,13 +1882,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[cc]"></a>osDelay</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osDelay))
-<BR><BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exibir_thread
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fibonacci_thread
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;primo_thread
-<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ultima_thread
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;antepenultima_thread
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decodificacao_thread
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geracao_thread
+<BR><BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ultima_thread
 </UL>
 
 <P><STRONG><a name="[b5]"></a>osKernelInitialize</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, rt_cmsis.o(i.osKernelInitialize))
@@ -1941,12 +1923,12 @@ Global Symbols
 </UL>
 <P><STRONG><a name="[cb]"></a>osThreadYield</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osThreadYield))
 <BR><BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exibir_thread
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fibonacci_thread
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;primo_thread
-<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ultima_thread
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;penultima_thread
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;antepenultima_thread
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decodificacao_thread
+<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fibonacci_thread
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;primo_thread
+<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ultima_thread
+<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;penultima_thread
+<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;antepenultima_thread
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decodificacao_thread
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geracao_thread
 </UL>
 
