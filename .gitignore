@@ -1,6 +1,7 @@
 
 #Ignore thumbnails created by Windows
 Thumbs.db
+ProjectFiles/Flash/
 #Ignore files built by Visual Studio
 *.obj
 *.exe
@@ -14,6 +15,7 @@ Thumbs.db
 *.ncb
 *.suo
 *.tlb
+*.Marlon
 *.tlh
 *.bak
 *.cache
@@ -31,4 +33,4 @@ _ReSharper*/
 .vs/
 #Nuget packages folder
 packages/
-ProjectFiles/Flash/
+
