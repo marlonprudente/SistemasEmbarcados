@@ -306,8 +306,6 @@ void fibonacci_thread(void const *args){
 	int num1 = 0,num2 = 1,num3;
 	bool teste;
 	if(fluxo == 5){
-		//num3 = num1 + num2;
-		
 		while(num3 <= antepenultima){
 			num3 = num1 + num2;
 			num1 = num2;
