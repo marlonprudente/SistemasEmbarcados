@@ -514,7 +514,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>ARMRTXEVENTFLAGS</Key>
-          <Name>-L132 -Z9 -C0 -M0 -T1</Name>
+          <Name>-L132 -Z8 -C0 -M0 -T1</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
