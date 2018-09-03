@@ -68,6 +68,15 @@ tContext sContext;
 	fluxo = 6	verificação da penultima
 	fluxo = 7	verificação da ultima 
 */
+osThreadId tgeracao, tdecodificacao, tantepenultima, tpenultima, tultima, tprimo, tfibonacci, texibir;
+void geracao_thread(void const *args);
+void decodificacao_thread(void const *args);
+void antepenultima_thread(void const *args);
+void penultima_thread(void const *args);
+void ultima_thread(void const *args);
+void primo_thread(void const *args);
+void fibonacci_thread(void const *args);
+void exibir_thread(void const *args);
 /*----------------------------------------------------------------------------
  *  Transforming int to string
  *---------------------------------------------------------------------------*/
@@ -175,10 +184,10 @@ static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, 
  *---------------------------------------------------------------------------*/
 
 void init_all(){
-rgb_init();
+	//rgb_init();
 	init_UART_J();
-		cfaf128x128x16Init();
-		GrContextInit(&sContext, &g_sCfaf128x128x16);
+  cfaf128x128x16Init();
+	GrContextInit(&sContext, &g_sCfaf128x128x16);
 	
 	GrFlush(&sContext);
 	GrContextFontSet(&sContext, g_psFontFixed6x8);
@@ -227,124 +236,104 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
  *      Threads
  *---------------------------------------------------------------------------*/
 void geracao_thread(void const *args){
-	if(fluxo!=1)
-	{
-		return;
-	}
+while(true){
+osSignalWait(0x0001,osWaitForever);
 	primo++; 
-	//envia para verificação de numero primo
-	osDelay(1000);	
-	fluxo = 2;
+osSignalSet(tprimo,0x0002);
+}
 }
 
 void decodificacao_thread(void const *args){
 	uint8_t i;
-	if(fluxo != 3)
-	{
-		return;
-	}
+while(true){
+	osSignalWait(0x0003,osWaitForever);
 	for(i = 0; i <= 35; i++){
 		if(i%2==0)
 			mensagemd[i] = mensagemo[i] + primo;
 		else
 			mensagemd[i] = mensagemo[i] - primo;
-	}
-	osDelay(1000);	
-	fluxo = 4;
+	}	
+	osSignalSet(tantepenultima, 0x0004);
 	flag = 1;
+}
 }
 
 void antepenultima_thread(void const *args){
-	if(fluxo != 4)
-	{
-		return;
-	}	
+while(true){
+	osSignalWait(0x0004,osWaitForever);
 	antepenultima = mensagemd[137];
 	osDelay(1000);	
-	fluxo = 5;
+	osSignalSet(tfibonacci, 0x0005);
+}
 }
 
 void penultima_thread(void const *args){
-	if(fluxo != 6)
-	{
-		return;
-	}
+while(true){
+	osSignalWait(0x0006,osWaitForever);
 	if(mensagemd[138] == 2*primo){
-		fluxo = 7;
-		return;
+		osSignalSet(tultima,0x0007);
 	}
-	else
-		fluxo = 1;
-	  primoanterior = primo;
-		return;
+	else{
+		primoanterior = primo;
+		osSignalSet(tgeracao,0x0001);
+	}
+}
 }
 
 void ultima_thread(void const *args){
-	if(fluxo != 7)
-	{
-		return;
-	}
-	if(mensagemd[139] ==(primo + primoanterior)/antepenultima)
+while(true){
+	osSignalWait(0x0007,osWaitForever);
+	if(mensagemd[139] ==(primo + primoanterior)/antepenultima){
+		osSignalSet(texibir,0x0008);
+	}else{
+		osSignalSet(tgeracao,0x0001);
 		osDelay(osWaitForever);
-	else
-		fluxo = 1;
-	osDelay(1000);	
-	osDelay(osWaitForever);
+	}
+}
 }
 
 void primo_thread(void const *args){
 	int aux;
 	int cont = 0;
-	if(fluxo != 2)
+while(true)
 	{
-		return;
-	}
+		osSignalWait(0x0002,osWaitForever);
+		
 	for (aux = 1; aux <= primo; aux++){
 		if(primo%aux == 0){
 			cont++;
 		}
 	}
 	if (cont == 2){	
-		fluxo = 3;
+		osSignalSet(tdecodificacao,0x0003);
 	}
 	else{
-		fluxo = 1;
-		return;
+		osSignalSet(tgeracao,0x0001);
 	}
-	osDelay(1000);		
+}
+	
 }
 
 void fibonacci_thread(void const *args){
 	int num1 = 0,num2 = 1,num3;
-	if(fluxo != 5)
-	{
-		return;
-	}
-	//num3 = num1 + num2;
-	
+while(true){
+	osSignalWait(0x0005,osWaitForever);
 	while(num3 <= antepenultima){
 		num3 = num1 + num2;
 		num1 = num2;
 		num2 = num3;
 		if(num3 == antepenultima){
-			fluxo = 6;
-			return;
+			osSignalSet(tpenultima,0x0006);
 		}
 	}
-			fluxo = 1;
-			primoanterior = primo;
-			return;
-	osDelay(1000);
+	primoanterior = primo;
+	osSignalSet(tgeracao,0x0001);
+}
 }
 
 void exibir_thread(void const *args){
-	if(flag == 0)
-	{
-		return;
-	}
-	//colocar função de exibir
-	osDelay(1000);	
-	flag = 0;
+	osSignalWait(0x0008,osWaitForever);
+	init_sidelong_menu();
 }
  /*----------------------------------------------------------------------------
  *      ThreadsDef
@@ -371,21 +360,21 @@ int main (void) {
 	
 	
 	//criação das threads
-	osThreadCreate(osThread(geracao_thread), NULL);
-	osThreadCreate(osThread(decodificacao_thread), NULL);
-	osThreadCreate(osThread(antepenultima_thread), NULL);
-	osThreadCreate(osThread(penultima_thread), NULL);
-	osThreadCreate(osThread(ultima_thread), NULL);
-	osThreadCreate(osThread(primo_thread), NULL);
-	osThreadCreate(osThread(fibonacci_thread), NULL);
-	osThreadCreate(osThread(exibir_thread), NULL);
-	fluxo = 1;
-	
+	tgeracao = osThreadCreate(osThread(geracao_thread), NULL);
+	tdecodificacao = osThreadCreate(osThread(decodificacao_thread), NULL);
+	tantepenultima = osThreadCreate(osThread(antepenultima_thread), NULL);
+	tpenultima = osThreadCreate(osThread(penultima_thread), NULL);
+	tultima = osThreadCreate(osThread(ultima_thread), NULL);
+	tprimo = osThreadCreate(osThread(primo_thread), NULL);
+	tfibonacci = osThreadCreate(osThread(fibonacci_thread), NULL);
+	texibir = osThreadCreate(osThread(exibir_thread), NULL);
+		
 	osKernelStart();
 	
-	while(true){
-		//GrStringDraw(&sContext,"TESTE", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-	}
+	osSignalSet(tgeracao,0x0001);
+//	while(true){
+//		//GrStringDraw(&sContext,"TESTE", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
+//	}
 	
 	osDelay(osWaitForever);
 }
