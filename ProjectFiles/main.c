@@ -310,20 +310,12 @@ void fibonacci_thread(void const *args){
 	int num1 = 0,num2 = 1,num3;
 	bool teste;
 	if(fluxo == 5){
-		//num3 = num1 + num2;
-		
-		while(num3 <= antepenultima){
-			num3 = num1 + num2;
-			num1 = num2;
-			num2 = num3;
-			if(num3 == antepenultima){
-				fluxo = 6;
-				teste = 1;
-			}
-		}
-		if(teste == 0){
+		if(isFibonacci(antepenultima)){
+			fluxo = 6;
+		}else{
 			fluxo = 1;
-			primoanterior = primo;}
+			primoanterior = primo;
+		}
 		osThreadYield();		
 	}
 }
