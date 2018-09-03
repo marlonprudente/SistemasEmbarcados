@@ -229,7 +229,7 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 void geracao_thread(void const *args){
 	if(fluxo!=1)
 	{
-		return;
+		osThreadYield();
 	}
 	primo++; 
 	//envia para verificação de numero primo
@@ -241,7 +241,7 @@ void decodificacao_thread(void const *args){
 	uint8_t i;
 	if(fluxo != 3)
 	{
-		return;
+		osThreadYield();
 	}
 	for(i = 0; i <= 35; i++){
 		if(i%2==0)
@@ -257,7 +257,7 @@ void decodificacao_thread(void const *args){
 void antepenultima_thread(void const *args){
 	if(fluxo != 4)
 	{
-		return;
+		osThreadYield();
 	}	
 	antepenultima = mensagemd[137];
 	osDelay(1000);	
@@ -267,22 +267,22 @@ void antepenultima_thread(void const *args){
 void penultima_thread(void const *args){
 	if(fluxo != 6)
 	{
-		return;
+		osThreadYield();
 	}
 	if(mensagemd[138] == 2*primo){
 		fluxo = 7;
-		return;
+		osThreadYield();
 	}
 	else
 		fluxo = 1;
 	  primoanterior = primo;
-		return;
+		osThreadYield();
 }
 
 void ultima_thread(void const *args){
 	if(fluxo != 7)
 	{
-		return;
+		osThreadYield();
 	}
 	if(mensagemd[139] ==(primo + primoanterior)/antepenultima)
 		osDelay(osWaitForever);
@@ -297,7 +297,7 @@ void primo_thread(void const *args){
 	int cont = 0;
 	if(fluxo != 2)
 	{
-		return;
+		osThreadYield();
 	}
 	for (aux = 1; aux <= primo; aux++){
 		if(primo%aux == 0){
@@ -309,7 +309,7 @@ void primo_thread(void const *args){
 	}
 	else{
 		fluxo = 1;
-		return;
+		osThreadYield();
 	}
 	osDelay(1000);		
 }
@@ -318,7 +318,7 @@ void fibonacci_thread(void const *args){
 	int num1 = 0,num2 = 1,num3;
 	if(fluxo != 5)
 	{
-		return;
+		osThreadYield();
 	}
 	//num3 = num1 + num2;
 	
@@ -328,19 +328,19 @@ void fibonacci_thread(void const *args){
 		num2 = num3;
 		if(num3 == antepenultima){
 			fluxo = 6;
-			return;
+			osThreadYield();
 		}
 	}
 			fluxo = 1;
 			primoanterior = primo;
-			return;
+			osThreadYield();
 	osDelay(1000);
 }
 
 void exibir_thread(void const *args){
 	if(flag == 0)
 	{
-		return;
+		osThreadYield();
 	}
 	//colocar função de exibir
 	osDelay(1000);	
@@ -363,9 +363,9 @@ osThreadDef(exibir_thread, osPriorityNormal, 1, 0);
  *---------------------------------------------------------------------------*/
 int main (void) {
 		//Initializing all peripherals
-	init_all();
+	//init_all();
 	//Sidelong menu creation
-	init_sidelong_menu();
+	//init_sidelong_menu();
 	//inicializações
 	osKernelInitialize();
 	

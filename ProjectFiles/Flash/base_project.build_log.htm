@@ -99,13 +99,11 @@ C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\Colors.h(131): warning:  #1
   #endif  //__COLORS_H__
 C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(191): warning:  #177-D: variable "i"  was declared but never referenced
         uint8_t i;
-C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(337): warning:  #111-D: statement is unreachable
-        osDelay(1000);
 C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(390): warning:  #111-D: statement is unreachable
         osDelay(osWaitForever);
 C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(144): warning:  #177-D: function "floatToString"  was declared but never referenced
   static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, uint8_t zeros, uint8_t precision){
-main.c: 38 warnings, 0 errors
+main.c: 37 warnings, 0 errors
 compiling UART_CONSOLE_F.c...
 C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\UARTDriver.h(4): warning:  #1295-D: Deprecated declaration init_UART_J - give arg types
   extern void init_UART_J();
@@ -255,8 +253,8 @@ compiling RTX_Conf_CM.c...
 assembling startup_TM4C129.s...
 compiling system_TM4C129.c...
 linking...
-Program Size: Code=13312 RO-data=2932 RW-data=652 ZI-data=10436  
-".\Flash\base_project.axf" - 0 Error(s), 98 Warning(s).
+Program Size: Code=13488 RO-data=2932 RW-data=652 ZI-data=10436  
+".\Flash\base_project.axf" - 0 Error(s), 97 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -287,24 +285,24 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.1.2
 
    * Component: ARM::CMSIS:RTOS:Keil RTX:4.81.1
-      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
-      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
-      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
+      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
-      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
       Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM4.lib
 
    * Component: Keil::Device:Startup:1.0.0
-      Source file:   Device\Source\ARM\startup_TM4C129.s
       Include file:  Device\Include\TM4C129\TM4C129.h
       Source file:   Device\Source\system_TM4C129.c
+      Source file:   Device\Source\ARM\startup_TM4C129.s
 Build Time Elapsed:  00:00:12
 </pre>
 </body>
