@@ -1,3 +1,16 @@
+/*============================================================================
+ *                    Exemplos de utilização do Kit
+ *              EK-TM4C1294XL + Educational BooterPack MKII 
+ *---------------------------------------------------------------------------*
+ *                    Prof. André Schneider de Oliveira
+ *            Universidade Tecnológica Federal do Paraná (UTFPR)
+ *===========================================================================
+ * Autores das bibliotecas:
+ * 		Allan Patrick de Souza - <allansouza@alunos.utfpr.edu.br>
+ * 		Guilherme Jacichen     - <jacichen@alunos.utfpr.edu.br>
+ * 		Jessica Isoton Sampaio - <jessicasampaio@alunos.utfpr.edu.br>
+ * 		Mariana Carrião        - <mcarriao@alunos.utfpr.edu.br>
+ *===========================================================================*/
 #include "cmsis_os.h"
 #include "TM4C129.h"                    // Device header
 #include <stdbool.h>
@@ -24,46 +37,41 @@
 #include "UARTDriver.h"
 #include "UART_CONSOLE_F.h"
 #include "Colors.h"
+
+#define LED_A      0
+#define LED_B      1
+#define LED_C      2
+#define LED_D      3
+#define LED_CLK    7
+
 uint32_t mensagemo[36] = 
- {0x1a56ca88, 0x9eaa3577, 0x4956ca88, 0x9daa3577, 0x4056ca88, 
- 0x97aa3577, 0x3b56ca88, 0x98aa3577, 0xf755ca88, 0x8aaa3577, 
- 0xf755ca88, 0x7faa3577, 0x4056ca88, 0x8daa3577, 0x3856ca88, 
- 0x49aa3577, 0x1856ca88, 0x8daa3577, 0x4656ca88, 0x92aa3577, 
- 0x3b56ca88, 0x8aaa3577, 0x3b56ca88, 0x98aa3577, 0xf755ca88, 
- 0x5aaa3577, 0x1056ca88, 0x61aa3577, 0x0d56ca88, 0x29aa3577, 
- 0xd755ca88, 0x29aa3577, 0xd755ca88, 0x4953c297, 0x7bfea065, 0xe655ca88};
+{0xFFFFCC43, 0x00003466, 0xFFFFCC1F, 0x00003457, 0xFFFFCC6E, 0x0000346D,
+0xFFFFCC73, 0x00003462, 0xFFFFCC1F, 0x00003451, 0xFFFFCC60, 0x00003473,
+0xFFFFCC60, 0x00003421, 0xFFFFCC6E, 0x00003421, 0xFFFFCC45, 0x00003476,
+0xFFFFCC73, 0x00003476, 0xFFFFCC71, 0x00003470, 0xFFFFCC1F, 0x00003421,
+0xFFFFCC1f, 0x00003421, 0xFFFFCC30, 0x0000343a, 0xFFFFCc37, 0x00003436,
+0x0000522b, 0x00009c03, 0xffffcbff};
 
 /*uint32_t mensagemo[36] = 
-{0x43ccffff, 0x66340000, 0x1fccffff, 0x57340000, 0x6eccffff,
- 0x6d340000, 0x73ccffff, 0x62340000, 0x1fccffff, 0x51340000,
- 0x60ccffff, 0x73340000, 0x60ccffff, 0x21340000, 0x6eccffff,
- 0x21340000, 0x45ccffff, 0x76340000, 0x73ccffff, 0x76340000,
- 0x71ccffff, 0x70340000, 0x1fccffff, 0x32340000, 0x38ccffff,
- 0x39340000, 0x34ccffff, 0x01340000, 0xffcbffff, 0x01340000,
- 0xffcbffff, 0x01340000, 0xffcbffff, 0x2b520000, 0x039c0000, 0xffcbffff};*/
-
+{0x88ca561a, 0x7735aa9e, 0x88ca5649, 0x7735aa9d, 0x88ca5640, 0x7735aa97,
+0x88ca563b, 0x7735aa98, 0x88ca55f7, 0x7735aa8a, 0x88ca55f7, 0x7735aa7f,
+0x88ca5640, 0x7735aa8d, 0x88ca5638, 0x7735aa49, 0x88ca5618, 0x7735aa8d, 
+0x88ca5646, 0x7735aa92, 0x88ca563b, 0x7735aa8a, 0x88ca563b, 0x7735aa98,
+0x88ca55f7, 0x7735aa49, 0x88ca5608, 0x7735aa62, 0x88ca560f, 0x7735aa5f,
+0x97c25348, 0x65a0fe7b, 0xe655ca88};*/
 
  uint8_t fluxo; //saber qual thread deve ser a proxima
  bool flag; //saber se deve imprimir ou não na tela
- uint16_t primo = 1; //chave
+ uint16_t primo = 2; //chave
  uint16_t primoanterior = 1; //chave anterior
  uint32_t antepenultima; //antepenultima word
  uint32_t penultima; //penultima word
  uint32_t ultima; //ultima word
  
- uint32_t mensagemd[144];
-
- //To print on the screen
+ uint32_t mensagemd[36];
+//To print on the screen
 tContext sContext;
- /*
-	fluxo = 1	geração
-	fluxo = 2	verifica se é primo
-	fluxo = 3	decodifica
-	fluxo = 4	verificação da antepenultima word
-	fluxo = 5	verificação da serie de fibonacci
-	fluxo = 6	verificação da penultima
-	fluxo = 7	verificação da ultima 
-*/
+
 /*----------------------------------------------------------------------------
  *  Transforming int to string
  *---------------------------------------------------------------------------*/
@@ -120,20 +128,7 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 			value /= base;
 	} while(value > 0);
 }
-//=============Fibbonacci Test==============
-bool isPerfectSquare(int x)
-{
-    int s = sqrt(x);
-    return (s*s == x);
-}
-bool isFibonacci(int n)
-{
-    // n is Fibinacci if one of 5*n*n + 4 or 5*n*n - 4 or both
-    // is a perferct square
-    return isPerfectSquare(5*n*n + 4) ||
-           isPerfectSquare(5*n*n - 4);
-}
-//==========================================
+
 static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, uint8_t zeros, uint8_t precision){
 	static const char* pAscii = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	uint8_t start = 0xFF;
@@ -163,21 +158,23 @@ static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, 
 		pBuf[start++] = pAscii[(uint32_t) value];
 	}
 }
+
 /*----------------------------------------------------------------------------
  *    Initializations
  *---------------------------------------------------------------------------*/
 
 void init_all(){
-rgb_init();
-	init_UART_J();
-		cfaf128x128x16Init();
-		GrContextInit(&sContext, &g_sCfaf128x128x16);
-	
-	GrFlush(&sContext);
-	GrContextFontSet(&sContext, g_psFontFixed6x8);
-	
-	GrContextForegroundSet(&sContext, ClrWhite);
-	GrContextBackgroundSet(&sContext, ClrBlack);
+	cfaf128x128x16Init();
+	joy_init();
+	accel_init();
+	buzzer_init(); 
+	button_init();
+	mic_init();
+	rgb_init();
+	servo_init();
+	temp_init();
+	opt_init();
+	led_init();
 }
 
 void init_sidelong_menu(){
@@ -189,11 +186,18 @@ void init_sidelong_menu(){
 	
 	GrContextForegroundSet(&sContext, ClrWhite);
 	GrContextBackgroundSet(&sContext, ClrBlack);
-
+	
 	//Escreve menu lateral:
-	GrStringDraw(&sContext,"Exemplo EK-TM4C1294XL", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
+	/*GrStringDraw(&sContext,"Exemplo EK-TM4C1294XL", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
 	GrStringDraw(&sContext,"---------------------", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
-	UARTprintstring("TESTE1");
+	GrStringDraw(&sContext,"RGB", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
+	GrStringDraw(&sContext,"ACC", -1, 0, (sContext.psFont->ui8Height+2)*3, true);
+	GrStringDraw(&sContext,"TMP", -1, 0, (sContext.psFont->ui8Height+2)*4, true);
+	GrStringDraw(&sContext,"OPT", -1, 0, (sContext.psFont->ui8Height+2)*5, true);
+	GrStringDraw(&sContext,"MIC", -1, 0, (sContext.psFont->ui8Height+2)*6, true);
+	GrStringDraw(&sContext,"JOY", -1, 0, (sContext.psFont->ui8Height+2)*7, true);
+	GrStringDraw(&sContext,"BUT", -1, 0, (sContext.psFont->ui8Height+2)*8, true);*/
+
 }
 	
 uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
@@ -216,11 +220,23 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 					(((uint32_t) g) <<  8) | 
 					( (uint32_t) b       );
 }
+bool isPerfectSquare(int x)
+{
+    int s = sqrt(x);
+    return (s*s == x);
+}
+bool isFibonacci(int n)
+{
+    // n is Fibinacci if one of 5*n*n + 4 or 5*n*n - 4 or both
+    // is a perferct square
+    return isPerfectSquare(5*n*n + 4) ||
+           isPerfectSquare(5*n*n - 4);
+}
+
 /*----------------------------------------------------------------------------
  *      Threads
  *---------------------------------------------------------------------------*/
 void geracao_thread(void const *args){
-	UARTprintstring("GeracaoThread");	
 	if(fluxo == 1){
 		primo++; 
 		//envia para verificação de numero primo
@@ -232,7 +248,6 @@ void geracao_thread(void const *args){
 
 void decodificacao_thread(void const *args){	
 	uint8_t i;
-	UARTprintstring("DecodeThread");	
 	if(fluxo == 3){
 		for(i = 0; i <= 35; i++){
 			if(i%2==0)
@@ -247,7 +262,6 @@ void decodificacao_thread(void const *args){
 }
 
 void antepenultima_thread(void const *args){
-	UARTprintstring("AntepenultimaThread");	
 	if(fluxo == 4){
 		antepenultima = mensagemd[33];
 		fluxo = 5;
@@ -256,7 +270,6 @@ void antepenultima_thread(void const *args){
 }
 
 void penultima_thread(void const *args){
-	UARTprintstring("PenultimaThread");	
 	if(fluxo == 6){
 		if(mensagemd[34] == 2*primo){
 			fluxo = 7;
@@ -272,7 +285,7 @@ void penultima_thread(void const *args){
 }
 
 void ultima_thread(void const *args){
-	UARTprintstring("UltimaThread");	
+	
 	if(fluxo == 7){
 		if(mensagemd[35] ==(primo + primoanterior)/antepenultima)
 			osDelay(osWaitForever);
@@ -284,7 +297,7 @@ void ultima_thread(void const *args){
 }
 
 void primo_thread(void const *args){
-	int aux;
+	uint32_t aux;
 	int cont = 0;
 	UARTprintstring("PrimoThread");	
 	if(fluxo == 2){
@@ -298,25 +311,37 @@ void primo_thread(void const *args){
 		}
 		else{
 			fluxo = 1;
-			osThreadYield();
 		}
 	osThreadYield();
 	}
 }
 
 void fibonacci_thread(void const *args){
-	int num1 = 0,num2 = 1,num3;
-	bool teste;
+	uint32_t num1 = 0,num2 = 1,num3;
 	UARTprintstring("FibonacciThread");	
 	if(fluxo == 5){
-		if(isFibonacci(antepenultima)){
+		while(num3 <= antepenultima)
+            {
+                num1 = num2;
+                num2 = num3;
+                num3 = num1 + num2;
+            }
+		if(num3 = antepenultima)
+		{
+			fluxo = 6;
+		}
+		else{
+			fluxo = 1;
+			primoanterior = primo;			
+		}
+		/*if(isFibonacci(antepenultima)){
 			fluxo = 6;
 		}else{
 			fluxo = 1;
 			primoanterior = primo;
-		}
-		osThreadYield();		
+		}	*/
 	}
+	osThreadYield();
 }
 
 void exibir_thread(void const *args){
@@ -343,20 +368,33 @@ osThreadDef(penultima_thread, osPriorityNormal, 1, 0);
 osThreadDef(ultima_thread, osPriorityNormal, 1, 0);
 osThreadDef(exibir_thread, osPriorityNormal, 1, 0);
 
+
+
+
+
+	
+
+
 /*----------------------------------------------------------------------------
  *      Main
  *---------------------------------------------------------------------------*/
 int main (void) {
-		//Initializing all peripherals
+
+  char pbufx[10], pbufy[10], pbufz[10];
+	bool center;
+	float temp,lux;
+	float mic;
+	bool s1_press, s2_press;
+	uint8_t  	r, g, b;
+	uint32_t color;
+	uint16_t x, y, z, angle=0;
+	
+	//Initializing all peripherals
 	init_all();
 	//Sidelong menu creation
 	init_sidelong_menu();
-	//inicializações
-	osKernelInitialize();
-	
-	
-	//criação das threads
-	osThreadCreate(osThread(geracao_thread), NULL);
+GrStringDraw(&sContext,"RGB", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
+  osThreadCreate(osThread(geracao_thread), NULL);
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(decodificacao_thread), NULL);
 	osThreadCreate(osThread(antepenultima_thread), NULL);
@@ -365,12 +403,6 @@ int main (void) {
 	osThreadCreate(osThread(ultima_thread), NULL);
 	osThreadCreate(osThread(exibir_thread), NULL);
 	fluxo = 1;
-	
-	osKernelStart();
-	
-	//while(true){
-		//GrStringDraw(&sContext,"TESTE", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-	//}
-	
-	//osDelay(osWaitForever);
-}
+			
+	}	
+

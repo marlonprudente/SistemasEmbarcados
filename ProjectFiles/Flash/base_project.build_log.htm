@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.25.2.0
 Copyright (C) 2018 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: N/A N/A, N/A, LIC=----
+License Information: N/A N/A, N/A, LIC=R4HVE-57AFS-06PQU-SSZX4-MM33U-MW940
  
 Tool Versions:
 Toolchain:       MDK-ARM Professional  Version: 5.25.2.0
@@ -96,11 +96,53 @@ C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\UART_CONSOLE_F.h(35): warni
   #endif  //__UART_CONSOLE_F_H__
 C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\Colors.h(131): warning:  #1-D: last line of file ends without a newline
   #endif  //__COLORS_H__
-C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(187): warning:  #177-D: variable "i"  was declared but never referenced
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(183): warning:  #177-D: variable "i"  was declared but never referenced
         uint8_t i;
-C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(140): warning:  #177-D: function "floatToString"  was declared but never referenced
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(323): warning:  #177-D: variable "num1"  was declared but never referenced
+        int num1 = 0,num2 = 1,num3;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(323): warning:  #177-D: variable "num2"  was declared but never referenced
+        int num1 = 0,num2 = 1,num3;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(323): warning:  #177-D: variable "num3"  was declared but never referenced
+        int num1 = 0,num2 = 1,num3;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(324): warning:  #177-D: variable "teste"  was declared but never referenced
+        bool teste;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(373): warning:  #177-D: variable "pbufx"  was declared but never referenced
+    char pbufx[10], pbufy[10], pbufz[10];
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(373): warning:  #177-D: variable "pbufy"  was declared but never referenced
+    char pbufx[10], pbufy[10], pbufz[10];
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(373): warning:  #177-D: variable "pbufz"  was declared but never referenced
+    char pbufx[10], pbufy[10], pbufz[10];
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(374): warning:  #177-D: variable "center"  was declared but never referenced
+        bool center;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(375): warning:  #177-D: variable "temp"  was declared but never referenced
+        float temp,lux;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(375): warning:  #177-D: variable "lux"  was declared but never referenced
+        float temp,lux;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(376): warning:  #177-D: variable "mic"  was declared but never referenced
+        float mic;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(377): warning:  #177-D: variable "s1_press"  was declared but never referenced
+        bool s1_press, s2_press;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(377): warning:  #177-D: variable "s2_press"  was declared but never referenced
+        bool s1_press, s2_press;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(378): warning:  #177-D: variable "r"  was declared but never referenced
+        uint8_t         r, g, b;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(378): warning:  #177-D: variable "g"  was declared but never referenced
+        uint8_t         r, g, b;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(378): warning:  #177-D: variable "b"  was declared but never referenced
+        uint8_t         r, g, b;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(379): warning:  #177-D: variable "color"  was declared but never referenced
+        uint32_t color;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(380): warning:  #177-D: variable "x"  was declared but never referenced
+        uint16_t x, y, z, angle=0;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(380): warning:  #177-D: variable "y"  was declared but never referenced
+        uint16_t x, y, z, angle=0;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(380): warning:  #177-D: variable "z"  was declared but never referenced
+        uint16_t x, y, z, angle=0;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(380): warning:  #177-D: variable "angle"  was declared but never referenced
+        uint16_t x, y, z, angle=0;
+C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\main.c(134): warning:  #177-D: function "floatToString"  was declared but never referenced
   static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, uint8_t zeros, uint8_t precision){
-main.c: 36 warnings, 0 errors
+main.c: 57 warnings, 0 errors
 compiling UART_CONSOLE_F.c...
 C:\Users\Mat\Desktop\SistemasEmbarcados\ProjectFiles\UARTDriver.h(4): warning:  #1295-D: Deprecated declaration init_UART_J - give arg types
   extern void init_UART_J();
@@ -250,8 +292,8 @@ compiling RTX_Conf_CM.c...
 assembling startup_TM4C129.s...
 compiling system_TM4C129.c...
 linking...
-Program Size: Code=13348 RO-data=2932 RW-data=236 ZI-data=10452  
-".\Flash\base_project.axf" - 0 Error(s), 96 Warning(s).
+Program Size: Code=18932 RO-data=3344 RW-data=1644 ZI-data=10020  
+".\Flash\base_project.axf" - 0 Error(s), 117 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -282,23 +324,23 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.1.2
 
    * Component: ARM::CMSIS:RTOS:Keil RTX:4.81.1
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
       Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
-      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
-      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
       Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
       Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM4.lib
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
 
    * Component: Keil::Device:Startup:1.0.0
-      Include file:  Device\Include\TM4C129\TM4C129.h
       Source file:   Device\Source\ARM\startup_TM4C129.s
+      Include file:  Device\Include\TM4C129\TM4C129.h
       Source file:   Device\Source\system_TM4C129.c
 Build Time Elapsed:  00:00:12
 </pre>
