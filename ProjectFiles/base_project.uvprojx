@@ -382,24 +382,9 @@
           <GroupName>Source Files</GroupName>
           <Files>
             <File>
-              <FileName>UART_CONSOLE_F.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\UART_CONSOLE_F.h</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>UART_CONSOLE_F.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\UART_CONSOLE_F.c</FilePath>
-            </File>
-            <File>
-              <FileName>Colors.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Colors.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -880,24 +865,9 @@
           <GroupName>Source Files</GroupName>
           <Files>
             <File>
-              <FileName>UART_CONSOLE_F.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\UART_CONSOLE_F.h</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>UART_CONSOLE_F.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\UART_CONSOLE_F.c</FilePath>
-            </File>
-            <File>
-              <FileName>Colors.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Colors.h</FilePath>
             </File>
           </Files>
         </Group>

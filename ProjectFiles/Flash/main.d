@@ -14,17 +14,6 @@
 .\flash\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\flash\main.o: ..\grlib/grlib.h
 .\flash\main.o: ..\driverlib/uart.h
-.\flash\main.o: rgb.h
 .\flash\main.o: cfaf128x128x16.h
-.\flash\main.o: servo.h
-.\flash\main.o: temp.h
-.\flash\main.o: opt.h
-.\flash\main.o: buttons.h
-.\flash\main.o: buzzer.h
-.\flash\main.o: joy.h
-.\flash\main.o: mic.h
-.\flash\main.o: accel.h
 .\flash\main.o: led.h
-.\flash\main.o: UARTDriver.h
-.\flash\main.o: UART_CONSOLE_F.h
 .\flash\main.o: Colors.h

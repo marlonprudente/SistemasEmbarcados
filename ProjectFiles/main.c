@@ -23,21 +23,9 @@
  * include libraries from drivers
  *----------------------------------------------------------------------------*/
 
-#include "rgb.h"
 #include "cfaf128x128x16.h"
-#include "servo.h"
-#include "temp.h"
-#include "opt.h"
-#include "buttons.h"
-#include "buzzer.h"
-#include "joy.h"
-#include "mic.h"
-#include "accel.h"
 #include "led.h"
-#include "UARTDriver.h"
-#include "UART_CONSOLE_F.h"
 #include "Colors.h"
-
 #define LED_A      0
 #define LED_B      1
 #define LED_C      2
@@ -45,24 +33,24 @@
 #define LED_CLK    7
 
 uint32_t mensagemo[36] = 
-{0xFFFFCC43, 0x00003466, 0xFFFFCC1F, 0x00003457, 0xFFFFCC6E, 0x0000346D,
-0xFFFFCC73, 0x00003462, 0xFFFFCC1F, 0x00003451, 0xFFFFCC60, 0x00003473,
-0xFFFFCC60, 0x00003421, 0xFFFFCC6E, 0x00003421, 0xFFFFCC45, 0x00003476,
-0xFFFFCC73, 0x00003476, 0xFFFFCC71, 0x00003470, 0xFFFFCC1F, 0x00003421,
-0xFFFFCC1f, 0x00003421, 0xFFFFCC30, 0x0000343a, 0xFFFFCc37, 0x00003436,
-0x0000522b, 0x00009c03, 0xffffcbff};
+{ 0xffffcc43, 0x00003466, 0xffffcc1f, 0x00003457, 0xffffcc6e, 0x0000346d,
+  0xffffcc73, 0x00003462, 0xffffcc1f, 0x00003451, 0xffffcc60, 0x00003473,
+	0xffffcc60, 0x00003421, 0xffffcc6e, 0x00003421, 0xffffcc45, 0x00003476,
+	0xffffcc73, 0x00003476, 0xffffcc71, 0x00003470, 0xffffcc1f, 0x00003421,
+	0xffffcc1f, 0x00003421, 0xffffcc30, 0x0000343a, 0xffffcc37, 0x00003436,
+	0x0000811f, 0x00009c03, 0xffffcbff };
 
 /*uint32_t mensagemo[36] = 
-{0x88ca561a, 0x7735aa9e, 0x88ca5649, 0x7735aa9d, 0x88ca5640, 0x7735aa97,
-0x88ca563b, 0x7735aa98, 0x88ca55f7, 0x7735aa8a, 0x88ca55f7, 0x7735aa7f,
-0x88ca5640, 0x7735aa8d, 0x88ca5638, 0x7735aa49, 0x88ca5618, 0x7735aa8d, 
-0x88ca5646, 0x7735aa92, 0x88ca563b, 0x7735aa8a, 0x88ca563b, 0x7735aa98,
-0x88ca55f7, 0x7735aa49, 0x88ca5608, 0x7735aa62, 0x88ca560f, 0x7735aa5f,
-0x97c25348, 0x65a0fe7b, 0xe655ca88};*/
+{ 0x88ca561a, 0x7735aa9e, 0x88ca5649, 0x7735aa9d, 0x88ca5640, 0x7735aa97, 
+	0x88ca563b, 0x7735aa98, 0x88ca55f7, 0x7735aa8a, 0x88ca55f7, 0x7735aa7f, 
+  0x88ca5640, 0x7735aa8d, 0x88ca5638, 0x7735aa49, 0x88ca5618, 0x7735aa8d, 
+  0x88ca5646, 0x7735aa92, 0x88ca563b, 0x7735aa8a, 0x88ca563b, 0x7735aa98, 
+  0x88ca55f7, 0x7735aa49, 0x88ca5608, 0x7735aa62, 0x88ca560f, 0x7735aa5f, 
+  0x98c2620f, 0x65a0fe7b, 0x88ca55e5};*/
 
  uint8_t fluxo; //saber qual thread deve ser a proxima
  bool flag; //saber se deve imprimir ou não na tela
- uint16_t primo = 2; //chave
+ uint16_t primo = 2; //chave	
  uint16_t primoanterior = 1; //chave anterior
  uint32_t antepenultima; //antepenultima word
  uint32_t penultima; //penultima word
@@ -163,18 +151,14 @@ static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, 
  *    Initializations
  *---------------------------------------------------------------------------*/
 
-void init_all(){
+void init_display(){
 	cfaf128x128x16Init();
-	joy_init();
-	accel_init();
-	buzzer_init(); 
-	button_init();
-	mic_init();
-	rgb_init();
-	servo_init();
-	temp_init();
-	opt_init();
-	led_init();
+	GrContextInit(&sContext, &g_sCfaf128x128x16);
+	GrFlush(&sContext);
+	GrContextFontSet(&sContext, g_psFontFixed6x8);
+	GrContextForegroundSet(&sContext, ClrWhite);
+	GrContextBackgroundSet(&sContext, ClrBlack);
+
 }
 
 void init_sidelong_menu(){
@@ -265,46 +249,46 @@ void antepenultima_thread(void const *args){
 	if(fluxo == 4){
 		antepenultima = mensagemd[33];
 		fluxo = 5;
-		osThreadYield();
 	}
+	osThreadYield();
 }
 
 void penultima_thread(void const *args){
 	if(fluxo == 6){
 		if(mensagemd[34] == 2*primo){
 			fluxo = 7;
-			//osThreadYield();
 		}
 		else{
 			fluxo = 1;
 			primoanterior = primo;
 		}
-		osThreadYield();
 	}
-	//osThreadYield();
+		osThreadYield();
 }
 
 void ultima_thread(void const *args){
 	
 	if(fluxo == 7){
-		if(mensagemd[35] ==(primo + primoanterior)/antepenultima)
+		if(mensagemd[35] == (primo + primoanterior)/antepenultima )
+		{
+			flag = 1;
+			fluxo = 8;
 			osDelay(osWaitForever);
+		}
 		else
 			fluxo = 1;
-		
-		osThreadYield();
 	}
+	osThreadYield();
 }
 
 void primo_thread(void const *args){
 	uint32_t aux;
 	int cont = 0;
-	UARTprintstring("PrimoThread");	
+	//UARTprintstring("PrimoThread");	
 	if(fluxo == 2){
 		for (aux = 1; aux <= primo; aux++){
-			if(primo%aux == 0){
+			if(primo%aux == 0)
 				cont++;
-			}
 		}
 		if (cont == 2){	
 			fluxo = 3;
@@ -312,21 +296,21 @@ void primo_thread(void const *args){
 		else{
 			fluxo = 1;
 		}
-	osThreadYield();
 	}
+	osThreadYield();
 }
 
 void fibonacci_thread(void const *args){
 	uint32_t num1 = 0,num2 = 1,num3;
-	UARTprintstring("FibonacciThread");	
+	num3 = num1 + num2;
 	if(fluxo == 5){
-		while(num3 <= antepenultima)
-            {
-                num1 = num2;
-                num2 = num3;
-                num3 = num1 + num2;
-            }
-		if(num3 = antepenultima)
+		while(num3 < antepenultima)
+			{
+					num1 = num2;
+					num2 = num3;
+					num3 = num1 + num2;
+			}
+		if(num3 == antepenultima)
 		{
 			fluxo = 6;
 		}
@@ -346,14 +330,27 @@ void fibonacci_thread(void const *args){
 
 void exibir_thread(void const *args){
 	uint8_t n;
-	UARTprintstring("ExibirThread");	
+	uint8_t i;
+	char c[2];
+	
 	if(flag == 0)
 	{
 		osThreadYield();
 	}
-	for(n = 0;n<36;n++){
-	UARTprintstring((char*)mensagemd[n]);
+	init_display();
+	//Sidelong menu creation
+	init_sidelong_menu();
+
+	for(i = 0; i<36; i++){
+	c[0] = (char)(mensagemd[i])%256;
+	c[1] = '\0';
+	GrStringDraw(&sContext,(char*)c, -1,  (sContext.psFont->ui8MaxWidth)*(i%20), (sContext.psFont->ui8Height+2)*(2 + i/20), true);
 	}
+	GrStringDraw(&sContext,"Mensagem", -1,  0, (sContext.psFont->ui8Height+2)*0, true);
+	GrStringDraw(&sContext,"antepenultima", -1,  0, (sContext.psFont->ui8Height+2)*6, true);
+	GrStringDraw(&sContext,"penultima", -1,  0, (sContext.psFont->ui8Height+2)*7, true);
+	GrStringDraw(&sContext,"ultima", -1,  0, (sContext.psFont->ui8Height+2)*8, true);
+	
 	flag = 0;
 }
  /*----------------------------------------------------------------------------
@@ -367,34 +364,16 @@ osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 osThreadDef(penultima_thread, osPriorityNormal, 1, 0);
 osThreadDef(ultima_thread, osPriorityNormal, 1, 0);
 osThreadDef(exibir_thread, osPriorityNormal, 1, 0);
-
-
-
-
-
-	
-
-
 /*----------------------------------------------------------------------------
  *      Main
  *---------------------------------------------------------------------------*/
 int main (void) {
-
-  char pbufx[10], pbufy[10], pbufz[10];
-	bool center;
-	float temp,lux;
-	float mic;
-	bool s1_press, s2_press;
-	uint8_t  	r, g, b;
-	uint32_t color;
-	uint16_t x, y, z, angle=0;
-	
+	osKernelInitialize();
 	//Initializing all peripherals
-	init_all();
+	init_display();
 	//Sidelong menu creation
 	init_sidelong_menu();
-GrStringDraw(&sContext,"RGB", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
-  osThreadCreate(osThread(geracao_thread), NULL);
+	osThreadCreate(osThread(geracao_thread), NULL);
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(decodificacao_thread), NULL);
 	osThreadCreate(osThread(antepenultima_thread), NULL);
@@ -403,6 +382,8 @@ GrStringDraw(&sContext,"RGB", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
 	osThreadCreate(osThread(ultima_thread), NULL);
 	osThreadCreate(osThread(exibir_thread), NULL);
 	fluxo = 1;
-			
+	
+	osKernelStart();
+	osDelay(osWaitForever);			
 	}	
 

@@ -1,6 +1,5 @@
 --cpu=Cortex-M4.fp
 ".\flash\main.o"
-".\flash\uart_console_f.o"
 ".\flash\buzzer.o"
 ".\flash\accel.o"
 ".\flash\buttons.o"
