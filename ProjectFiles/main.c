@@ -31,8 +31,8 @@
 #define LED_C      2
 #define LED_D      3
 #define LED_CLK    7
-
-uint32_t mensagemo[36] = 
+char buff[32];
+uint32_t mensagemo[33] = 
 { 0xffffcc43, 0x00003466, 0xffffcc1f, 0x00003457, 0xffffcc6e, 0x0000346d,
   0xffffcc73, 0x00003462, 0xffffcc1f, 0x00003451, 0xffffcc60, 0x00003473,
 	0xffffcc60, 0x00003421, 0xffffcc6e, 0x00003421, 0xffffcc45, 0x00003476,
@@ -40,7 +40,7 @@ uint32_t mensagemo[36] =
 	0xffffcc1f, 0x00003421, 0xffffcc30, 0x0000343a, 0xffffcc37, 0x00003436,
 	0x0000811f, 0x00009c03, 0xffffcbff };
 
-/*uint32_t mensagemo[36] = 
+/*uint32_t mensagemo[32] = 
 { 0x88ca561a, 0x7735aa9e, 0x88ca5649, 0x7735aa9d, 0x88ca5640, 0x7735aa97, 
 	0x88ca563b, 0x7735aa98, 0x88ca55f7, 0x7735aa8a, 0x88ca55f7, 0x7735aa7f, 
   0x88ca5640, 0x7735aa8d, 0x88ca5638, 0x7735aa49, 0x88ca5618, 0x7735aa8d, 
@@ -50,13 +50,16 @@ uint32_t mensagemo[36] =
 
  uint8_t fluxo; //saber qual thread deve ser a proxima
  bool flag; //saber se deve imprimir ou não na tela
- uint16_t primo = 2; //chave	
+ uint32_t primo = 2; //chave	
  uint16_t primoanterior = 1; //chave anterior
  uint32_t antepenultima; //antepenultima word
  uint32_t penultima; //penultima word
  uint32_t ultima; //ultima word
+ bool flagp = false;
+ bool flaga = false;
+ bool flagu = false;
  
- uint32_t mensagemd[36];
+ uint32_t mensagemd[33];
 //To print on the screen
 tContext sContext;
 
@@ -161,28 +164,7 @@ void init_display(){
 
 }
 
-void init_sidelong_menu(){
-	uint8_t i;
-	GrContextInit(&sContext, &g_sCfaf128x128x16);
-	
-	GrFlush(&sContext);
-	GrContextFontSet(&sContext, g_psFontFixed6x8);
-	
-	GrContextForegroundSet(&sContext, ClrWhite);
-	GrContextBackgroundSet(&sContext, ClrBlack);
-	
-	//Escreve menu lateral:
-	/*GrStringDraw(&sContext,"Exemplo EK-TM4C1294XL", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-	GrStringDraw(&sContext,"---------------------", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
-	GrStringDraw(&sContext,"RGB", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
-	GrStringDraw(&sContext,"ACC", -1, 0, (sContext.psFont->ui8Height+2)*3, true);
-	GrStringDraw(&sContext,"TMP", -1, 0, (sContext.psFont->ui8Height+2)*4, true);
-	GrStringDraw(&sContext,"OPT", -1, 0, (sContext.psFont->ui8Height+2)*5, true);
-	GrStringDraw(&sContext,"MIC", -1, 0, (sContext.psFont->ui8Height+2)*6, true);
-	GrStringDraw(&sContext,"JOY", -1, 0, (sContext.psFont->ui8Height+2)*7, true);
-	GrStringDraw(&sContext,"BUT", -1, 0, (sContext.psFont->ui8Height+2)*8, true);*/
 
-}
 	
 uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 	uint8_t *max = &r, 
@@ -204,7 +186,7 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 					(((uint32_t) g) <<  8) | 
 					( (uint32_t) b       );
 }
-bool isPerfectSquare(int x)
+/*bool isPerfectSquare(int x)
 {
     int s = sqrt(x);
     return (s*s == x);
@@ -215,25 +197,31 @@ bool isFibonacci(int n)
     // is a perferct square
     return isPerfectSquare(5*n*n + 4) ||
            isPerfectSquare(5*n*n - 4);
-}
+}*/
 
 /*----------------------------------------------------------------------------
  *      Threads
  *---------------------------------------------------------------------------*/
 void geracao_thread(void const *args){
+	while(1){
 	if(fluxo == 1){
 		primo++; 
 		//envia para verificação de numero primo
 		
 		fluxo = 2;
+	}
 		osThreadYield();
 	}
 }
 
 void decodificacao_thread(void const *args){	
 	uint8_t i;
+	while(1){
 	if(fluxo == 3){
-		for(i = 0; i <= 35; i++){
+		/*for(i = 0; i <= 35; i++){
+			mensagemd[i] = mensagemo[i];
+		}*/
+ 		for(i = 0; i < 33; i++){
 			if(i%2==0)
 				mensagemd[i] = mensagemo[i] + primo;
 			else
@@ -241,51 +229,60 @@ void decodificacao_thread(void const *args){
 		}
 		fluxo = 4;
 		flag = 1;
+	}
 		osThreadYield();
 	}
 }
 
 void antepenultima_thread(void const *args){
-	if(fluxo == 4){
-		antepenultima = mensagemd[33];
-		fluxo = 5;
-	}
-	osThreadYield();
-}
-
-void penultima_thread(void const *args){
-	if(fluxo == 6){
-		if(mensagemd[34] == 2*primo){
-			fluxo = 7;
+	while(1){
+		if(fluxo == 4){
+			antepenultima = mensagemd[30];
+			fluxo = 5;
 		}
-		else{
-			fluxo = 1;
-			primoanterior = primo;
-		}
-	}
 		osThreadYield();
+	}
+}
+void penultima_thread(void const *args){
+	char buffp[32];
+	while(1){
+		if(fluxo == 6){
+			if(mensagemd[31] == 2*primo){
+				fluxo = 7;
+				flagp = true;
+			}
+			else{
+				fluxo = 1;
+				primoanterior = primo;
+			}
+		}
+		osThreadYield();
+	}
 }
 
 void ultima_thread(void const *args){
-	
-	if(fluxo == 7){
-		if(mensagemd[35] == (primo + primoanterior)/antepenultima )
-		{
-			flag = 1;
-			fluxo = 8;
-			osDelay(osWaitForever);
+	while(1){	
+		if(fluxo == 7){
+			if(mensagemd[32] == (primo + primoanterior)/antepenultima )
+			{
+				flagu = true;
+				flag = 1;
+				fluxo = 8;
+				osDelay(osWaitForever);
+			}
+			else
+				fluxo = 1;
 		}
-		else
-			fluxo = 1;
-	}
-	osThreadYield();
+		osThreadYield();
+}
 }
 
 void primo_thread(void const *args){
 	uint32_t aux;
 	int cont = 0;
-	//UARTprintstring("PrimoThread");	
+	while(1){
 	if(fluxo == 2){
+		cont = 0;
 		for (aux = 1; aux <= primo; aux++){
 			if(primo%aux == 0)
 				cont++;
@@ -298,60 +295,70 @@ void primo_thread(void const *args){
 		}
 	}
 	osThreadYield();
+	}
 }
 
 void fibonacci_thread(void const *args){
 	uint32_t num1 = 0,num2 = 1,num3;
-	num3 = num1 + num2;
-	if(fluxo == 5){
-		while(num3 < antepenultima)
-			{
-					num1 = num2;
-					num2 = num3;
-					num3 = num1 + num2;
+	
+	while(1){
+		num3 = num1 + num2;
+		if(fluxo == 5){
+		
+			while(num3 < antepenultima)
+				{
+						num1 = num2;
+						num2 = num3;
+						num3 = num1 + num2;
+				}
+			if(num3 == antepenultima){
+				fluxo = 6;
+				flaga = true;
 			}
-		if(num3 == antepenultima)
-		{
-			fluxo = 6;
-		}
-		else{
-			fluxo = 1;
-			primoanterior = primo;			
-		}
-		/*if(isFibonacci(antepenultima)){
-			fluxo = 6;
-		}else{
-			fluxo = 1;
-			primoanterior = primo;
-		}	*/
+			else{
+				fluxo = 1;
+				primoanterior = primo;			
+			}
+			/*if(isFibonacci(antepenultima)){
+				fluxo = 6;
+			}else{
+				fluxo = 1;
+				primoanterior = primo;
+			}	*/
+			}osThreadYield();
 	}
-	osThreadYield();
 }
 
 void exibir_thread(void const *args){
 	uint8_t n;
 	uint8_t i;
 	char c[2];
-	
-	if(flag == 0)
-	{
-		osThreadYield();
+	char d[2];
+	while(1){
+		if(flag == 1)
+		{
+			intToString(primo,buff,30,10,10);
+			GrStringDraw(&sContext,buff, -1,  32, (sContext.psFont->ui8Height+2)*5, true);
+			
+			
+			for(i = 0; i<33; i++){
+			c[0] = (char)(mensagemd[i])%256;
+			c[1] = '\0';
+			GrStringDraw(&sContext,(char*)c, -1,  (sContext.psFont->ui8MaxWidth)*(i%20), (sContext.psFont->ui8Height+2)*(2 + i/20), true);
+			}
+			if(flagp == true && flagp == true && flagu == true)
+				{
+					while(1)
+					{
+					}
+				}
+			//GrStringDraw(&sContext,primo, -1,  7, (sContext.psFont->ui8Height+2)*0, true);
+			//GrStringDraw(&sContext,"antepenultima", -1,  0, (sContext.psFont->ui8Height+2)*6, true);
+			//GrStringDraw(&sContext,"penultima", -1,  0, (sContext.psFont->ui8Height+2)*7, true);
+			//GrStringDraw(&sContext,"ultima", -1,  0, (sContext.psFont->ui8Height+2)*8, true);
+			flag = 0;
+		}osThreadYield();
 	}
-	init_display();
-	//Sidelong menu creation
-	init_sidelong_menu();
-
-	for(i = 0; i<36; i++){
-	c[0] = (char)(mensagemd[i])%256;
-	c[1] = '\0';
-	GrStringDraw(&sContext,(char*)c, -1,  (sContext.psFont->ui8MaxWidth)*(i%20), (sContext.psFont->ui8Height+2)*(2 + i/20), true);
-	}
-	GrStringDraw(&sContext,"Mensagem", -1,  0, (sContext.psFont->ui8Height+2)*0, true);
-	GrStringDraw(&sContext,"antepenultima", -1,  0, (sContext.psFont->ui8Height+2)*6, true);
-	GrStringDraw(&sContext,"penultima", -1,  0, (sContext.psFont->ui8Height+2)*7, true);
-	GrStringDraw(&sContext,"ultima", -1,  0, (sContext.psFont->ui8Height+2)*8, true);
-	
-	flag = 0;
 }
  /*----------------------------------------------------------------------------
  *      ThreadsDef
@@ -369,10 +376,16 @@ osThreadDef(exibir_thread, osPriorityNormal, 1, 0);
  *---------------------------------------------------------------------------*/
 int main (void) {
 	osKernelInitialize();
-	//Initializing all peripherals
+	
+	
 	init_display();
-	//Sidelong menu creation
-	init_sidelong_menu();
+	GrContextInit(&sContext, &g_sCfaf128x128x16);
+	GrFlush(&sContext);
+	GrContextFontSet(&sContext, g_psFontFixed6x8);
+	GrContextForegroundSet(&sContext, ClrWhite);
+	GrContextBackgroundSet(&sContext, ClrBlack);
+	
+	
 	osThreadCreate(osThread(geracao_thread), NULL);
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(decodificacao_thread), NULL);
@@ -382,7 +395,8 @@ int main (void) {
 	osThreadCreate(osThread(ultima_thread), NULL);
 	osThreadCreate(osThread(exibir_thread), NULL);
 	fluxo = 1;
-	
+	GrStringDraw(&sContext,"Primo", -1,  0, (sContext.psFont->ui8Height+2)*5, true);
+
 	osKernelStart();
 	osDelay(osWaitForever);			
 	}	
