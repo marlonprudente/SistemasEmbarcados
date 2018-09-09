@@ -51,7 +51,7 @@ uint32_t mensagemo[33] =
 
  uint8_t fluxo; //saber qual thread deve ser a proxima
  bool flag; //saber se deve imprimir ou não na tela
- uint32_t primo = 2; //chave
+ uint32_t primo = 0x2; //chave
  uint32_t tick;
  uint32_t tempoanterior;
  uint32_t tempototal;
@@ -167,9 +167,6 @@ void init_display(){
 	GrContextBackgroundSet(&sContext, ClrBlack);
 
 }
-
-
-	
 uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 	uint8_t *max = &r, 
 					*mid = &g, 
@@ -222,9 +219,7 @@ void decodificacao_thread(void const *args){
 	uint8_t i;
 	while(1){
 	if(fluxo == 3){
-		/*for(i = 0; i <= 35; i++){
-			mensagemd[i] = mensagemo[i];
-		}*/
+
  		for(i = 0; i < 33; i++){
 			if(i%2==0)
 				mensagemd[i] = mensagemo[i] + primo;
