@@ -31,6 +31,7 @@
 #define LED_C      2
 #define LED_D      3
 #define LED_CLK    7
+#define osFeature_SysTick 1
 char buff[32];
 uint32_t mensagemo[33] = 
 { 0xffffcc43, 0x00003466, 0xffffcc1f, 0x00003457, 0xffffcc6e, 0x0000346d,
@@ -40,7 +41,7 @@ uint32_t mensagemo[33] =
 	0xffffcc1f, 0x00003421, 0xffffcc30, 0x0000343a, 0xffffcc37, 0x00003436,
 	0x0000811f, 0x00009c03, 0xffffcbff };
 
-/*uint32_t mensagemo[32] = 
+/*uint32_t mensagemo[33] = 
 { 0x88ca561a, 0x7735aa9e, 0x88ca5649, 0x7735aa9d, 0x88ca5640, 0x7735aa97, 
 	0x88ca563b, 0x7735aa98, 0x88ca55f7, 0x7735aa8a, 0x88ca55f7, 0x7735aa7f, 
   0x88ca5640, 0x7735aa8d, 0x88ca5638, 0x7735aa49, 0x88ca5618, 0x7735aa8d, 
@@ -50,15 +51,18 @@ uint32_t mensagemo[33] =
 
  uint8_t fluxo; //saber qual thread deve ser a proxima
  bool flag; //saber se deve imprimir ou não na tela
- uint32_t primo = 2; //chave	
- uint16_t primoanterior = 1; //chave anterior
+ uint32_t primo = 2; //chave
+ uint32_t tick;
+ uint32_t tempoanterior;
+ uint32_t tempototal;
+ uint32_t primoanterior = 1; //chave anterior
  uint32_t antepenultima; //antepenultima word
  uint32_t penultima; //penultima word
  uint32_t ultima; //ultima word
  bool flagp = false;
  bool flaga = false;
  bool flagu = false;
- 
+ char buff_tempo [32];
  uint32_t mensagemd[33];
 //To print on the screen
 tContext sContext;
@@ -244,7 +248,6 @@ void antepenultima_thread(void const *args){
 	}
 }
 void penultima_thread(void const *args){
-	char buffp[32];
 	while(1){
 		if(fluxo == 6){
 			if(mensagemd[31] == 2*primo){
@@ -330,17 +333,19 @@ void fibonacci_thread(void const *args){
 }
 
 void exibir_thread(void const *args){
-	uint8_t n;
 	uint8_t i;
 	char c[2];
-	char d[2];
 	while(1){
 		if(flag == 1)
 		{
 			intToString(primo,buff,30,10,10);
-			GrStringDraw(&sContext,buff, -1,  32, (sContext.psFont->ui8Height+2)*5, true);
-			
-			
+			GrStringDraw(&sContext,buff, -1,  40, (sContext.psFont->ui8Height+2)*5, true);
+			tick = osKernelSysTick();
+			if(tick > tempoanterior)
+				tempototal += (tick - tempoanterior)/100000;
+			else
+				tempototal += (0xFFFFFFFF - tempoanterior + tick)/100000;
+			tempoanterior = tick;
 			for(i = 0; i<33; i++){
 			c[0] = (char)(mensagemd[i])%256;
 			c[1] = '\0';
@@ -348,15 +353,18 @@ void exibir_thread(void const *args){
 			}
 			if(flagp == true && flagp == true && flagu == true)
 				{
-					while(1)
-					{
+					for(i = 0; i<33; i++){
+						c[0] = (char)(mensagemd[i])%256;
+						c[1] = '\0';
+						GrStringDraw(&sContext,(char*)c, -1,  (sContext.psFont->ui8MaxWidth)*(i%20), (sContext.psFont->ui8Height+2)*(2 + i/20), true);
 					}
+					tempototal = (0.85*tempototal)/1000; 
+					intToString(tempototal,buff_tempo,30,10,10);
+					GrStringDraw(&sContext,"Tempo(s):", -1,  0, (sContext.psFont->ui8Height+2)*7, true);
+					GrStringDraw(&sContext,buff_tempo, -1,  48, (sContext.psFont->ui8Height+2)*7, true);
+					while(1){}
 				}
-			//GrStringDraw(&sContext,primo, -1,  7, (sContext.psFont->ui8Height+2)*0, true);
-			//GrStringDraw(&sContext,"antepenultima", -1,  0, (sContext.psFont->ui8Height+2)*6, true);
-			//GrStringDraw(&sContext,"penultima", -1,  0, (sContext.psFont->ui8Height+2)*7, true);
-			//GrStringDraw(&sContext,"ultima", -1,  0, (sContext.psFont->ui8Height+2)*8, true);
-			flag = 0;
+				flag = 0;
 		}osThreadYield();
 	}
 }
@@ -395,7 +403,7 @@ int main (void) {
 	osThreadCreate(osThread(ultima_thread), NULL);
 	osThreadCreate(osThread(exibir_thread), NULL);
 	fluxo = 1;
-	GrStringDraw(&sContext,"Primo", -1,  0, (sContext.psFont->ui8Height+2)*5, true);
+	GrStringDraw(&sContext,"Primo: ", -1,  0, (sContext.psFont->ui8Height+2)*5, true);
 
 	osKernelStart();
 	osDelay(osWaitForever);			
