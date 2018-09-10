@@ -33,25 +33,25 @@
 #define LED_CLK    7
 #define osFeature_SysTick 1
 char buff[32];
-uint32_t mensagemo[33] = 
+/*uint32_t mensagemo[33] = 
 { 0xffffcc43, 0x00003466, 0xffffcc1f, 0x00003457, 0xffffcc6e, 0x0000346d,
   0xffffcc73, 0x00003462, 0xffffcc1f, 0x00003451, 0xffffcc60, 0x00003473,
 	0xffffcc60, 0x00003421, 0xffffcc6e, 0x00003421, 0xffffcc45, 0x00003476,
 	0xffffcc73, 0x00003476, 0xffffcc71, 0x00003470, 0xffffcc1f, 0x00003421,
 	0xffffcc1f, 0x00003421, 0xffffcc30, 0x0000343a, 0xffffcc37, 0x00003436,
-	0x0000811f, 0x00009c03, 0xffffcbff };
+	0x0000811f, 0x00009c03, 0xffffcbff };*/
 
-/*uint32_t mensagemo[33] = 
+uint32_t mensagemo[33] = 
 { 0x88ca561a, 0x7735aa9e, 0x88ca5649, 0x7735aa9d, 0x88ca5640, 0x7735aa97, 
 	0x88ca563b, 0x7735aa98, 0x88ca55f7, 0x7735aa8a, 0x88ca55f7, 0x7735aa7f, 
   0x88ca5640, 0x7735aa8d, 0x88ca5638, 0x7735aa49, 0x88ca5618, 0x7735aa8d, 
   0x88ca5646, 0x7735aa92, 0x88ca563b, 0x7735aa8a, 0x88ca563b, 0x7735aa98, 
   0x88ca55f7, 0x7735aa49, 0x88ca5608, 0x7735aa62, 0x88ca560f, 0x7735aa5f, 
-  0x98c2620f, 0x65a0fe7b, 0x88ca55e5};*/
+  0x98c2620f, 0x65a0fe7b, 0x88ca55e5};
 
  uint8_t fluxo; //saber qual thread deve ser a proxima
  bool flag; //saber se deve imprimir ou não na tela
- uint32_t primo = 0x2; //chave
+ uint32_t primo = 2000000000; //chave
  uint32_t tick;
  uint32_t tempoanterior;
  uint32_t tempototal;
@@ -281,11 +281,13 @@ void primo_thread(void const *args){
 	while(1){
 	if(fluxo == 2){
 		cont = 0;
-		for (aux = 1; aux <= primo; aux++){
+		for (aux = 2; aux*aux < primo; aux++){
 			if(primo%aux == 0)
 				cont++;
+			if(cont>0)
+				break;
 		}
-		if (cont == 2){	
+		if (cont == 0){	
 			fluxo = 3;
 		}
 		else{
@@ -346,7 +348,7 @@ void exibir_thread(void const *args){
 			c[1] = '\0';
 			GrStringDraw(&sContext,(char*)c, -1,  (sContext.psFont->ui8MaxWidth)*(i%20), (sContext.psFont->ui8Height+2)*(2 + i/20), true);
 			}
-			if(flagp == true && flagp == true && flagu == true)
+			if(flaga == true && flagp == true && flagu == true)
 				{
 					for(i = 0; i<33; i++){
 						c[0] = (char)(mensagemd[i])%256;
@@ -357,6 +359,8 @@ void exibir_thread(void const *args){
 					intToString(tempototal,buff_tempo,30,10,10);
 					GrStringDraw(&sContext,"Tempo(s):", -1,  0, (sContext.psFont->ui8Height+2)*7, true);
 					GrStringDraw(&sContext,buff_tempo, -1,  48, (sContext.psFont->ui8Height+2)*7, true);
+					//if(flagu == true)
+					//GrStringDraw(&sContext,"True", -1,  0, (sContext.psFont->ui8Height+2)*8, true);
 					while(1){}
 				}
 				flag = 0;
