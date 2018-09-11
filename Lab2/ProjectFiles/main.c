@@ -51,7 +51,7 @@ uint32_t mensagemo[33] =
 
  uint8_t fluxo; //saber qual thread deve ser a proxima
  bool flag; //saber se deve imprimir ou não na tela
- uint32_t primo = 2000000000; //chave
+ uint32_t primo = 1999900000; //chave
  uint32_t tick;
  uint32_t tempoanterior;
  uint32_t tempototal;
@@ -281,13 +281,11 @@ void primo_thread(void const *args){
 	while(1){
 	if(fluxo == 2){
 		cont = 0;
-		for (aux = 2; aux*aux < primo; aux++){
+		for (aux = 3; aux*aux < primo; aux=aux+2){
 			if(primo%aux == 0)
 				cont++;
-			if(cont > 0 )
-			{fluxo = 1;
+			if(cont>0)
 				break;
-			}
 		}
 		if (cont == 0){	
 			fluxo = 3;
@@ -345,17 +343,14 @@ void exibir_thread(void const *args){
 			else
 				tempototal += (0xFFFFFFFF - tempoanterior + tick)/100000;
 			tempoanterior = tick;
-			for(i = 0; i<30; i++){
+			for(i = 0; i<33; i++){
 			c[0] = (char)(mensagemd[i])%256;
 			c[1] = '\0';
 			GrStringDraw(&sContext,(char*)c, -1,  (sContext.psFont->ui8MaxWidth)*(i%20), (sContext.psFont->ui8Height+2)*(2 + i/20), true);
 			}
-			
 			if(flaga == true && flagp == true && flagu == true)
 				{
-					intToString(primo,buff,30,10,10);
-					GrStringDraw(&sContext,buff, -1,  40, (sContext.psFont->ui8Height+2)*5, true);
-					for(i = 0; i<30; i++){
+					for(i = 0; i<33; i++){
 						c[0] = (char)(mensagemd[i])%256;
 						c[1] = '\0';
 						GrStringDraw(&sContext,(char*)c, -1,  (sContext.psFont->ui8MaxWidth)*(i%20), (sContext.psFont->ui8Height+2)*(2 + i/20), true);
@@ -364,6 +359,8 @@ void exibir_thread(void const *args){
 					intToString(tempototal,buff_tempo,30,10,10);
 					GrStringDraw(&sContext,"Tempo(s):", -1,  0, (sContext.psFont->ui8Height+2)*7, true);
 					GrStringDraw(&sContext,buff_tempo, -1,  48, (sContext.psFont->ui8Height+2)*7, true);
+					//if(flagu == true)
+					//GrStringDraw(&sContext,"True", -1,  0, (sContext.psFont->ui8Height+2)*8, true);
 					while(1){}
 				}
 				flag = 0;
