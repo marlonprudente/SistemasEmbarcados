@@ -479,6 +479,9 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>New Group</GroupName>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
@@ -960,6 +963,9 @@
               <FilePath>..\grlib\rvmdk\grlib.lib</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>New Group</GroupName>
         </Group>
         <Group>
           <GroupName>::CMSIS</GroupName>
