@@ -41,7 +41,7 @@
 
 uint32_t mapa[128][128];
 
-uint32_t nave[11][9]={
+uint8_t nave[11][9]={
 0,0,0,0,0,0,0,0,0,
 0,0,0,0,1,0,0,0,0,
 0,0,0,0,1,0,0,0,0,
@@ -55,7 +55,7 @@ uint32_t nave[11][9]={
 0,0,0,0,0,0,0,0,0};
 //To print on the screen
 tContext sContext;
-
+uint32_t pontos;
 /*----------------------------------------------------------------------------
  *  Transforming int to string
  *---------------------------------------------------------------------------*/
@@ -183,82 +183,121 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 }
 
 
+
+//================================================	
+void constroi_mapa(){
+	uint16_t i,j;
+	for (i = 0; i < 128; i++)
+	{
+		for (j = 0; j < 128; j++)
+		{
+				if (j < 20 || j > 108)
+						mapa[j][i] = 2;
+				else
+						mapa[j][i] = 0;
+		}
+	}
+}
+
 /*----------------------------------------------------------------------------
  *      Threads
  *---------------------------------------------------------------------------*/
 
-	void constroi_mapa(){
-	uint16_t i,j;
-            for (i = 0; i < 128; i++)
-            {
-                for (j = 0; j < 128; j++)
-                {
-                    if (j < 20 || j > 108)
-                        mapa[j][i] = 2;
-                    else
-                        mapa[j][i] = 0;
-                }
-            }
-	}
+
 	
 void veiculo_do_jogador(void const *args){
-	/*uint16_t x, y;
-	uint8_t k, i = 0,j = 0,a = 56 , b = 100;
+	uint16_t x, y,center;
+	uint8_t k, i = 0,j = 0,a = 56 , b = 99;
 	bool button;
-		while(1){
-	x = joy_read_x();
-	y = joy_read_y();
+	while(1){
+		x = joy_read_x();
+		y = joy_read_y();
 		button = button_read_s1();
-		
-			for(i = 0; i < 9; i++){
-				for(j = 0; j < 11; j++){
-					if(nave[j][i] == 1 ){
-						GrContextForegroundSet(&sContext, ClrYellow);
-						GrPixelDraw(&sContext, i+a , j+b);}
-					else{
-						GrContextForegroundSet(&sContext, ClrBlue);
-						GrPixelDraw(&sContext, i+a , j+b);
-					}
+//		GrImageDraw(&sContext,*nave,a,b);
+		for(i = 0; i < 9; i++){
+			for(j = 0; j < 11; j++){
+				if(nave[j][i] == 1 ){
+					GrContextForegroundSet(&sContext, ClrYellow);
+					GrPixelDraw(&sContext, i+a , j+b);}
+				else{
+					GrContextForegroundSet(&sContext, ClrBlue);
+					GrPixelDraw(&sContext, i+a , j+b);
 				}
 			}
-				if(button == 1)
-				{
-							for(k = j+b-12; k > 0; k --){
-							GrContextForegroundSet(&sContext, ClrYellow);
-							GrPixelDraw(&sContext, a-5+i , k);
-							osDelay(50);
-							GrContextForegroundSet(&sContext, ClrBlue);
-							GrPixelDraw(&sContext, a-5+i , k);
-						}
-				}
-					
-			if(x > 2800){
-				if(mapa[i+a][j] == 2)
-						a = a;
-				else
+		}
+		if(button == 1)
+		{
+			for(k = j+b-12; k > 0; k --){
+				GrContextForegroundSet(&sContext, ClrYellow);
+				GrPixelDraw(&sContext, a-5+i , k);
+				GrPixelDraw(&sContext, a-5+i , k+1);
+				osDelay(50);
+				GrContextForegroundSet(&sContext, ClrBlue);
+				GrPixelDraw(&sContext, a-5+i , k);
+				GrPixelDraw(&sContext, a-5+i , k+1);
+			}
+		}		
+		if(x > 2800){
+			if(mapa[i+a][j] == 2)
+				a = a;
+			else
 				a++;
-			}
-			else if (x < 1500){
-				if(mapa[a-1][j] == 2)
-						a = a;
-				else
-					a--;}
-			if(y > 2800)
-				b = b;
-				//controle de velocidade
-			else if (y < 1500){
-				//controle de velocidade
-			osDelay(20);
-				}
-			}*/
+		}
+		else if (x < 1500){
+			if(mapa[a-1][j] == 2)
+					a = a;
+			else
+				a--;
+		}
+		if(y > 2800)
+			b = b;
+			//controle de velocidade
+		else if (y < 1500){
+			//controle de velocidade
+		osDelay(20);
+		}
+		osThreadYield();
+	}
 }
 
 
-void veiculo_obstaculos(void const *args){}
-
-void gerenciador_trajeto(void const *args){}
-	
-void painel_de_instrumentos(void const *args){}
+//================================================
+void veiculo_obstaculos(void const *args){
+	while(1){
+		osThreadYield();
+	}
+}
+//================================================
+void gerenciador_trajeto(void const *args){
+	while(1){
+		uint16_t i, j;
+			constroi_mapa();
+			for(i = 0; i < 128; i++){
+				for(j = 0; j < 110; j++){
+					if(mapa[i][j] == 0){
+						GrContextForegroundSet(&sContext, ClrBlue);
+							GrPixelDraw(&sContext, i , j);
+					}
+					else if( mapa [i][j] == 2){
+							GrContextForegroundSet(&sContext, ClrGreen);
+							GrPixelDraw(&sContext, i , j);
+					}
+				}	
+			}osThreadYield();
+		}
+}
+//================================================
+void painel_de_instrumentos(void const *args){
+	char buff_pontos [32];
+	while(1){
+		//GrContextForegroundSet(&sContext, ClrWhite);
+		pontos = 100;
+		intToString(pontos,buff_pontos,30,10,10);
+		GrStringDraw(&sContext,buff_pontos, -1,  48, (sContext.psFont->ui8Height+2)*11, true);
+		GrStringDraw(&sContext,"   E     1/2     F", -1,  0, (sContext.psFont->ui8Height+2)*12, true);
+		osThreadYield();
+	}
+}
  /*----------------------------------------------------------------------------
  *      ThreadsDef
  *---------------------------------------------------------------------------*/
@@ -272,73 +311,20 @@ osThreadDef(painel_de_instrumentos, osPriorityNormal, 1, 0);
  *      Main
  *---------------------------------------------------------------------------*/
 int main (void) {
-	uint16_t x, y,center;
-	uint8_t k, i = 0,j = 0,a = 56 , b = 100;
-	bool button;
-		
+	
+	uint8_t i = 0,j = 0;
+	osKernelInitialize();
 	init_all();
 	osThreadCreate(osThread(veiculo_do_jogador), NULL);
-	constroi_mapa();
-			for(i = 0; i < 128; i++){
-				for(j = 0; j < 128; j++){
-					if(mapa[i][j] == 0){
-						GrContextForegroundSet(&sContext, ClrBlue);
-							GrPixelDraw(&sContext, i , j);
-					}
-					else if( mapa [i][j] == 2){
-							GrContextForegroundSet(&sContext, ClrGreen);
-							GrPixelDraw(&sContext, i , j);
-				}
-			}
-		}
-			//essa parte do código está na thread de movimentação do veículo do jogador
+	osThreadCreate(osThread(veiculo_obstaculos), NULL);
+	osThreadCreate(osThread(gerenciador_trajeto), NULL);
+	osThreadCreate(osThread(painel_de_instrumentos), NULL);
+	
+	osKernelStart();
+	osDelay(osWaitForever);
 		GrFlush(&sContext);
 		GrImageDraw(&sContext,cenario1,10,5);
 		GrImageDraw(&sContext,cenario2,10,13);
-	while(1){
-	x = joy_read_x();
-	y = joy_read_y();
-		button = button_read_s1();
-		
-			for(i = 0; i < 9; i++){
-				for(j = 0; j < 11; j++){
-					if(nave[j][i] == 1 ){
-						GrContextForegroundSet(&sContext, ClrYellow);
-						GrPixelDraw(&sContext, i+a , j+b);}
-					else{
-						GrContextForegroundSet(&sContext, ClrBlue);
-						GrPixelDraw(&sContext, i+a , j+b);
-					}
-				}
-			}
-				if(button == 1)
-				{
-							for(k = j+b-12; k > 0; k --){
-							GrContextForegroundSet(&sContext, ClrYellow);
-							GrPixelDraw(&sContext, a-5+i , k);
-							osDelay(50);
-							GrContextForegroundSet(&sContext, ClrBlue);
-							GrPixelDraw(&sContext, a-5+i , k);
-						}
-				}
-					
-			if(x > 2800){
-				if(mapa[i+a][j] == 2)
-						a = a;
-				else
-				a++;
-			}
-			else if (x < 1500){
-				if(mapa[a-1][j] == 2)
-						a = a;
-				else
-					a--;}
-			if(y > 2800)
-				b = b;
-				//controle de velocidade
-			else if (y < 1500){
-				//controle de velocidade
-			osDelay(20);
-				}
-			}
-		}
+
+	
+}
