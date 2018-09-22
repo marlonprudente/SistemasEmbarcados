@@ -179,25 +179,14 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 					(((uint32_t) g) <<  8) | 
 					( (uint32_t) b       );
 }
-/*bool isPerfectSquare(int x)
-{
-    int s = sqrt(x);
-    return (s*s == x);
-}
-bool isFibonacci(int n)
-{
-    // n is Fibinacci if one of 5*n*n + 4 or 5*n*n - 4 or both
-    // is a perferct square
-    return isPerfectSquare(5*n*n + 4) ||
-           isPerfectSquare(5*n*n - 4);
-}*/
+
 
 /*----------------------------------------------------------------------------
  *      Threads
  *---------------------------------------------------------------------------*/
 
 	void constroi_mapa(){
-		uint16_t i,j;
+	uint16_t i,j;
             for (i = 0; i < 128; i++)
             {
                 for (j = 0; j < 128; j++)
@@ -208,12 +197,75 @@ bool isFibonacci(int n)
                         mapa[j][i] = 0;
                 }
             }
+	}
+	
+void veiculo_do_jogador(void const *args){
+	/*uint16_t x, y;
+	uint8_t k, i = 0,j = 0,a = 56 , b = 100;
+	bool button;
+		while(1){
+	x = joy_read_x();
+	y = joy_read_y();
+		button = button_read_s1();
+		
+			for(i = 0; i < 9; i++){
+				for(j = 0; j < 11; j++){
+					if(nave[j][i] == 1 ){
+						GrContextForegroundSet(&sContext, ClrYellow);
+						GrPixelDraw(&sContext, i+a , j+b);}
+					else{
+						GrContextForegroundSet(&sContext, ClrBlue);
+						GrPixelDraw(&sContext, i+a , j+b);
 					}
+				}
+			}
+				if(button == 1)
+				{
+							for(k = j+b-12; k > 0; k --){
+							GrContextForegroundSet(&sContext, ClrYellow);
+							GrPixelDraw(&sContext, a-5+i , k);
+							osDelay(50);
+							GrContextForegroundSet(&sContext, ClrBlue);
+							GrPixelDraw(&sContext, a-5+i , k);
+						}
+				}
+					
+			if(x > 2800){
+				if(mapa[i+a][j] == 2)
+						a = a;
+				else
+				a++;
+			}
+			else if (x < 1500){
+				if(mapa[a-1][j] == 2)
+						a = a;
+				else
+					a--;}
+			if(y > 2800)
+				b = b;
+				//controle de velocidade
+			else if (y < 1500){
+				//controle de velocidade
+			osDelay(20);
+				}
+			}*/
+}
+
+
+void veiculo_obstaculos(void const *args){}
+
+void gerenciador_trajeto(void const *args){}
+	
+void painel_de_instrumentos(void const *args){}
  /*----------------------------------------------------------------------------
  *      ThreadsDef
  *---------------------------------------------------------------------------*/
 
-//osThreadDef(thread, osPriorityNormal, 1, 0);
+osThreadDef(veiculo_do_jogador, osPriorityNormal, 1, 0);
+osThreadDef(veiculo_obstaculos, osPriorityNormal, 1, 0);
+osThreadDef(gerenciador_trajeto, osPriorityNormal, 1, 0);
+osThreadDef(painel_de_instrumentos, osPriorityNormal, 1, 0);
+					
 /*----------------------------------------------------------------------------
  *      Main
  *---------------------------------------------------------------------------*/
@@ -223,7 +275,7 @@ int main (void) {
 	bool button;
 		
 	init_all();
-	
+	osThreadCreate(osThread(veiculo_do_jogador), NULL);
 	constroi_mapa();
 			for(i = 0; i < 128; i++){
 				for(j = 0; j < 128; j++){
@@ -237,6 +289,7 @@ int main (void) {
 				}
 			}
 		}
+			//essa parte do código está na thread de movimentação do veículo do jogador
 	while(1){
 	x = joy_read_x();
 	y = joy_read_y();
@@ -255,9 +308,7 @@ int main (void) {
 			}
 				if(button == 1)
 				{
-//					GrContextForegroundSet(&sContext, ClrRed);
-//					GrPixelDraw(&sContext, i+a-5 , j+b-12);
-						for(k = j+b-12; k > 0; k --){
+							for(k = j+b-12; k > 0; k --){
 							GrContextForegroundSet(&sContext, ClrYellow);
 							GrPixelDraw(&sContext, a-5+i , k);
 							osDelay(50);
@@ -267,13 +318,13 @@ int main (void) {
 				}
 					
 			if(x > 2800){
-				if(a > 98)
+				if(mapa[i+a][j] == 2)
 						a = a;
 				else
 				a++;
 			}
 			else if (x < 1500){
-				if(a < 22)
+				if(mapa[a-1][j] == 2)
 						a = a;
 				else
 					a--;}
