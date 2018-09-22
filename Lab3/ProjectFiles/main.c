@@ -22,6 +22,8 @@
 #include <stdio.h>
 #include "grlib/grlib.h"
 #include "driverlib/uart.h"
+#include "cenario1.h"
+#include "cenario2.h"
 
 /*----------------------------------------------------------------------------
  * include libraries from drivers
@@ -290,6 +292,9 @@ int main (void) {
 			}
 		}
 			//essa parte do código está na thread de movimentação do veículo do jogador
+		GrFlush(&sContext);
+		GrImageDraw(&sContext,cenario1,10,5);
+		GrImageDraw(&sContext,cenario2,10,13);
 	while(1){
 	x = joy_read_x();
 	y = joy_read_y();
