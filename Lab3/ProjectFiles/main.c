@@ -37,28 +37,20 @@
 #define LED_CLK    7
 #define osFeature_SysTick 1
 
-uint32_t nave[21][16] = {
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,
-0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,
-0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,
-0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,
-0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,
-0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-0,1,1,1,1,0,0,1,1,0,0,1,1,1,1,0,
-0,1,1,1,1,0,0,1,1,0,0,1,1,1,1,0,
-0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,
-0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,
-0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,
-0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,
-0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,
-0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,
-0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,
-0,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0,
-0,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+uint32_t mapa[128][128];
+
+uint32_t nave[11][9]={
+0,0,0,0,0,0,0,0,0,
+0,0,0,0,1,0,0,0,0,
+0,0,0,0,1,0,0,0,0,
+0,0,0,1,1,1,0,0,0,
+0,0,1,1,1,1,1,0,0,
+0,1,1,0,1,0,1,1,0,
+0,1,0,0,1,0,0,1,0,
+0,0,0,1,1,1,0,0,0,
+0,0,1,1,1,1,1,0,0,
+0,0,1,0,1,0,1,0,0,
+0,0,0,0,0,0,0,0,0};
 //To print on the screen
 tContext sContext;
 
@@ -204,7 +196,19 @@ bool isFibonacci(int n)
  *      Threads
  *---------------------------------------------------------------------------*/
 
-	
+	void constroi_mapa(){
+		uint16_t i,j;
+            for (i = 0; i < 128; i++)
+            {
+                for (j = 0; j < 128; j++)
+                {
+                    if (j < 20 || j > 108)
+                        mapa[j][i] = 2;
+                    else
+                        mapa[j][i] = 0;
+                }
+            }
+					}
  /*----------------------------------------------------------------------------
  *      ThreadsDef
  *---------------------------------------------------------------------------*/
@@ -215,30 +219,48 @@ bool isFibonacci(int n)
  *---------------------------------------------------------------------------*/
 int main (void) {
 	uint16_t x, y,center;
-	uint8_t i = 0,j = 0,a = 0 , b = 0;
+	uint8_t i = 0,j = 0,a = 56 , b = 100;
 	init_all();
-
+	
+	constroi_mapa();
+			for(i = 0; i < 128; i++){
+				for(j = 0; j < 128; j++){
+					if(mapa[i][j] == 0){
+						GrContextForegroundSet(&sContext, ClrBlue);
+							GrPixelDraw(&sContext, i , j);
+					}
+					else if( mapa [i][j] == 2){
+							GrContextForegroundSet(&sContext, ClrGreen);
+							GrPixelDraw(&sContext, i , j);
+				}
+			}
+		}
 	while(1){
 	x = joy_read_x();
 	y = joy_read_y();
-	
-			for(i = 0; i < 16; i++){
-				for(j = 0; j < 21; j++){
+		
+			for(i = 0; i < 9; i++){
+				for(j = 0; j < 11; j++){
 					if(nave[j][i] == 1 ){
-						GrContextForegroundSet(&sContext, ClrWhite);
+						GrContextForegroundSet(&sContext, ClrYellow);
 						GrPixelDraw(&sContext, i+a , j+b);}
 					else{
-						GrContextForegroundSet(&sContext, ClrBlack);
-						GrPixelDraw(&sContext, i+a , j+b);}
-									}
+						GrContextForegroundSet(&sContext, ClrBlue);
+						GrPixelDraw(&sContext, i+a , j+b);
+					}
+				}
 			}
-			if(x > 2800)
-				a++;
-			else if (x < 1500)
-				a--;
+			if(x > 2800){
+				if(a < 22 || a > 98)
+						continue;
+				a++;}
+			else if (x < 1500){
+				if(a < 22 || a > 98)
+						continue;
+				a--;}
 			if(y > 2800)
 				b--;
-			else if (y < 1500)
+			else if (y < 1500){
 				b++;
 			osDelay(20);
 				}
