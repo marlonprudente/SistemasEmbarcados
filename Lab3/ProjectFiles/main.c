@@ -219,7 +219,9 @@ bool isFibonacci(int n)
  *---------------------------------------------------------------------------*/
 int main (void) {
 	uint16_t x, y,center;
-	uint8_t i = 0,j = 0,a = 56 , b = 100;
+	uint8_t k, i = 0,j = 0,a = 56 , b = 100;
+	bool button;
+		
 	init_all();
 	
 	constroi_mapa();
@@ -238,6 +240,7 @@ int main (void) {
 	while(1){
 	x = joy_read_x();
 	y = joy_read_y();
+		button = button_read_s1();
 		
 			for(i = 0; i < 9; i++){
 				for(j = 0; j < 11; j++){
@@ -250,18 +253,36 @@ int main (void) {
 					}
 				}
 			}
+				if(button == 1)
+				{
+//					GrContextForegroundSet(&sContext, ClrRed);
+//					GrPixelDraw(&sContext, i+a-5 , j+b-12);
+						for(k = j+b-12; k > 0; k --){
+							GrContextForegroundSet(&sContext, ClrYellow);
+							GrPixelDraw(&sContext, a-5+i , k);
+							osDelay(50);
+							GrContextForegroundSet(&sContext, ClrBlue);
+							GrPixelDraw(&sContext, a-5+i , k);
+						}
+				}
+					
 			if(x > 2800){
-				if(a < 22 || a > 98)
-						continue;
-				a++;}
+				if(a > 98)
+						a = a;
+				else
+				a++;
+			}
 			else if (x < 1500){
-				if(a < 22 || a > 98)
-						continue;
-				a--;}
+				if(a < 22)
+						a = a;
+				else
+					a--;}
 			if(y > 2800)
-				b--;
+				b = b;
+				//controle de velocidade
 			else if (y < 1500){
-				b++;
+				//controle de velocidade
 			osDelay(20);
 				}
 			}
+		}
