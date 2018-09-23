@@ -272,7 +272,7 @@ void gerenciador_trajeto(void const *args){
 	while(1){
 		GrFlush(&sContext);
 		GrImageDraw(&sContext,cenario1,10,5);
-		GrImageDraw(&sContext,cenario2,10,13);
+		//GrImageDraw(&sContext,cenario2,10,13);
 		osThreadYield();
 		}
 }
@@ -305,9 +305,9 @@ int main (void) {
 	uint8_t i = 0,j = 0;
 	osKernelInitialize();
 	init_all();
-	osThreadCreate(osThread(veiculo_do_jogador), NULL);
+	//osThreadCreate(osThread(veiculo_do_jogador), NULL);
 //	osThreadCreate(osThread(veiculo_obstaculos), NULL);
-//	osThreadCreate(osThread(gerenciador_trajeto), NULL);
+	osThreadCreate(osThread(gerenciador_trajeto), NULL);
 //	osThreadCreate(osThread(painel_de_instrumentos), NULL);
 	
 	osKernelStart();
