@@ -324,7 +324,7 @@ int main (void) {
 	osDelay(osWaitForever);
 		GrFlush(&sContext);
 		GrImageDraw(&sContext,cenario1,10,5);
-		GrImageDraw(&sContext,cenario2,10,13);
+		//GrImageDraw(&sContext,cenario2,10,13);
 
 	
 }
