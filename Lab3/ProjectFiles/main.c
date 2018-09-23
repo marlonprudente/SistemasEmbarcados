@@ -272,7 +272,7 @@ void gerenciador_trajeto(void const *args){
 	while(1){
 		GrFlush(&sContext);
 		GrImageDraw(&sContext,cenario1,10,5);
-		//GrImageDraw(&sContext,cenario2,10,13);
+		GrImageDraw(&sContext,cenario2,10,13);
 		osThreadYield();
 		}
 }
