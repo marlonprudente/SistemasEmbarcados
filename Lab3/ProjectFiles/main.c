@@ -41,7 +41,7 @@
 
 uint32_t mapa[128][128];
 
-uint8_t nave[11][9]={
+uint32_t nave[11][9]={
 0,0,0,0,0,0,0,0,0,
 0,0,0,0,1,0,0,0,0,
 0,0,0,0,1,0,0,0,0,
@@ -270,20 +270,10 @@ void veiculo_obstaculos(void const *args){
 //================================================
 void gerenciador_trajeto(void const *args){
 	while(1){
-		uint16_t i, j;
-			constroi_mapa();
-			for(i = 0; i < 128; i++){
-				for(j = 0; j < 110; j++){
-					if(mapa[i][j] == 0){
-						GrContextForegroundSet(&sContext, ClrBlue);
-							GrPixelDraw(&sContext, i , j);
-					}
-					else if( mapa [i][j] == 2){
-							GrContextForegroundSet(&sContext, ClrGreen);
-							GrPixelDraw(&sContext, i , j);
-					}
-				}	
-			}osThreadYield();
+		GrFlush(&sContext);
+		GrImageDraw(&sContext,cenario1,10,5);
+		GrImageDraw(&sContext,cenario2,10,13);
+		osThreadYield();
 		}
 }
 //================================================
@@ -316,9 +306,9 @@ int main (void) {
 	osKernelInitialize();
 	init_all();
 	osThreadCreate(osThread(veiculo_do_jogador), NULL);
-	osThreadCreate(osThread(veiculo_obstaculos), NULL);
-	osThreadCreate(osThread(gerenciador_trajeto), NULL);
-	osThreadCreate(osThread(painel_de_instrumentos), NULL);
+//	osThreadCreate(osThread(veiculo_obstaculos), NULL);
+//	osThreadCreate(osThread(gerenciador_trajeto), NULL);
+//	osThreadCreate(osThread(painel_de_instrumentos), NULL);
 	
 	osKernelStart();
 	osDelay(osWaitForever);
