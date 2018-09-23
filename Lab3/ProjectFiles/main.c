@@ -348,5 +348,8 @@ int main (void) {
 	osKernelStart();
 	osDelay(osWaitForever);
 
+		GrImageDraw(&sContext,cenario1,10,5);
+		//GrImageDraw(&sContext,cenario2,10,13);
+
 	
 }
