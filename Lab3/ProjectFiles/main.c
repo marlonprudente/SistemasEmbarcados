@@ -22,8 +22,6 @@
 #include <stdio.h>
 #include "grlib/grlib.h"
 #include "driverlib/uart.h"
-#include "cenario1.h"
-#include "cenario2.h"
 
 /*----------------------------------------------------------------------------
  * include libraries from drivers
@@ -39,9 +37,14 @@
 #define LED_CLK    7
 #define osFeature_SysTick 1
 
+osThreadId veiculo_do_jogador_id;
+osThreadId veiculo_obstaculos_id;
+osThreadId gerenciador_trajeto_id;
+osThreadId painel_de_instrumentos_id;
+
 uint32_t mapa[128][128];
 
-uint32_t nave[11][9]={
+uint8_t nave[11][9]={
 0,0,0,0,0,0,0,0,0,
 0,0,0,0,1,0,0,0,0,
 0,0,0,0,1,0,0,0,0,
@@ -206,86 +209,116 @@ void constroi_mapa(){
 
 	
 void veiculo_do_jogador(void const *args){
+	osEvent evento;
 	uint16_t x, y,center;
 	uint8_t k, i = 0,j = 0,a = 56 , b = 99;
 	bool button;
 	while(1){
-		x = joy_read_x();
-		y = joy_read_y();
-		button = button_read_s1();
-//		GrImageDraw(&sContext,*nave,a,b);
-		for(i = 0; i < 9; i++){
-			for(j = 0; j < 11; j++){
-				if(nave[j][i] == 1 ){
-					GrContextForegroundSet(&sContext, ClrYellow);
-					GrPixelDraw(&sContext, i+a , j+b);}
-				else{
-					GrContextForegroundSet(&sContext, ClrBlue);
-					GrPixelDraw(&sContext, i+a , j+b);
+		
+		evento = osSignalWait(0x0001, osWaitForever);
+		if(evento.status == osEventSignal)
+		{	
+			x = joy_read_x();
+			y = joy_read_y();
+			button = button_read_s1();
+	//		GrImageDraw(&sContext,*nave,a,b);
+			for(i = 0; i < 9; i++){
+				for(j = 0; j < 11; j++){
+					if(nave[j][i] == 1 ){
+						GrContextForegroundSet(&sContext, ClrYellow);
+						GrPixelDraw(&sContext, i+a , j+b);}
+					else{
+						GrContextForegroundSet(&sContext, ClrBlue);
+						GrPixelDraw(&sContext, i+a , j+b);
+					}
 				}
 			}
-		}
-		if(button == 1)
-		{
-			for(k = j+b-12; k > 0; k --){
-				GrContextForegroundSet(&sContext, ClrYellow);
-				GrPixelDraw(&sContext, a-5+i , k);
-				GrPixelDraw(&sContext, a-5+i , k+1);
-				osDelay(50);
-				GrContextForegroundSet(&sContext, ClrBlue);
-				GrPixelDraw(&sContext, a-5+i , k);
-				GrPixelDraw(&sContext, a-5+i , k+1);
-			}
-		}		
-		if(x > 2800){
-			if(mapa[i+a][j] == 2)
-				a = a;
-			else
-				a++;
-		}
-		else if (x < 1500){
-			if(mapa[a-1][j] == 2)
+			if(button == 1)
+			{
+				for(k = j+b-12; k > 0; k --){
+					GrContextForegroundSet(&sContext, ClrYellow);
+					GrPixelDraw(&sContext, a-5+i , k);
+					GrPixelDraw(&sContext, a-5+i , k+1);
+					osDelay(50);
+					GrContextForegroundSet(&sContext, ClrBlue);
+					GrPixelDraw(&sContext, a-5+i , k);
+					GrPixelDraw(&sContext, a-5+i , k+1);
+				}
+			}		
+			if(x > 2800){
+				if(mapa[i+a][j] == 2)
 					a = a;
-			else
-				a--;
+				else
+					a++;
+			}
+			else if (x < 1500){
+				if(mapa[a-1][j] == 2)
+						a = a;
+				else
+					a--;
+			}
+			if(y > 2800)
+				b = b;
+				//controle de velocidade
+			else if (y < 1500){
+				b = b;
+				//controle de velocidade
+			osDelay(20);
+			}
+			osSignalSet(gerenciador_trajeto_id, 0x0001);
 		}
-		if(y > 2800)
-			b = b;
-			//controle de velocidade
-		else if (y < 1500){
-			//controle de velocidade
-		osDelay(20);
-		}
-		osThreadYield();
 	}
 }
 
 
 //================================================
 void veiculo_obstaculos(void const *args){
+	osEvent evento;
 	while(1){
-		osThreadYield();
+		evento = osSignalWait(0x0001, osWaitForever);
+		if(evento.status == osEventSignal)
+		{}
 	}
 }
 //================================================
 void gerenciador_trajeto(void const *args){
+	uint16_t i, j;
+	osEvent evento;
 	while(1){
-		GrFlush(&sContext);
-		GrImageDraw(&sContext,cenario1,10,5);
-		GrImageDraw(&sContext,cenario2,10,13);
-		osThreadYield();
+		evento = osSignalWait(0x0001, osWaitForever);
+		if(evento.status == osEventSignal){
+			constroi_mapa();
+				for(i = 0; i < 128; i++){
+					for(j = 0; j < 110; j++){
+						if(mapa[i][j] == 0){
+							GrContextForegroundSet(&sContext, ClrBlue);
+							GrPixelDraw(&sContext, i , j);
+						}
+						else if( mapa [i][j] == 2){
+								GrContextForegroundSet(&sContext, ClrGreen);
+								GrPixelDraw(&sContext, i , j);
+						}
+					}	
+				}osSignalSet(painel_de_instrumentos_id, 0x0001);
+			}
 		}
-}
+	}
+
 //================================================
 void painel_de_instrumentos(void const *args){
 	char buff_pontos [32];
+	osEvent evento;
+	
 	while(1){
-		//GrContextForegroundSet(&sContext, ClrWhite);
+		evento = osSignalWait(0x0001, osWaitForever); 
+		if(evento.status == osEventSignal){
+		GrContextForegroundSet(&sContext, ClrWhite);
 		pontos = 100;
 		intToString(pontos,buff_pontos,30,10,10);
 		GrStringDraw(&sContext,buff_pontos, -1,  48, (sContext.psFont->ui8Height+2)*11, true);
 		GrStringDraw(&sContext,"   E     1/2     F", -1,  0, (sContext.psFont->ui8Height+2)*12, true);
-		osThreadYield();
+		osSignalSet(veiculo_do_jogador_id, 0x0001);
+		}
 	}
 }
  /*----------------------------------------------------------------------------
@@ -305,12 +338,15 @@ int main (void) {
 	uint8_t i = 0,j = 0;
 	osKernelInitialize();
 	init_all();
-	//osThreadCreate(osThread(veiculo_do_jogador), NULL);
-//	osThreadCreate(osThread(veiculo_obstaculos), NULL);
-	osThreadCreate(osThread(gerenciador_trajeto), NULL);
-//	osThreadCreate(osThread(painel_de_instrumentos), NULL);
+	veiculo_do_jogador_id = osThreadCreate(osThread(veiculo_do_jogador), NULL);
+	veiculo_obstaculos_id = osThreadCreate(osThread(veiculo_obstaculos), NULL);
+	gerenciador_trajeto_id = osThreadCreate(osThread(gerenciador_trajeto), NULL);
+	painel_de_instrumentos_id = osThreadCreate(osThread(painel_de_instrumentos), NULL);
+	
+	osSignalSet(veiculo_do_jogador_id, 0x0001);
 	
 	osKernelStart();
 	osDelay(osWaitForever);
+
 	
 }

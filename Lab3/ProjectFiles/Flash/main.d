@@ -18,8 +18,6 @@
 .\flash\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\flash\main.o: ..\grlib/grlib.h
 .\flash\main.o: ..\driverlib/uart.h
-.\flash\main.o: cenario1.h
-.\flash\main.o: cenario2.h
 .\flash\main.o: cfaf128x128x16.h
 .\flash\main.o: led.h
 .\flash\main.o: Colors.h

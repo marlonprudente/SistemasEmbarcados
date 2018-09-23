@@ -1310,9 +1310,9 @@ s=interwork --depend=.\flash\startup_tm4c129.d -o.\flash\startup_tm4c129.o -I.\
 RTE\_TM4C129_Flash -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include -IC
 :\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\RTOS\RTX\INC -IC:\Keil_v5\ARM\PACK\Kei
 l\TM4C_DFP\1.1.0\Device\Include\TM4C129 --predefine="__RTX SETA 1" --predefine=
-"__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 525" --predefine="_RTE_ SET
-A 1" --predefine="TM4C1294NCPDT SETA 1" --list=.\flash\startup_tm4c129.lst RTE\
-Device\TM4C1294NCPDT\startup_TM4C129.s
+"__UVISION_VERSION SETA 525" --predefine="_RTE_ SETA 1" --predefine="TM4C1294NC
+PDT SETA 1" --list=.\flash\startup_tm4c129.lst RTE\Device\TM4C1294NCPDT\startup
+_TM4C129.s
 
 
 
@@ -2792,4 +2792,4 @@ Symbol: __use_two_region_memory
       None
 Comment: __use_two_region_memory unused
 3 symbols
-489 symbols in table
+488 symbols in table
