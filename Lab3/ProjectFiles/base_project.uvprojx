@@ -486,6 +486,11 @@
               <FileType>1</FileType>
               <FilePath>.\chao_2.c</FilePath>
             </File>
+            <File>
+              <FileName>aeronave.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\aeronave.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -993,6 +998,11 @@
               <FileName>chao_2.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\chao_2.c</FilePath>
+            </File>
+            <File>
+              <FileName>aeronave.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\aeronave.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -22,9 +22,9 @@
 #include <stdio.h>
 #include "grlib/grlib.h"
 #include "driverlib/uart.h"
-#include "ceu.h"
-#include "chao.h"
-#include "chao_2.h"
+#include "cenario1.h"
+#include "cenario2.h"
+#include "aeronave.h"
 
 /*----------------------------------------------------------------------------
  * include libraries from drivers
@@ -265,7 +265,7 @@ void constroi_mapa(){
 void veiculo_do_jogador(void const *args){
 	osEvent evento;
 	uint16_t x, y,center;
-	uint8_t k, i = 0,j = 0,a = 56 , b = 99;
+	uint8_t k, aux, i = 0,j = 0,a = 56 , b = 99;
 	bool button;
 	while(1){
 		
@@ -276,39 +276,35 @@ void veiculo_do_jogador(void const *args){
 			y = joy_read_y();
 			button = button_read_s1();
 	//		GrImageDraw(&sContext,*nave,a,b);
-			for(i = 0; i < 28; i++){
-				for(j = 0; j < 21; j++){
-					if(helicoptero[j][i] == 1 ){
-						GrContextForegroundSet(&sContext, ClrYellow);
-						GrPixelDraw(&sContext, i+a , j+b);}
-					else{
-						GrContextForegroundSet(&sContext, ClrBlue);
-						GrPixelDraw(&sContext, i+a , j+b);
-					}
-				}
-			}
+		GrFlush(&sContext);
+		
+		GrTransparentImageDraw(&sContext,aeronave,a,99,ClrBlack);
+		 
+		
 			if(button == 1)
 			{
-				for(k = j+b-12; k > 0; k --){
-					GrContextForegroundSet(&sContext, ClrYellow);
-					GrPixelDraw(&sContext, a-5+i , k);
-					GrPixelDraw(&sContext, a-5+i , k+1);
+				for(k = 98; k > 0; k --){
+					GrContextForegroundSet(&sContext, ClrRed);
+					GrPixelDraw(&sContext, a+4 , k);
+					GrPixelDraw(&sContext, a+4 , k+1);
 					osDelay(50);
-					GrContextForegroundSet(&sContext, ClrBlue);
-					GrPixelDraw(&sContext, a-5+i , k);
-					GrPixelDraw(&sContext, a-5+i , k+1);
+					GrContextForegroundSet(&sContext, ClrRed);
+					GrPixelDraw(&sContext, a+4 , k);
+					GrPixelDraw(&sContext, a+4 , k+1);
 				}
 			}		
 			if(x > 2800){
-				if(mapa[i+a][j] == 2)
-					a = a;
-				else
+//				if(mapa[i+a][j] == 2)
+//					a = a;
+//				else
+				aux = a;
 					a++;
 			}
 			else if (x < 1500){
-				if(mapa[a-1][j] == 2)
-						a = a;
-				else
+//				if(mapa[a-1][j] == 2)
+//						a = a;
+//				else
+				aux = a;
 					a--;
 			}
 			if(y > 2800)
@@ -341,19 +337,8 @@ void gerenciador_trajeto(void const *args){
 	while(1){
 		evento = osSignalWait(0x0001, osWaitForever);
 		if(evento.status == osEventSignal){
-			constroi_mapa();
-				for(i = 0; i < 128; i++){
-					for(j = 0; j < 110; j++){
-						if(mapa[i][j] == 0){
-							GrContextForegroundSet(&sContext, ClrBlue);
-							GrPixelDraw(&sContext, i , j);
-						}
-						else if( mapa [i][j] == 2){
-								GrContextForegroundSet(&sContext, ClrGreen);
-								GrPixelDraw(&sContext, i , j);
-						}
-					}	
-				}osSignalSet(painel_de_instrumentos_id, 0x0001);
+				GrImageDraw(&sContext,cenario1,4,0);
+		osSignalSet(painel_de_instrumentos_id, 0x0001);
 			}
 		}
 	}
@@ -398,16 +383,7 @@ int main (void) {
 	painel_de_instrumentos_id = osThreadCreate(osThread(painel_de_instrumentos), NULL);
 	
 	osSignalSet(veiculo_do_jogador_id, 0x0001);
-	
-		osKernelStart();	
-	osKernelStart();
+	//GrImageDraw(&sContext,cenario1,0,4);
+	osKernelStart();	
 	osDelay(osWaitForever);
-
-		//GrImageDraw(&sContext,cenario1,10,5);
-		//GrImageDraw(&sContext,ceu,10,5);
-		//GrImageDraw(&sContext,chao,10,13);
-		osDelay(osWaitForever);
-		//GrImageDraw(&sContext,cenario2,10,13);
-
-	
 }

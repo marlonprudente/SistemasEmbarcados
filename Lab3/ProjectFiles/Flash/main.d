@@ -20,9 +20,7 @@
 .\flash\main.o: ..\driverlib/uart.h
 .\flash\main.o: cenario1.h
 .\flash\main.o: cenario2.h
-.\flash\main.o: ceu.h
-.\flash\main.o: chao.h
-.\flash\main.o: chao_2.h
+.\flash\main.o: aeronave.h
 .\flash\main.o: cfaf128x128x16.h
 .\flash\main.o: led.h
 .\flash\main.o: Colors.h
