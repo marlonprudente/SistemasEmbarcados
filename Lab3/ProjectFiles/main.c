@@ -24,6 +24,9 @@
 #include "driverlib/uart.h"
 #include "cenario1.h"
 #include "cenario2.h"
+#include "ceu.h"
+#include "chao.h"
+#include "chao_2.h"
 
 /*----------------------------------------------------------------------------
  * include libraries from drivers
@@ -152,8 +155,8 @@ void init_all(){
 	GrContextInit(&sContext, &g_sCfaf128x128x16);
 	GrFlush(&sContext);
 	GrContextFontSet(&sContext, g_psFontFixed6x8);
-	GrContextForegroundSet(&sContext, ClrWhite);
-	GrContextBackgroundSet(&sContext, ClrBlack);
+	//GrContextForegroundSet(&sContext, ClrWhite);
+	//GrContextBackgroundSet(&sContext, ClrBlack);
 	//GrStringDraw(&sContext,"River Raid", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
 	joy_init();
 	buzzer_init(); 
@@ -271,8 +274,8 @@ void veiculo_obstaculos(void const *args){
 void gerenciador_trajeto(void const *args){
 	while(1){
 		GrFlush(&sContext);
-		GrImageDraw(&sContext,cenario1,10,5);
-		GrImageDraw(&sContext,cenario2,10,13);
+		GrImageDraw(&sContext,cenario1,0,0);
+		//GrImageDraw(&sContext,cenario2,10,13);
 		osThreadYield();
 		}
 }
@@ -305,15 +308,17 @@ int main (void) {
 	uint8_t i = 0,j = 0;
 	osKernelInitialize();
 	init_all();
-	osThreadCreate(osThread(veiculo_do_jogador), NULL);
+	//osThreadCreate(osThread(veiculo_do_jogador), NULL);
 //	osThreadCreate(osThread(veiculo_obstaculos), NULL);
 //	osThreadCreate(osThread(gerenciador_trajeto), NULL);
 //	osThreadCreate(osThread(painel_de_instrumentos), NULL);
 	
-	osKernelStart();
-	osDelay(osWaitForever);
+		osKernelStart();	
 		GrFlush(&sContext);
-		GrImageDraw(&sContext,cenario1,10,5);
+		GrImageDraw(&sContext,cenario2,0,4);
+		//GrImageDraw(&sContext,ceu,10,5);
+		//GrImageDraw(&sContext,chao,10,13);
+		osDelay(osWaitForever);
 		//GrImageDraw(&sContext,cenario2,10,13);
 
 	
