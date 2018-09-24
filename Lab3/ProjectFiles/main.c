@@ -202,9 +202,6 @@ void tiro(void const * args){
 		evento = osSignalWait(0x0001, osWaitForever);
 		if(evento.status == osEventSignal && flag == 1){
 			for(k = 98; k >= 0; k --){
-				if(k == 0)
-					flag = 0;
-				
 				GrContextForegroundSet(&sContext, ClrRed);
 				GrPixelDraw(&sContext, pos_x+4 , k);
 				GrPixelDraw(&sContext, pos_x+4 , k+1);
@@ -215,7 +212,7 @@ void tiro(void const * args){
 	}
 }
 //================================================
-	void veiculo_do_jogador(void const *args){
+void veiculo_do_jogador(void const *args){
 	osEvent evento;
 	uint16_t x, y,center;
 	uint8_t k, aux, i = 0,j = 0,a = 56 , b = 99;
@@ -228,10 +225,11 @@ void tiro(void const * args){
 			x = joy_read_x();
 			y = joy_read_y();
 			button = button_read_s1();
-		GrFlush(&sContext);
-		//GrTransparentImageDraw(&sContext,barco,20,50,ClrBlack);
-		GrImageDraw(&sContext,aeronave,a,99);
-		 		
+			GrFlush(&sContext);
+			GrContextBackgroundSet	(&sContext, ClrBlue);	
+	//	GrTransparentImageDraw(&sContext,aeronave,a,99,ClrBlack);
+			GrImageDraw(&sContext,aeronave,a,99);
+		  GrContextBackgroundSet	(&sContext, ClrBlue);	
 			if(button == 1)
 			{
 				pos_x = a;
@@ -259,7 +257,7 @@ void tiro(void const * args){
 			else if (y < 1500){
 				b = b;
 				//controle de velocidade
-			osDelay(20);
+			//osDelay(20);
 			}
 			osSignalSet(gerenciador_trajeto_id, 0x0001);
 		}
@@ -274,7 +272,6 @@ void veiculo_obstaculos(void const *args){
 		evento = osSignalWait(0x0001, osWaitForever);
 		if(evento.status == osEventSignal)
 		{
-
 				GrTransparentImageDraw(&sContext,helicoptero,10,30,ClrWhite);
 		}
 	}
@@ -336,7 +333,7 @@ int main (void) {
 	gerenciador_trajeto_id = osThreadCreate(osThread(gerenciador_trajeto), NULL);
 	painel_de_instrumentos_id = osThreadCreate(osThread(painel_de_instrumentos), NULL);
 	tiro_id = osThreadCreate(osThread(tiro),NULL);
-	
+	GrImageDraw(&sContext,cenario1,4,0);
 	osSignalSet(veiculo_do_jogador_id, 0x0001);
 	
 	osKernelStart();	
