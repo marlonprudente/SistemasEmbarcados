@@ -47,6 +47,7 @@ osThreadId painel_de_instrumentos_id;
 osThreadId tiro_id;
 uint32_t mapa[128][128];
 uint8_t pos_x,pos_y;
+uint32_t aux[120][110];
 uint32_t aviao[12][24]={
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -229,7 +230,7 @@ void tiro(void const * args){
 			button = button_read_s1();
 		GrFlush(&sContext);
 		//GrTransparentImageDraw(&sContext,barco,20,50,ClrBlack);
-		GrTransparentImageDraw(&sContext,aeronave,a,99,ClrBlack);
+		GrImageDraw(&sContext,aeronave,a,99);
 		 		
 			if(button == 1)
 			{
@@ -286,10 +287,10 @@ void gerenciador_trajeto(void const *args){
 		evento = osSignalWait(0x0001, osWaitForever);
 		if(evento.status == osEventSignal){
 			
-			if(cont > 10){
-		GrImageDraw(&sContext,cenario1,4,0);
-				cont = 0;
-			}
+//			if(cont > 50){
+//				//GrImageDraw(&sContext,cenario1,4,0);
+//				cont = 0;
+//			}
 			cont ++;
 			osSignalSet(painel_de_instrumentos_id, 0x0001);
 			}
@@ -327,7 +328,7 @@ osThreadDef(tiro,osPriorityNormal,1 ,0);
  *---------------------------------------------------------------------------*/
 int main (void) {
 	
-	uint8_t i = 0,j = 0;
+	uint8_t i = 0,j = 0, k = 15;
 	osKernelInitialize();
 	init_all();
 	veiculo_do_jogador_id = osThreadCreate(osThread(veiculo_do_jogador), NULL);
@@ -337,7 +338,7 @@ int main (void) {
 	tiro_id = osThreadCreate(osThread(tiro),NULL);
 	
 	osSignalSet(veiculo_do_jogador_id, 0x0001);
-	GrImageDraw(&sContext,cenario1,4,0);
+	
 	osKernelStart();	
 	osDelay(osWaitForever);
 }
