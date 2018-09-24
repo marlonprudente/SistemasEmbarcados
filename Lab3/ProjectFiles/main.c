@@ -16,7 +16,6 @@
 #include <stdbool.h>
 #include "joy.h"
 #include "buttons.h"
-#include "rgb.h"
 #include "buzzer.h"
 #include <math.h>
 #include <stdio.h>
@@ -45,9 +44,9 @@ osThreadId veiculo_do_jogador_id;
 osThreadId veiculo_obstaculos_id;
 osThreadId gerenciador_trajeto_id;
 osThreadId painel_de_instrumentos_id;
-
+osThreadId tiro_id;
 uint32_t mapa[128][128];
-
+uint8_t pos_x,pos_y;
 uint32_t aviao[12][24]={
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -61,8 +60,7 @@ uint32_t aviao[12][24]={
 0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-
-
+bool flag;
 //To print on the screen
 tContext sContext;
 uint32_t pontos;
@@ -168,7 +166,6 @@ void init_all(){
 	joy_init();
 	buzzer_init(); 
 	button_init();
-	//rgb_init();
 	}
 
 uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
@@ -195,8 +192,29 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 /*----------------------------------------------------------------------------
  *      Threads
  *---------------------------------------------------------------------------*/
+void tiro(void const * args){
+	uint16_t k;
+	osEvent evento;
 	
-void veiculo_do_jogador(void const *args){
+	while(1){
+		
+		evento = osSignalWait(0x0001, osWaitForever);
+		if(evento.status == osEventSignal && flag == 1){
+			for(k = 98; k >= 0; k --){
+				if(k == 0)
+					flag = 0;
+				
+				GrContextForegroundSet(&sContext, ClrRed);
+				GrPixelDraw(&sContext, pos_x+4 , k);
+				GrPixelDraw(&sContext, pos_x+4 , k+1);
+				osDelay(1);
+				osSignalSet(veiculo_do_jogador_id, 0x0001);
+			}
+		}
+	}
+}
+//================================================
+	void veiculo_do_jogador(void const *args){
 	osEvent evento;
 	uint16_t x, y,center;
 	uint8_t k, aux, i = 0,j = 0,a = 56 , b = 99;
@@ -210,20 +228,15 @@ void veiculo_do_jogador(void const *args){
 			y = joy_read_y();
 			button = button_read_s1();
 		GrFlush(&sContext);
-		GrTransparentImageDraw(&sContext,barco,20,50,ClrBlack);
-		GrTransparentImageDraw(&sContext,barco,a,99,ClrWhite);
+		//GrTransparentImageDraw(&sContext,barco,20,50,ClrBlack);
+		GrTransparentImageDraw(&sContext,aeronave,a,99,ClrBlack);
 		 		
 			if(button == 1)
 			{
-				for(k = 98; k > 0; k --){
-					GrContextForegroundSet(&sContext, ClrRed);
-					GrPixelDraw(&sContext, a+4 , k);
-					GrPixelDraw(&sContext, a+4 , k+1);
-					osDelay(50);
-					GrContextForegroundSet(&sContext, ClrRed);
-					GrPixelDraw(&sContext, a+4 , k);
-					GrPixelDraw(&sContext, a+4 , k+1);
-				}
+				pos_x = a;
+				pos_y = b;
+				flag = 1;
+				osSignalSet(tiro_id, 0x0001);
 			}		
 			if(x > 2800){
 //				if(mapa[i+a][j] == 2)
@@ -267,13 +280,18 @@ void veiculo_obstaculos(void const *args){
 }
 //================================================
 void gerenciador_trajeto(void const *args){
-	uint16_t i, j;
+	uint16_t i, j, cont = 0;
 	osEvent evento;
 	while(1){
 		evento = osSignalWait(0x0001, osWaitForever);
 		if(evento.status == osEventSignal){
+			
+			if(cont > 10){
 				GrImageDraw(&sContext,cenario1,4,0);
-		osSignalSet(painel_de_instrumentos_id, 0x0001);
+				cont = 0;
+			}
+			cont ++;
+			osSignalSet(painel_de_instrumentos_id, 0x0001);
 			}
 		}
 	}
@@ -303,7 +321,7 @@ osThreadDef(veiculo_do_jogador, osPriorityNormal, 1, 0);
 osThreadDef(veiculo_obstaculos, osPriorityNormal, 1, 0);
 osThreadDef(gerenciador_trajeto, osPriorityNormal, 1, 0);
 osThreadDef(painel_de_instrumentos, osPriorityNormal, 1, 0);
-					
+osThreadDef(tiro,osPriorityNormal,1 ,0);
 /*----------------------------------------------------------------------------
  *      Main
  *---------------------------------------------------------------------------*/
@@ -316,9 +334,10 @@ int main (void) {
 	veiculo_obstaculos_id = osThreadCreate(osThread(veiculo_obstaculos), NULL);
 	gerenciador_trajeto_id = osThreadCreate(osThread(gerenciador_trajeto), NULL);
 	painel_de_instrumentos_id = osThreadCreate(osThread(painel_de_instrumentos), NULL);
+	tiro_id = osThreadCreate(osThread(tiro),NULL);
 	
 	osSignalSet(veiculo_do_jogador_id, 0x0001);
-	GrImageDraw(&sContext,cenario1,0,4);
+	GrImageDraw(&sContext,cenario1,4,0);
 	osKernelStart();	
 	osDelay(osWaitForever);
 }
