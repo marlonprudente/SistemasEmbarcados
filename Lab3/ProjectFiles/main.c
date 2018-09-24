@@ -240,28 +240,9 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 					( (uint32_t) b       );
 }
 
-
-
-//================================================	
-void constroi_mapa(){
-	uint16_t i,j;
-	for (i = 0; i < 128; i++)
-	{
-		for (j = 0; j < 128; j++)
-		{
-				if (j < 20 || j > 108)
-						mapa[j][i] = 2;
-				else
-						mapa[j][i] = 0;
-		}
-	}
-}
-
 /*----------------------------------------------------------------------------
  *      Threads
  *---------------------------------------------------------------------------*/
-
-
 	
 void veiculo_do_jogador(void const *args){
 	osEvent evento;
@@ -276,12 +257,10 @@ void veiculo_do_jogador(void const *args){
 			x = joy_read_x();
 			y = joy_read_y();
 			button = button_read_s1();
-	//		GrImageDraw(&sContext,*nave,a,b);
 		GrFlush(&sContext);
 		
-		GrTransparentImageDraw(&sContext,aeronave,a,99,ClrBlack);
-		 
-		
+		GrTransparentImageDraw(&sContext,barco,a,99,ClrWhite);
+		 		
 			if(button == 1)
 			{
 				for(k = 98; k > 0; k --){
@@ -387,7 +366,7 @@ int main (void) {
 	painel_de_instrumentos_id = osThreadCreate(osThread(painel_de_instrumentos), NULL);
 	
 	osSignalSet(veiculo_do_jogador_id, 0x0001);
-	//GrImageDraw(&sContext,cenario1,0,4);
+	GrImageDraw(&sContext,barco,0,4);
 	osKernelStart();	
 	osDelay(osWaitForever);
 }
