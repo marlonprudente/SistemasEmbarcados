@@ -278,7 +278,7 @@ void veiculo_do_jogador(void const *args){
 			button = button_read_s1();
 	//		GrImageDraw(&sContext,*nave,a,b);
 		GrFlush(&sContext);
-		
+		GrTransparentImageDraw(&sContext,barco,20,50,ClrBlack);
 		GrTransparentImageDraw(&sContext,aeronave,a,99,ClrBlack);
 		 
 		
@@ -329,7 +329,7 @@ void veiculo_obstaculos(void const *args){
 		evento = osSignalWait(0x0001, osWaitForever);
 		if(evento.status == osEventSignal)
 		{
-				GrTransparentImageDraw(&sContext,barco,20,50,ClrWhite);
+
 				GrTransparentImageDraw(&sContext,helicoptero,10,30,ClrWhite);
 		}
 	}
