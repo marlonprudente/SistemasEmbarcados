@@ -12,7 +12,6 @@
 .\flash\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\flash\main.o: joy.h
 .\flash\main.o: buttons.h
-.\flash\main.o: rgb.h
 .\flash\main.o: buzzer.h
 .\flash\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\flash\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
