@@ -18,6 +18,7 @@
 ".\flash\chao.o"
 ".\flash\chao_2.o"
 ".\flash\aeronave.o"
+".\flash\inimigos.o"
 "..\driverlib\rvmdk\driverlib.lib"
 "..\grlib\rvmdk\grlib.lib"
 "C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM4.lib"

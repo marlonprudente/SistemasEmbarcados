@@ -1,0 +1,14 @@
+.\flash\inimigos.o: inimigos.c
+.\flash\inimigos.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
+.\flash\inimigos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\flash\inimigos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\flash\inimigos.o: C:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129\TM4C129.h
+.\flash\inimigos.o: C:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129\TM4C1294NCPDT.h
+.\flash\inimigos.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include\core_cm4.h
+.\flash\inimigos.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include\cmsis_version.h
+.\flash\inimigos.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include\cmsis_compiler.h
+.\flash\inimigos.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include\cmsis_armcc.h
+.\flash\inimigos.o: C:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129\system_TM4C129.h
+.\flash\inimigos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\flash\inimigos.o: ..\grlib/grlib.h
+.\flash\inimigos.o: inimigos.h

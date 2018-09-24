@@ -21,6 +21,7 @@
 .\flash\main.o: cenario1.h
 .\flash\main.o: cenario2.h
 .\flash\main.o: aeronave.h
+.\flash\main.o: inimigos.h
 .\flash\main.o: cfaf128x128x16.h
 .\flash\main.o: led.h
 .\flash\main.o: Colors.h

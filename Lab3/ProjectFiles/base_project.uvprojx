@@ -491,6 +491,11 @@
               <FileType>1</FileType>
               <FilePath>.\aeronave.c</FilePath>
             </File>
+            <File>
+              <FileName>inimigos.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\inimigos.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1003,6 +1008,11 @@
               <FileName>aeronave.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\aeronave.c</FilePath>
+            </File>
+            <File>
+              <FileName>inimigos.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\inimigos.c</FilePath>
             </File>
           </Files>
         </Group>
