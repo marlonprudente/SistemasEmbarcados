@@ -272,7 +272,8 @@ void gerenciador_trajeto(void const *args){
 	while(1){
 		evento = osSignalWait(0x0001, osWaitForever);
 		if(evento.status == osEventSignal){
-				GrImageDraw(&sContext,cenario1,4,0);
+			
+		GrImageDraw(&sContext,cenario1,4,0);
 		osSignalSet(painel_de_instrumentos_id, 0x0001);
 			}
 		}
