@@ -45,6 +45,7 @@ osThreadId veiculo_obstaculos_id;
 osThreadId gerenciador_trajeto_id;
 osThreadId painel_de_instrumentos_id;
 osThreadId tiro_id;
+osMutexId mutex_tiro_id;
 uint32_t mapa[128][128];
 uint8_t pos_x,pos_y;
 uint32_t aux[120][110];
@@ -196,17 +197,28 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 void tiro(void const * args){
 	uint16_t k;
 	osEvent evento;
-	
+	osStatus status;
 	while(1){
 		
 		evento = osSignalWait(0x0001, osWaitForever);
 		if(evento.status == osEventSignal && flag == 1){
-			for(k = 98; k >= 0; k --){
-				GrContextForegroundSet(&sContext, ClrRed);
-				GrPixelDraw(&sContext, pos_x+4 , k);
-				GrPixelDraw(&sContext, pos_x+4 , k+1);
-				osDelay(1);
+			
+			
+				for(k = 98; k >= 0; k --){
+					status = osMutexWait(mutex_tiro_id,NULL);
+			if(status == osOK){
+					GrContextForegroundSet(&sContext, ClrYellow);
+					GrPixelDraw(&sContext, pos_x+4 , k);
+					GrPixelDraw(&sContext, pos_x+4 , k+1);
+					osDelay(10);
+					GrContextForegroundSet(&sContext, ClrBlue);
+					GrPixelDraw(&sContext, pos_x+4 , k);
+					GrPixelDraw(&sContext, pos_x+4 , k-1);
+					
+				osMutexRelease(mutex_tiro_id);
 				osSignalSet(veiculo_do_jogador_id, 0x0001);
+				}
+				
 			}
 		}
 	}
@@ -226,6 +238,7 @@ void veiculo_do_jogador(void const *args){
 			y = joy_read_y();
 			button = button_read_s1();
 			GrFlush(&sContext);
+  		GrContextForegroundSet(&sContext, ClrYellow);
 			GrContextBackgroundSet	(&sContext, ClrBlue);	
 	//	GrTransparentImageDraw(&sContext,aeronave,a,99,ClrBlack);
 			GrImageDraw(&sContext,aeronave,a,99);
@@ -320,6 +333,8 @@ osThreadDef(veiculo_obstaculos, osPriorityNormal, 1, 0);
 osThreadDef(gerenciador_trajeto, osPriorityNormal, 1, 0);
 osThreadDef(painel_de_instrumentos, osPriorityNormal, 1, 0);
 osThreadDef(tiro,osPriorityNormal,1 ,0);
+osMutexDef(mutex_tiro);
+
 /*----------------------------------------------------------------------------
  *      Main
  *---------------------------------------------------------------------------*/
@@ -333,6 +348,7 @@ int main (void) {
 	gerenciador_trajeto_id = osThreadCreate(osThread(gerenciador_trajeto), NULL);
 	painel_de_instrumentos_id = osThreadCreate(osThread(painel_de_instrumentos), NULL);
 	tiro_id = osThreadCreate(osThread(tiro),NULL);
+	mutex_tiro_id = osMutexCreate(osMutex(mutex_tiro));
 	GrImageDraw(&sContext,cenario1,4,0);
 	osSignalSet(veiculo_do_jogador_id, 0x0001);
 	
