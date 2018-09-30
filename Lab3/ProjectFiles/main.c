@@ -45,8 +45,8 @@ osThreadId veiculo_obstaculos_id;
 osThreadId gerenciador_trajeto_id;
 osThreadId painel_de_instrumentos_id;
 osThreadId tiro_id;
-osMutexId mutex_painel_id;
-osMutexId mutex_tiro_id;
+osMutexId mutex_display_id;
+//osMutexId mutex_tiro_id;
 uint32_t mapa[128][128];
 uint8_t pos_x,pos_y;
 uint32_t aux[120][110];
@@ -188,23 +188,22 @@ void tiro(void const * args){
 	osStatus status;
 	int k;	
 	while(1){
-		osSignalWait(0x0005, osWaitForever);
-		
+		osSignalWait(0x0005, osWaitForever);		
+		osMutexWait(mutex_display_id,osWaitForever);
 		GrFlush(&sContext);
 		GrContextForegroundSet(&sContext, ClrRed);
 		GrContextBackgroundSet(&sContext, ClrBlack);
 		buzzer_write(true);
 		//GrLineDrawH(&sContext, pos_x+4 , k+1, 0);
 		
-		for(k = 98; k > 0; k --){
-			status = osMutexWait(mutex_tiro_id,NULL);
-			if(status == osOK){
+		for(k = 98; k > 0; k --){			
+
 				GrPixelDraw(&sContext, pos_x+4 , k);
 				GrPixelDraw(&sContext, pos_x+4 , k+1);
-				osDelay(10);
-				
-			}osMutexRelease(mutex_tiro_id);
+
 		}
+		osMutexRelease(mutex_display_id);
+		osDelay(10);
 		buzzer_write(false);
 		osSignalSet(veiculo_do_jogador_id, 0x0001);
 	}
@@ -221,9 +220,11 @@ void tiro(void const * args){
 
 		//GrContextBackgroundSet(&sContext, ClrBlack);
 		
-			x = joy_read_x();
-			y = joy_read_y();
-			button = button_read_s1();
+		x = joy_read_x();
+		y = joy_read_y();
+		button = button_read_s1();
+		
+		osMutexWait(mutex_display_id,osWaitForever);
 		GrFlush(&sContext);
 		GrContextForegroundSet(&sContext, ClrWhite);
 		GrContextBackgroundSet(&sContext, ClrBlack);
@@ -236,6 +237,7 @@ void tiro(void const * args){
 				flag = 1;
 				button = 0;
 				osSignalSet(tiro_id, 0x0005);
+				osMutexRelease(mutex_display_id);
 			}
 			
 			if(x > 2800){
@@ -254,7 +256,8 @@ void tiro(void const * args){
 				//controle de velocidade
 			osDelay(30);
 			}
-			osDelay(30);
+			osMutexRelease(mutex_display_id);
+			osDelay(15);
 			osSignalSet(gerenciador_trajeto_id, 0x0003);
 		}
 	
@@ -277,14 +280,16 @@ void gerenciador_trajeto(void const *args){
 	int cont = -990;
 	while(1){
 		osSignalWait(0x0003, osWaitForever);
+		osMutexWait(mutex_display_id,osWaitForever);
 		GrFlush(&sContext);
 		GrImageDraw(&sContext,cenario1,4,cont);
-		osSignalSet(painel_de_instrumentos_id, 0x0004);
-			cont = cont + 5;
-				if(cont == 0)
-					cont = -990;
+		cont = cont + 5;
+			if(cont == 0)
+				cont = -990;
+			osSignalSet(painel_de_instrumentos_id, 0x0004);
+			osMutexRelease(mutex_display_id);
 			osDelay(30);
-			}
+		}
 	}
 
 //================================================
@@ -293,6 +298,7 @@ void painel_de_instrumentos(void const *args){
 	pontos = 100;
 	while(1){
 		osSignalWait(0x0004, osWaitForever);
+		osMutexWait(mutex_display_id,osWaitForever);
 		GrFlush(&sContext);
 		GrContextForegroundSet(&sContext, ClrWhite);
 		GrContextBackgroundSet(&sContext, ClrBlack);		
@@ -300,8 +306,7 @@ void painel_de_instrumentos(void const *args){
 		intToString(pontos,buff_pontos,30,10,10);
 		GrStringDraw(&sContext,buff_pontos, -1,  48, (sContext.psFont->ui8Height+2)*11, true);
 		GrStringDraw(&sContext,"   E     1/2     F", -1,  0, (sContext.psFont->ui8Height+2)*12, true);
-			//osMutexRelease(mutex_tiro_id);
-		osDelay(30);
+		osMutexRelease(mutex_display_id);
 		osSignalSet(veiculo_do_jogador_id, 0x0001);		
 	}
 }
@@ -330,8 +335,8 @@ int main (void) {
 	gerenciador_trajeto_id = osThreadCreate(osThread(gerenciador_trajeto), NULL); //Sinal 0x003
 	painel_de_instrumentos_id = osThreadCreate(osThread(painel_de_instrumentos), NULL); //Sinal 0x004
 	tiro_id = osThreadCreate(osThread(tiro),NULL); //sinal 0x005
-  mutex_tiro_id = osMutexCreate(osMutex(mutex_tiro));
-	mutex_painel_id = osMutexCreate(osMutex(mutex_painel));
+  //mutex_tiro_id = osMutexCreate(osMutex(mutex_tiro));
+	mutex_display_id = osMutexCreate(osMutex(mutex_painel));
 	osSignalSet(veiculo_do_jogador_id, 0x0001);
 
 	
