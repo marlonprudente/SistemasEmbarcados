@@ -46,22 +46,11 @@ osThreadId gerenciador_trajeto_id;
 osThreadId painel_de_instrumentos_id;
 osThreadId tiro_id;
 osMutexId mutex_painel_id;
+osMutexId mutex_tiro_id;
 uint32_t mapa[128][128];
 uint8_t pos_x,pos_y;
 uint32_t aux[120][110];
-uint32_t aviao[12][24]={
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,
-0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,
-0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,
-0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
 bool flag;
 //To print on the screen
 tContext sContext;
@@ -196,21 +185,27 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
  *      Threads
  *---------------------------------------------------------------------------*/
 void tiro(void const * args){
+	osStatus status;
 	int k;	
 	while(1){
 		osSignalWait(0x0005, osWaitForever);
+		
 		GrFlush(&sContext);
 		GrContextForegroundSet(&sContext, ClrRed);
 		GrContextBackgroundSet(&sContext, ClrBlack);
 		buzzer_write(true);
 		//GrLineDrawH(&sContext, pos_x+4 , k+1, 0);
-			for(k = 98; k > 0; k --){
-				GrPixelDraw(&sContext, pos_x+4 , k);				
+		
+		for(k = 98; k > 0; k --){
+			status = osMutexWait(mutex_tiro_id,NULL);
+			if(status == osOK){
+				GrPixelDraw(&sContext, pos_x+4 , k);
 				GrPixelDraw(&sContext, pos_x+4 , k+1);
-				osDelay(10);				
+				osDelay(10);
+				
+			}osMutexRelease(mutex_tiro_id);
 		}
 		buzzer_write(false);
-			
 		osSignalSet(veiculo_do_jogador_id, 0x0001);
 	}
 }
@@ -273,7 +268,7 @@ void veiculo_obstaculos(void const *args){
 		evento = osSignalWait(0x0002, osWaitForever);
 		if(evento.status == osEventSignal)
 		{
-				GrTransparentImageDraw(&sContext,helicoptero,10,30,ClrWhite);
+				
 		}
 	}
 }
@@ -320,6 +315,7 @@ osThreadDef(gerenciador_trajeto, osPriorityNormal, 1, 0);
 osThreadDef(painel_de_instrumentos, osPriorityNormal, 1, 0);
 osThreadDef(tiro,osPriorityNormal,1 ,0);
 osMutexDef(mutex_painel);
+osMutexDef(mutex_tiro);
 /*----------------------------------------------------------------------------
  *      Main
  *---------------------------------------------------------------------------*/
@@ -334,7 +330,8 @@ int main (void) {
 	gerenciador_trajeto_id = osThreadCreate(osThread(gerenciador_trajeto), NULL); //Sinal 0x003
 	painel_de_instrumentos_id = osThreadCreate(osThread(painel_de_instrumentos), NULL); //Sinal 0x004
 	tiro_id = osThreadCreate(osThread(tiro),NULL); //sinal 0x005
-//	
+  mutex_tiro_id = osMutexCreate(osMutex(mutex_tiro));
+	mutex_painel_id = osMutexCreate(osMutex(mutex_painel));
 	osSignalSet(veiculo_do_jogador_id, 0x0001);
 
 	
