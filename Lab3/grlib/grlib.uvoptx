@@ -8,7 +8,7 @@
   <Extensions>
     <cExt>*.c</cExt>
     <aExt>*.s*; *.src; *.a*</aExt>
-    <oExt>*.obj</oExt>
+    <oExt>*.obj; *.o</oExt>
     <lExt>*.lib</lExt>
     <tExt>*.txt; *.h; *.inc</tExt>
     <pExt>*.plm</pExt>
@@ -73,7 +73,7 @@
         <LExpSel>0</LExpSel>
       </OPTXL>
       <OPTFL>
-        <tvExp>0</tvExp>
+        <tvExp>1</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
         <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
@@ -103,7 +103,7 @@
         <bEvRecOn>1</bEvRecOn>
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
-        <nTsel>8</nTsel>
+        <nTsel>9</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -141,7 +141,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;RTE\CMSIS\RTX_Conf_CM.c</Filename>
+          <Filename>C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab3\grlib\RTE\CMSIS\RTX_Conf_CM.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -173,7 +173,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;RTE\Device\TM4C1294NCPDT\startup_TM4C129.s</Filename>
+          <Filename>C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab3\grlib\RTE\Device\TM4C1294NCPDT\startup_TM4C129.s</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -189,7 +189,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;.\rgb.c</Filename>
+          <Filename>C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab3\grlib\rgb.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -205,7 +205,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;RTE\CMSIS\RTX_Conf_CM.c</Filename>
+          <Filename>C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab3\grlib\RTE\CMSIS\RTX_Conf_CM.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -237,7 +237,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;.\rgb.c</Filename>
+          <Filename>C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab3\grlib\rgb.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -253,7 +253,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;.\cfaf128x128x16.c</Filename>
+          <Filename>C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab3\grlib\cfaf128x128x16.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -269,7 +269,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;.\rgb.c</Filename>
+          <Filename>C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab3\grlib\rgb.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -333,7 +333,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;.\temp.c</Filename>
+          <Filename>C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab3\grlib\temp.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -393,7 +393,7 @@
       <GroupNumber>1</GroupNumber>
       <FileNumber>1</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>.\canvas.c</PathWithFileName>
@@ -2421,7 +2421,7 @@
       <GroupNumber>1</GroupNumber>
       <FileNumber>170</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>.\rectangle.c</PathWithFileName>
