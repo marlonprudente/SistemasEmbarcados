@@ -3,5 +3,6 @@
 
 extern unsigned char barco[];
 extern unsigned char helicoptero[];
+extern unsigned char ponte[];
 
 #endif /* AERONAVE_H */
