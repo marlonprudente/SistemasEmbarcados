@@ -45,6 +45,7 @@ osThreadId veiculo_obstaculos_id;
 osThreadId gerenciador_trajeto_id;
 osThreadId painel_de_instrumentos_id;
 osThreadId tiro_id;
+osMutexId mutex_painel_id;
 uint32_t mapa[128][128];
 uint8_t pos_x,pos_y;
 uint32_t aux[120][110];
@@ -310,18 +311,21 @@ void gerenciador_trajeto(void const *args){
 void painel_de_instrumentos(void const *args){
 	char buff_pontos [32];
 	osEvent evento;
-	
+	osStatus status;
 	while(1){
 		evento = osSignalWait(0x0004, osWaitForever); 
-		if(evento.status == osEventSignal){
+		if(status == osOK){
+			if(evento.status == osEventSignal){
 		GrFlush(&sContext);
-		GrContextForegroundSet(&sContext, ClrWhite);
+			GrContextForegroundSet(&sContext, ClrWhite);
 		GrContextBackgroundSet(&sContext, ClrBlack);
-		pontos = 100;
-		intToString(pontos,buff_pontos,30,10,10);
-		GrStringDraw(&sContext,buff_pontos, -1,  48, (sContext.psFont->ui8Height+2)*11, true);
-		GrStringDraw(&sContext,"   E     1/2     F", -1,  0, (sContext.psFont->ui8Height+2)*12, true);
-		osSignalSet(veiculo_do_jogador_id, 0x0001);
+			pontos = 100;
+			intToString(pontos,buff_pontos,30,10,10);
+			GrStringDraw(&sContext,buff_pontos, -1,  48, (sContext.psFont->ui8Height+2)*11, true);
+			GrStringDraw(&sContext,"   E     1/2     F", -1,  0, (sContext.psFont->ui8Height+2)*12, true);
+			osMutexRelease(mutex_tiro_id);
+			osSignalSet(veiculo_do_jogador_id, 0x0001);
+			}
 		}
 	}
 }
@@ -334,6 +338,7 @@ osThreadDef(veiculo_obstaculos, osPriorityNormal, 1, 0);
 osThreadDef(gerenciador_trajeto, osPriorityNormal, 1, 0);
 osThreadDef(painel_de_instrumentos, osPriorityNormal, 1, 0);
 osThreadDef(tiro,osPriorityNormal,1 ,0);
+osMutexDef(mutex_painel);
 /*----------------------------------------------------------------------------
  *      Main
  *---------------------------------------------------------------------------*/
@@ -349,7 +354,8 @@ int main (void) {
 //	painel_de_instrumentos_id = osThreadCreate(osThread(painel_de_instrumentos), NULL); //Sinal 0x004
 	tiro_id = osThreadCreate(osThread(tiro),NULL); //sinal 0x005
 //	
-	osSignalSet(veiculo_do_jogador_id, 0x0003);
+	osSignalSet(veiculo_do_jogador_id, 0x0001);
+
 	
 	osKernelStart();	
 	
