@@ -46,11 +46,12 @@ osThreadId painel_de_instrumentos_id;
 osThreadId tiro_id;
 osMutexId mutex_display_id;
 //osMutexId mutex_tiro_id;
-uint32_t mapa[128][128];
-uint8_t pos_x,pos_y;
-uint32_t aux[120][110];
+//uint32_t mapa[128][128];
+uint8_t pos_x,pos_y, hel_x, hel_y, bar_x, bar_y, pon_x, pon_y;
+//uint32_t aux[120][110];
 
-bool flag;
+bool flag, helicoptero_status, barco_status, ponte_status;
+int cont_cenario;
 //To print on the screen
 tContext sContext;
 uint32_t pontos;
@@ -193,18 +194,27 @@ void tiro(void const * args){
 		GrContextForegroundSet(&sContext, ClrRed);
 		GrContextBackgroundSet(&sContext, ClrBlack);
 		buzzer_write(true);
+		
 		//GrLineDrawH(&sContext, pos_x+4 , k+1, 0);
 		
 		for(k = 98; k > 0; k --){			
-
+				buzzer_per_set(6002 -(2*k));
 				GrPixelDraw(&sContext, pos_x+4 , k);
 				GrPixelDraw(&sContext, pos_x+4 , k+1);
-
 		}
+		
+		if(bar_x <= pos_x+4 && bar_x + 28 >= pos_x+4)
+			barco_status = false;
+		if(hel_x <= pos_x+4 && hel_x + 11 >= pos_x+4)
+			helicoptero_status = false;
+		if(pon_x <= pos_x+4 && pon_x + 120 >= pos_x+4)
+			ponte_status = false;
+		
 		osMutexRelease(mutex_display_id);
 		//osDelay(10);
 		buzzer_write(false);
 		osSignalSet(veiculo_do_jogador_id, 0x0001);
+		osDelay(60);
 	}
 }
 //================================================
@@ -212,11 +222,8 @@ void tiro(void const * args){
 	uint16_t x, y,center;
 	uint8_t k, aux, i = 0,j = 0,a = 56 , b = 99;
 	bool button;
-
 	while(1){
 		osSignalWait(0x0001, osWaitForever);
-
-
 		//GrContextBackgroundSet(&sContext, ClrBlack);
 		
 		x = joy_read_x();
@@ -257,7 +264,7 @@ void tiro(void const * args){
 			}
 			osMutexRelease(mutex_display_id);
 			osSignalSet(gerenciador_trajeto_id, 0x0003);
-			osDelay(60);
+			osDelay(30);
 		}
 	
 }
@@ -265,35 +272,46 @@ void tiro(void const * args){
 
 //================================================
 void veiculo_obstaculos(void const *args){
-	osEvent evento;
+	barco_status = true;
+	bar_x = 50, bar_y = 50;
+	helicoptero_status = true;
+	hel_x = 50, hel_y = 25;
+	ponte_status = true;
+	pon_x = 4, pon_y = 0;
+	
 	while(1){
 		osSignalWait(0x0002, osWaitForever);
 		osMutexWait(mutex_display_id,osWaitForever);
 		//area critica
 		GrFlush(&sContext);
-		GrImageDraw(&sContext,ponte,4,0);
-		GrTransparentImageDraw(&sContext,barco,50,50,ClrBlack);//colocar coordenada que varie
-		GrTransparentImageDraw(&sContext,helicoptero,50,25,ClrWhite);//colocar coordenada que varie
+		if(ponte_status)
+			GrImageDraw(&sContext,ponte,pon_x,pon_y);
+		if(barco_status)
+			GrTransparentImageDraw(&sContext,barco,bar_x,bar_y,ClrBlack);//colocar coordenada que varie
+		if(helicoptero_status)
+			GrTransparentImageDraw(&sContext,helicoptero,hel_x,hel_y,ClrWhite);//colocar coordenada que varie
+		
 		osSignalSet(veiculo_do_jogador_id,0x0001);
 		osMutexRelease(mutex_display_id);
+		osDelay(60);
 	}
 }
 //================================================
 void gerenciador_trajeto(void const *args){
-	int cont = -990;
+	cont_cenario = -990;
 	while(1){
 		osSignalWait(0x0003, osWaitForever);
 		osMutexWait(mutex_display_id,osWaitForever);
 		GrFlush(&sContext);
-		GrImageDraw(&sContext,cenario,4,cont);
+		GrImageDraw(&sContext,cenario,4,cont_cenario);
 		GrFlush(&sContext);
 		GrImageDraw(&sContext,painel,4,110);
-		cont = cont + 5;
-			if(cont == 0)
-				cont = -990;
+		cont_cenario = cont_cenario + 5;
+			if(cont_cenario == 0)
+				cont_cenario = -990;
 			osSignalSet(painel_de_instrumentos_id, 0x0004);
 			osMutexRelease(mutex_display_id);
-			//osDelay(30);
+			osDelay(60);
 		}
 	}
 
@@ -312,7 +330,8 @@ void painel_de_instrumentos(void const *args){
 		GrStringDraw(&sContext,buff_pontos, -1,  48, (sContext.psFont->ui8Height+2)*11, true);
 		GrStringDraw(&sContext,"   E     1/2     F", -1,  0, (sContext.psFont->ui8Height+2)*12, true);
 		osMutexRelease(mutex_display_id);
-		osSignalSet(veiculo_obstaculos_id, 0x0002);		
+		osSignalSet(veiculo_obstaculos_id, 0x0002);
+		osDelay(60);
 	}
 }
  /*----------------------------------------------------------------------------
