@@ -48,12 +48,13 @@ osMutexId mutex_display_id;
 //osMutexId mutex_tiro_id;
 uint32_t mapa[128][128];
 uint8_t pos_x,pos_y;
-uint32_t aux[120][110];
+uint8_t pos_x_obstaculo, pos_y_obstaculo;
 
-bool flag;
+uint32_t aux[120][110];
 //To print on the screen
 tContext sContext;
 uint32_t pontos;
+int cont_cenario = -990;
 /*----------------------------------------------------------------------------
  *  Transforming int to string
  *---------------------------------------------------------------------------*/
@@ -196,10 +197,8 @@ void tiro(void const * args){
 		//GrLineDrawH(&sContext, pos_x+4 , k+1, 0);
 		
 		for(k = 98; k > 0; k --){			
-
 				GrPixelDraw(&sContext, pos_x+4 , k);
 				GrPixelDraw(&sContext, pos_x+4 , k+1);
-
 		}
 		osMutexRelease(mutex_display_id);
 		//osDelay(10);
@@ -215,14 +214,12 @@ void tiro(void const * args){
 
 	while(1){
 		osSignalWait(0x0001, osWaitForever);
-
-
 		//GrContextBackgroundSet(&sContext, ClrBlack);
-		
+		//leitura do joystick
 		x = joy_read_x();
 		y = joy_read_y();
 		button = button_read_s1();
-		
+		//mutex para display
 		osMutexWait(mutex_display_id,osWaitForever);
 		GrFlush(&sContext);
 		GrContextForegroundSet(&sContext, ClrWhite);
@@ -233,19 +230,17 @@ void tiro(void const * args){
 			{
 				pos_x = a;
 				pos_y = b;
-				flag = 1;
 				button = 0;
 				osSignalSet(tiro_id, 0x0005);
 				osMutexRelease(mutex_display_id);
 			}
-			
 			if(x > 2800){
 				aux = a;
-					a = a + 5;
+				a = a + 5;
 			}
 			else if (x < 1500){
 				aux = a;
-					a = a - 5;
+				a = a - 5;
 			}
 			if(y > 2800)
 				b = b;
@@ -269,28 +264,31 @@ void veiculo_obstaculos(void const *args){
 	while(1){
 		osSignalWait(0x0002, osWaitForever);
 		osMutexWait(mutex_display_id,osWaitForever);
+		pos_y_obstaculo = 25;
+		pos_x_obstaculo = 25;
 		//area critica
 		GrFlush(&sContext);
 		GrImageDraw(&sContext,ponte,4,0);
-		GrTransparentImageDraw(&sContext,barco,50,50,ClrBlack);//colocar coordenada que varie
-		GrTransparentImageDraw(&sContext,helicoptero,50,25,ClrWhite);//colocar coordenada que varie
+		GrTransparentImageDraw(&sContext,barco,pos_x_obstaculo,pos_y_obstaculo,ClrBlack);//colocar coordenada que varie
+		//GrTransparentImageDraw(&sContext,helicoptero,pos_x_obstaculo,pos_y_obstaculo,ClrWhite);//colocar coordenada que varie
+		pos_x_obstaculo =50;
 		osSignalSet(veiculo_do_jogador_id,0x0001);
 		osMutexRelease(mutex_display_id);
 	}
 }
 //================================================
 void gerenciador_trajeto(void const *args){
-	int cont = -990;
+	
 	while(1){
 		osSignalWait(0x0003, osWaitForever);
 		osMutexWait(mutex_display_id,osWaitForever);
 		GrFlush(&sContext);
-		GrImageDraw(&sContext,cenario,4,cont);
+		GrImageDraw(&sContext,cenario,4,cont_cenario);
 		GrFlush(&sContext);
 		GrImageDraw(&sContext,painel,4,110);
-		cont = cont + 5;
-			if(cont == 0)
-				cont = -990;
+		cont_cenario = cont_cenario + 5;
+			if(cont_cenario == 0)
+				cont_cenario = -990;
 			osSignalSet(painel_de_instrumentos_id, 0x0004);
 			osMutexRelease(mutex_display_id);
 			//osDelay(30);
@@ -346,9 +344,12 @@ int main (void) {
 	
 while(!start){
 	GrFlush(&sContext);	
-	GrStringDraw(&sContext,"PRESS START", -1,  0, (sContext.psFont->ui8Height+2)*7, true);//NAO TA ESCREVENDO 
+	GrContextForegroundSet(&sContext, ClrWhite);
+	GrContextBackgroundSet(&sContext, ClrBlack);
+  GrStringDraw(&sContext,"PRESS START", -1,  0, (sContext.psFont->ui8Height+2)*1, true);	
 			start = button_read_s2();
 	}
+GrStringDraw(&sContext,"           ", -1,  0, (sContext.psFont->ui8Height+2)*1, true);	
 	osSignalSet(veiculo_do_jogador_id, 0x0001);	
 	osDelay(osWaitForever);
 }
