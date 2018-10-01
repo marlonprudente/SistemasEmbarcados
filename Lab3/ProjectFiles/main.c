@@ -276,13 +276,13 @@ void veiculo_obstaculos(void const *args){
 	helicoptero_status = true;
 	hel_x = 50, hel_y = 25;
 	ponte_status = true;
-	pon_x = 4, pon_y = 0;
+	pon_x = 50, pon_y = 46;
 	
 	while(1){
 		osSignalWait(0x0002, osWaitForever);
 		osMutexWait(mutex_display_id,osWaitForever);
-		pos_y_obstaculo = 25;
-		pos_x_obstaculo = 25;
+//		pos_y_obstaculo = 25;
+//		pos_x_obstaculo = 25;
 		//area critica
 		GrFlush(&sContext);
 		if(ponte_status)
