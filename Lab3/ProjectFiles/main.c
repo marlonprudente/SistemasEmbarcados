@@ -49,7 +49,7 @@ osMutexId mutex_display_id;
 //uint32_t mapa[128][128];
 uint8_t pos_x,pos_y, hel_x, hel_y, bar_x, bar_y, pon_x, pon_y;
 //uint32_t aux[120][110];
-
+uint8_t rand_x = 30;
 bool flag, helicoptero_status, barco_status, ponte_status;
 int cont_cenario;
 //To print on the screen
@@ -159,6 +159,7 @@ void init_all(){
 	buzzer_init(); 
 	buzzer_vol_set(4000);
 	button_init();
+	rand_x = ((rand_x +1)%80)+20;
 	}
 
 uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
@@ -195,7 +196,7 @@ void tiro(void const * args){
 		GrContextForegroundSet(&sContext, ClrRed);
 		GrContextBackgroundSet(&sContext, ClrBlack);
 		buzzer_write(true);
-		
+		rand_x = ((rand_x +1)%80)+20;
 		//GrLineDrawH(&sContext, pos_x+4 , k+1, 0);
 		
 		for(k = 98; k > 0; k --){			
@@ -210,7 +211,7 @@ void tiro(void const * args){
 			helicoptero_status = false;
 		if(pon_x <= pos_x+4 && pon_x + 120 >= pos_x+4)
 			ponte_status = false;
-		
+		rand_x = ((rand_x +1)%80)+20;
 		osMutexRelease(mutex_display_id);
 		//osDelay(10);
 		buzzer_write(false);
@@ -236,7 +237,7 @@ void tiro(void const * args){
 		GrContextForegroundSet(&sContext, ClrWhite);
 		GrContextBackgroundSet(&sContext, ClrBlack);
 		GrTransparentImageDraw(&sContext,aeronave,a,99, ClrBlack);
-		 		
+		 		rand_x = ((rand_x +1)%80)+20;
 			if(button == 1)
 			{
 				pos_x = a;
@@ -261,37 +262,47 @@ void tiro(void const * args){
 				//controle de velocidade
 			osDelay(30);
 			}
+			rand_x = ((rand_x +1)%80)+20;
 			osMutexRelease(mutex_display_id);
 			osSignalSet(gerenciador_trajeto_id, 0x0003);
 			osDelay(30);
 		}
-	
 }
-
-
 //================================================
 void veiculo_obstaculos(void const *args){
 	barco_status = true;
-	bar_x = 50, bar_y = 50;
+	bar_x = 70, bar_y = 50;
 	helicoptero_status = true;
-	hel_x = 50, hel_y = 25;
+	hel_x = 30, hel_y = 30;
 	ponte_status = true;
 	pon_x = 4, pon_y = 0;
-	
+	rand_x = ((rand_x +1)%80)+20;
 	while(1){
 		osSignalWait(0x0002, osWaitForever);
 		osMutexWait(mutex_display_id,osWaitForever);
-		pos_y_obstaculo = 25;
-		pos_x_obstaculo = 25;
 		//area critica
 		GrFlush(&sContext);
 		if(ponte_status)
 			GrImageDraw(&sContext,ponte,pon_x,pon_y);
-		if(barco_status)
-			GrTransparentImageDraw(&sContext,barco,bar_x,bar_y,ClrBlack);//colocar coordenada que varie
-		if(helicoptero_status)
-			GrTransparentImageDraw(&sContext,helicoptero,hel_x,hel_y,ClrWhite);//colocar coordenada que varie
 		
+		
+		if(barco_status){
+			GrTransparentImageDraw(&sContext,barco,bar_x,bar_y,ClrBlack);//colocar coordenada que varie
+			bar_y ++;
+			}
+		else{
+			bar_x = rand_x;
+			barco_status = true;
+			bar_y = 50;
+		}
+		if(helicoptero_status){
+			GrTransparentImageDraw(&sContext,helicoptero,hel_x,hel_y,ClrWhite);//colocar coordenada que varie
+			hel_y +=2;
+		}
+		else{
+			helicoptero_status = true;
+			bar_y = 10;
+		}
 		osSignalSet(veiculo_do_jogador_id,0x0001);
 		osMutexRelease(mutex_display_id);
 		osDelay(60);
