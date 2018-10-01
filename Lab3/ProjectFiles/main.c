@@ -275,7 +275,7 @@ void veiculo_obstaculos(void const *args){
 	helicoptero_status = true;
 	hel_x = 30, hel_y = 30;
 	ponte_status = true;
-	pon_x = 4, pon_y = 0;
+	pon_x = 50, pon_y = 46;
 	rand_x = ((rand_x +1)%80)+20;
 	while(1){
 		osSignalWait(0x0002, osWaitForever);
