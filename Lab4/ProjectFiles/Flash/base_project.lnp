@@ -11,6 +11,7 @@
 ".\flash\servo.o"
 ".\flash\joy.o"
 ".\flash\temp.o"
+".\flash\uart.o"
 "..\driverlib\rvmdk\driverlib.lib"
 "..\grlib\rvmdk\grlib.lib"
 "C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM4.lib"

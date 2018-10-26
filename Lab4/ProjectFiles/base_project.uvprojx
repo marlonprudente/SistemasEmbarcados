@@ -456,6 +456,11 @@
               <FileType>1</FileType>
               <FilePath>.\temp.c</FilePath>
             </File>
+            <File>
+              <FileName>UART.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\UART.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -933,6 +938,11 @@
               <FileName>temp.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\temp.c</FilePath>
+            </File>
+            <File>
+              <FileName>UART.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\UART.c</FilePath>
             </File>
           </Files>
         </Group>
