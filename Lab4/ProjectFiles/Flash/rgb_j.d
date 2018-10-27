@@ -1,0 +1,12 @@
+.\flash\rgb_j.o: rgb_j.c
+.\flash\rgb_j.o: D:\engenharia\programas\keil-arm\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129\TM4C129.h
+.\flash\rgb_j.o: D:\engenharia\programas\keil-arm\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129\TM4C1294NCPDT.h
+.\flash\rgb_j.o: D:\engenharia\programas\keil-arm\ARM\PACK\ARM\CMSIS\5.1.0\CMSIS\Include\core_cm4.h
+.\flash\rgb_j.o: D:\engenharia\programas\keil-arm\ARM\ARMCC\Bin\..\include\stdint.h
+.\flash\rgb_j.o: D:\engenharia\programas\keil-arm\ARM\PACK\ARM\CMSIS\5.1.0\CMSIS\Include\cmsis_version.h
+.\flash\rgb_j.o: D:\engenharia\programas\keil-arm\ARM\PACK\ARM\CMSIS\5.1.0\CMSIS\Include\cmsis_compiler.h
+.\flash\rgb_j.o: D:\engenharia\programas\keil-arm\ARM\PACK\ARM\CMSIS\5.1.0\CMSIS\Include\cmsis_armcc.h
+.\flash\rgb_j.o: D:\engenharia\programas\keil-arm\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129\system_TM4C129.h
+.\flash\rgb_j.o: D:\engenharia\programas\keil-arm\ARM\ARMCC\Bin\..\include\stdbool.h
+.\flash\rgb_j.o: ..\grlib/grlib.h
+.\flash\rgb_j.o: rgb_j.h

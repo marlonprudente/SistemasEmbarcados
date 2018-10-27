@@ -31,7 +31,7 @@
 #include "accel.h"
 #include "led.h"
 #include "UART.h"
-#include "UART_CONSOLE.h"
+#include "UART_CONSOLE_F.h"
 
 
 #define m_quantidade 1
@@ -53,6 +53,7 @@ osMailQDef(m_UART,m_quantidade,UART_read);
 =================================*/
 typedef struct{
 	uint32_t msg_value;
+	uint8_t msg_page;
 }msg_generic;
 /*----------------------------------------
 *		Mail
@@ -64,7 +65,10 @@ osPoolId poolid_c;
 osPoolDef(pool_c,m_quantidade,msg_generic);
 
 //To print on the screen
- /*---------------------------------------------------------------------------*
+/*----------------------------------------------------------------------------
+ *  Transforming int to string
+ *---------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------
  *    Initializations
  *---------------------------------------------------------------------------*/
 
@@ -76,7 +80,7 @@ void init_all(){
 /*-----------------------------------------------------------------------------
 *      Funcoes de uso exclusivo do programa
 *------------------------------------------------------------------------------*/
-void UARTIntHandler(void){
+void UARTIntHandler_J(void){
 	char m;
 	UART_read * mailI;
 	while((UART0->FR & (1<<4)) != 0);
@@ -87,13 +91,16 @@ void UARTIntHandler(void){
 		mailI	-> msg_UART = m;
 		osMailPut(mid_UART,mailI);
 	}
-	UARTprintstring("Entrada:");
+	UARTprintstring("Input:");
 	printchar(m);
 	UARTprintstring("\n\r");
 }
 /*-----------------------------------------------------------------------------
 *      Threads
 *------------------------------------------------------------------------------*/
+
+
+
 void Console(const void *args){
 	bool ini_uart = true;
 	osEvent evt;
@@ -104,13 +111,14 @@ void Console(const void *args){
 			ini_uart=false;
 		}
 		evt = osMessageGet(msg_console,osWaitForever);
-			osPoolFree(poolid_c,msg);
+		osPoolFree(poolid_c,msg);
 		}
 }osThreadDef(Console,osPriorityNormal,1,0);
-
 void UART_t(const void *args){
 	UART_read *mail=0;
+	//msg_generic *msg_g = 0;
 	osEvent evento;
+	//uint8_t pag = 0;
 	char mensagem = NULL;
 	while(1){
 		evento=osMailGet(mid_UART,osWaitForever);
@@ -119,26 +127,40 @@ void UART_t(const void *args){
 			if(mail){
 				mensagem = mail -> msg_UART;
 				osMailFree(mid_UART,mail);
+				
 						switch(mensagem){
 								case '1':
-									UARTprintstring("Frequencia aumentada\n\r");
+									UARTprintstring("Frequencia aumentda\n\r");
 									break;
 								case '2':
 									UARTprintstring("Frequencia diminuida\n\r");
 									break;
 								case '3':
-									UARTprintstring("Amplitude aumentada\n\r");
+									UARTprintstring("Amplitude aumentda\n\r");
 									break;
 								case '4':
 									UARTprintstring("Amplitude diminuida\n\r");
 									break;
+								case '5':
+									UARTprintstring("Onda Quadrada Selecionada\n\r");
+									break;
+								case '6':
+									UARTprintstring("Onda Senoidal Selecionada\n\r");
+									break;
+								case '7':
+									UARTprintstring("Onda Dente-de-serra Selecionada\n\r");
+									break;
+								case '8':
+									UARTprintstring("Onda Triangular Selecionada\n\r");
+									break;
 								default:
-									UARTprintstring("Entrada Invalida\n\r");
+									UARTprintstring("Entrada invalida\n\r");
+									break;
+							}
+						}
+					}
 				}
-			}
-		}
-	}
-}osThreadDef(UART_t,osPriorityAboveNormal,1,0);
+			}osThreadDef(UART_t,osPriorityAboveNormal,1,0);
 /*----------------------------------------------------------------------------
  *      Main
 *---------------------------------------------------------------------------*/
@@ -147,6 +169,8 @@ void UART_t(const void *args){
 	osKernelInitialize();
 	mid_UART= osMailCreate(osMailQ(m_UART), NULL);
 	msg_console = osMessageCreate(osMessageQ(msg_console),NULL);
+	
+	//poolid_c = osPoolCreate(osPool(pool_c));
 	osThreadCreate(osThread(UART_t),NULL);
 	osThreadCreate(osThread(Console),NULL);
 	osKernelStart();
