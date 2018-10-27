@@ -56,22 +56,20 @@ C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4
   extern bool joy_read_center();
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\ProjectFiles\mic.h(23): warning:  #1-D: last line of file ends without a newline
   #endif //__MIC_H__
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\driverlib\uart.h(4): warning:  #1295-D: Deprecated declaration init_UART_J - give arg types
-  extern void init_UART_J();
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\driverlib\uart.h(4): warning:  #1295-D: Deprecated declaration init_UART - give arg types
+  extern void init_UART();
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\driverlib\uart.h(10): warning:  #1-D: last line of file ends without a newline
   #endif
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\ProjectFiles\UART_CONSOLE_F.h(5): warning:  #1295-D: Deprecated declaration pag_ini_uart - give arg types
   extern void pag_ini_uart();
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\ProjectFiles\UART_CONSOLE_F.h(8): warning:  #1-D: last line of file ends without a newline
   #endif  //__UART_CONSOLE_F_H__
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\ProjectFiles\exemploTIVA.c(76): warning:  #223-D: function "init_UART" declared implicitly
-        init_UART();
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\ProjectFiles\exemploTIVA.c(106): warning:  #550-D: variable "evt"  was set but never used
         osEvent evt;
-exemploTIVA.c: 20 warnings, 0 errors
+exemploTIVA.c: 19 warnings, 0 errors
 compiling UART_CONSOLE_F.c...
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\driverlib\uart.h(4): warning:  #1295-D: Deprecated declaration init_UART_J - give arg types
-  extern void init_UART_J();
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\driverlib\uart.h(4): warning:  #1295-D: Deprecated declaration init_UART - give arg types
+  extern void init_UART();
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\driverlib\uart.h(10): warning:  #1-D: last line of file ends without a newline
   #endif
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\ProjectFiles\UART_CONSOLE_F.h(5): warning:  #1295-D: Deprecated declaration pag_ini_uart - give arg types
@@ -179,8 +177,8 @@ C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4
   static uint16_t g_mid, g_did, g_timeout_count;
 temp.c: 6 warnings, 0 errors
 compiling UART.c...
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\driverlib\uart.h(4): warning:  #1295-D: Deprecated declaration init_UART_J - give arg types
-  extern void init_UART_J();
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\driverlib\uart.h(4): warning:  #1295-D: Deprecated declaration init_UART - give arg types
+  extern void init_UART();
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\driverlib\uart.h(10): warning:  #1-D: last line of file ends without a newline
   #endif
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4\ProjectFiles\UART.c(45): warning:  #1-D: last line of file ends without a newline
@@ -194,7 +192,7 @@ C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab4
 RTE\Device\TM4C1294NCPDT\system_TM4C129.c: 1 warning, 0 errors
 linking...
 Program Size: Code=10408 RO-data=1288 RW-data=88 ZI-data=9888  
-".\Flash\base_project.axf" - 0 Error(s), 67 Warning(s).
+".\Flash\base_project.axf" - 0 Error(s), 66 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -225,25 +223,25 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.1.1
 
    * Component: ARM::CMSIS:RTOS:Keil RTX:4.81.1
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
-      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
       Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
-      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
-      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
       Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM4.lib
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
 
    * Component: Keil::Device:Startup:1.0.0
       Source file:   Device\Source\ARM\startup_TM4C129.s
       Source file:   Device\Source\system_TM4C129.c
       Include file:  Device\Include\TM4C129\TM4C129.h
-Build Time Elapsed:  00:00:10
+Build Time Elapsed:  00:00:05
 </pre>
 </body>
 </html>
