@@ -1,15 +1,11 @@
-#include "UART.h"
 #include "TM4C129.h"                    // Device header
 #include <stdbool.h>
 #include "grlib/grlib.h"
-
-//defines
-
-
-
-//função de inicialização
-void initUART(void)
-{
+#include "UART.h"
+/*================================
+=========Inicializacao============
+=================================*/
+void init_UART(){
 	SYSCTL-> RCGCUART |= (1<<0);   				//Habilita registradores da para uso da UART0
 	SYSCTL-> RCGCGPIO |= (1<<0);					//Habilita a porta A do GPIO
 	GPIOA_AHB -> AFSEL = (1<<1)|(1<<0);		//Habilita o usa de funcoes especiais do GPIO
@@ -26,24 +22,10 @@ void initUART(void)
 	NVIC -> ISER[0] |= (1<<5);						//Habilita interrupcoes de UART0 no vetor de interrupcoes
 	__NVIC_SetPriority(UART0_IRQn,1<<5);
 }
-//função de envio
-char writeUART(void)
-{
-	char c;
-	while((UART0->FR & (1<<4)) != 0);//Enquanto estiver enviado algo NAO se le
-	c = UART0->DR;//Recebe caracteres para a saida
-	return c;
-}
-char * UARTreadstring(){
-	char c = writeUART();
-	char* texto = "";
-	while(c){
-		texto += c;
-	}
-	
-	return texto;
-}
 
+/*================================
+=========Funcoes do Prog==========
+=================================*/
 /*Envio de elementos*/
 void printchar(char c){//Envio UM caracter
 	while((UART0->FR & (1<<5)) != 0);//Enquanto estiver recebendo algo NAO escreve
@@ -54,5 +36,10 @@ void UARTprintstring(char * string){//Envia uma String
 		printchar(*(string++));//Envia caracteres para a saida
 	}
 }
-
-//tratamento de interrupções
+/*Leitura de elementos*/
+char readchar(void){//leitura de caractere
+	char c;
+	while((UART0->FR & (1<<4)) != 0);//Enquanto estiver enviado algo NAO se le
+	c = UART0->DR;//Recebe caracteres para a saida
+	return c;
+}

@@ -1,12 +1,10 @@
-//implementar UART.h
-#ifndef UART_H
-#define UART_H
+#ifndef UART_JOAO_H
+#define UART_JOAO_H
 
-extern void initUART(void);
+extern void init_UART_J();
 extern void UARTIntHandler(void);
-extern char writeUART(void);
-
 extern void printchar(char c);
 extern void UARTprintstring(char * string);
+extern char readchar(void);
 
-#endif 
+#endif  //__UART_JOAO_H__

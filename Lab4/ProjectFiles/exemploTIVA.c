@@ -20,7 +20,6 @@
  * include libraries from drivers
  *----------------------------------------------------------------------------*/
 
-#include "rgb.h"
 #include "cfaf128x128x16.h"
 #include "servo.h"
 #include "temp.h"
@@ -32,149 +31,126 @@
 #include "accel.h"
 #include "led.h"
 #include "UART.h"
-#include "PWM.h"
+#include "UART_CONSOLE.h"
 
-#define LED_A      0
-#define LED_B      1
-#define LED_C      2
-#define LED_D      3
-#define LED_CLK    7
+
+#define m_quantidade 1
+
+
+/*================================
+=========Mail Handler============
+=================================*/
+typedef struct{
+	uint8_t msg_UART;
+}UART_read;
+/*----------------------------------------
+*		Mail
+*----------------------------------------*/
+osMailQId mid_UART;
+osMailQDef(m_UART,m_quantidade,UART_read);
+/*================================
+=========Msg Handler============
+=================================*/
+typedef struct{
+	uint32_t msg_value;
+}msg_generic;
+/*----------------------------------------
+*		Mail
+*----------------------------------------*/
+osMessageQId msg_console;
+osMessageQDef(msg_console,m_quantidade,msg_generic);
+
+osPoolId poolid_c;
+osPoolDef(pool_c,m_quantidade,msg_generic);
 
 //To print on the screen
-tContext sContext;
-
-/*----------------------------------------------------------------------------
- *  Transforming int to string
- *---------------------------------------------------------------------------*/
-static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base, uint8_t zeros){
-	static const char* pAscii = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	bool n = false;
-	int pos = 0, d = 0;
-	int64_t tmpValue = value;
-
-	// the buffer must not be null and at least have a length of 2 to handle one
-	// digit and null-terminator
-	if (pBuf == NULL || len < 2)
-			return;
-
-	// a valid base cannot be less than 2 or larger than 36
-	// a base value of 2 means binary representation. A value of 1 would mean only zeros
-	// a base larger than 36 can only be used if a larger alphabet were used.
-	if (base < 2 || base > 36)
-			return;
-
-	if (zeros > len)
-		return;
-	
-	// negative value
-	if (value < 0)
-	{
-			tmpValue = -tmpValue;
-			value    = -value;
-			pBuf[pos++] = '-';
-			n = true;
-	}
-
-	// calculate the required length of the buffer
-	do {
-			pos++;
-			tmpValue /= base;
-	} while(tmpValue > 0);
-
-
-	if (pos > len)
-			// the len parameter is invalid.
-			return;
-
-	if(zeros > pos){
-		pBuf[zeros] = '\0';
-		do{
-			pBuf[d++ + (n ? 1 : 0)] = pAscii[0]; 
-		}
-		while(zeros > d + pos);
-	}
-	else
-		pBuf[pos] = '\0';
-
-	pos += d;
-	do {
-			pBuf[--pos] = pAscii[value % base];
-			value /= base;
-	} while(value > 0);
-}
-
-static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, uint8_t zeros, uint8_t precision){
-	static const char* pAscii = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	uint8_t start = 0xFF;
-	if(len < 2)
-		return;
-	
-	if (base < 2 || base > 36)
-		return;
-	
-	if(zeros + precision + 1 > len)
-		return;
-	
-	intToString((int64_t) value, pBuf, len, base, zeros);
-	while(pBuf[++start] != '\0' && start < len); 
-
-	if(start + precision + 1 > len)
-		return;
-	
-	pBuf[start+precision+1] = '\0';
-	
-	if(value < 0)
-		value = -value;
-	pBuf[start++] = '.';
-	while(precision-- > 0){
-		value -= (uint32_t) value;
-		value *= (float) base;
-		pBuf[start++] = pAscii[(uint32_t) value];
-	}
-}
-
-/*----------------------------------------------------------------------------
+ /*---------------------------------------------------------------------------*
  *    Initializations
  *---------------------------------------------------------------------------*/
 
 void init_all(){
+	init_UART();
 	cfaf128x128x16Init();
-	initUART();
-	//joy_init();
-	//accel_init();
-	//buzzer_init(); 
-	//button_init();
-	//mic_init();
-	//rgb_init();
-	servo_init();
-	//temp_init();
-	//opt_init();
-	//led_init();
+
+}	
+/*-----------------------------------------------------------------------------
+*      Funcoes de uso exclusivo do programa
+*------------------------------------------------------------------------------*/
+void UARTIntHandler(void){
+	char m;
+	UART_read * mailI;
+	while((UART0->FR & (1<<4)) != 0);
+	m = UART0->DR;
+	UART0	->	RIS |= (1<<4);
+	mailI = (UART_read*)osMailAlloc(mid_UART,0);
+	if(mailI){
+		mailI	-> msg_UART = m;
+		osMailPut(mid_UART,mailI);
+	}
+	UARTprintstring("Entrada:");
+	printchar(m);
+	UARTprintstring("\n\r");
 }
+/*-----------------------------------------------------------------------------
+*      Threads
+*------------------------------------------------------------------------------*/
+void Console(const void *args){
+	bool ini_uart = true;
+	osEvent evt;
+	msg_generic *msg = 0;
+	while(1){
+		if(ini_uart){
+			pag_ini_uart();
+			ini_uart=false;
+		}
+		evt = osMessageGet(msg_console,osWaitForever);
+			osPoolFree(poolid_c,msg);
+		}
+}osThreadDef(Console,osPriorityNormal,1,0);
 
-	
-
-
+void UART_t(const void *args){
+	UART_read *mail=0;
+	osEvent evento;
+	char mensagem = NULL;
+	while(1){
+		evento=osMailGet(mid_UART,osWaitForever);
+		if(evento.status==osEventMail){
+			mail=evento.value.p;
+			if(mail){
+				mensagem = mail -> msg_UART;
+				osMailFree(mid_UART,mail);
+						switch(mensagem){
+								case '1':
+									UARTprintstring("Frequencia aumentada\n\r");
+									break;
+								case '2':
+									UARTprintstring("Frequencia diminuida\n\r");
+									break;
+								case '3':
+									UARTprintstring("Amplitude aumentada\n\r");
+									break;
+								case '4':
+									UARTprintstring("Amplitude diminuida\n\r");
+									break;
+								default:
+									UARTprintstring("Entrada Invalida\n\r");
+				}
+			}
+		}
+	}
+}osThreadDef(UART_t,osPriorityAboveNormal,1,0);
 /*----------------------------------------------------------------------------
  *      Main
- *---------------------------------------------------------------------------*/
-int main (void) {
-	char c = ' ';
-	bool a;
+*---------------------------------------------------------------------------*/
+ int main (void) {
 	init_all();
-	UARTprintstring("Digite e veja o que acontece: ");
-		c = writeUART();
-	
-//	if(c != ' ')
-//		UARTprintstring("Recebido");
-//	else
-//		UARTprintstring("Não recebido");
-//	if(a == true)
-//	{UARTprintstring("Recebido");}
-//	else 
-//	{UARTprintstring("Não recebido");}
-	
-	UARTprintstring("Muito bem \n");
-		
-			
+	osKernelInitialize();
+	mid_UART= osMailCreate(osMailQ(m_UART), NULL);
+	msg_console = osMessageCreate(osMessageQ(msg_console),NULL);
+	osThreadCreate(osThread(UART_t),NULL);
+	osThreadCreate(osThread(Console),NULL);
+	osKernelStart();
+	osThreadTerminate(osThreadGetId());
+	 while(1){
+	 }
 }
