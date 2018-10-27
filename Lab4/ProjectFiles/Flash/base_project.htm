@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Flash\base_project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Flash\base_project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sat Oct 27 18:13:18 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sat Oct 27 18:40:43 2018
 <BR><P>
 <H3>Maximum Stack Usage =        136 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -255,7 +255,7 @@ Function Pointers
  <LI><a href="#[47]">UART5_Handler</a> from startup_tm4c129.o(.text) referenced from startup_tm4c129.o(RESET)
  <LI><a href="#[48]">UART6_Handler</a> from startup_tm4c129.o(.text) referenced from startup_tm4c129.o(RESET)
  <LI><a href="#[49]">UART7_Handler</a> from startup_tm4c129.o(.text) referenced from startup_tm4c129.o(RESET)
- <LI><a href="#[12]">UARTIntHandler_J</a> from exemplotiva.o(.text) referenced from startup_tm4c129.o(RESET)
+ <LI><a href="#[12]">UARTIntHandler</a> from exemplotiva.o(.text) referenced from startup_tm4c129.o(RESET)
  <LI><a href="#[90]">UART_t</a> from exemplotiva.o(.text) referenced from exemplotiva.o(.constdata)
  <LI><a href="#[3a]">UDMAERR_Handler</a> from startup_tm4c129.o(.text) referenced from startup_tm4c129.o(RESET)
  <LI><a href="#[39]">UDMA_Handler</a> from startup_tm4c129.o(.text) referenced from startup_tm4c129.o(RESET)
@@ -489,8 +489,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[12]"></a>UARTIntHandler_J</STRONG> (Thumb, 66 bytes, Stack size 16 bytes, exemplotiva.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = UARTIntHandler_J &rArr; osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
+<P><STRONG><a name="[12]"></a>UARTIntHandler</STRONG> (Thumb, 66 bytes, Stack size 16 bytes, exemplotiva.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = UARTIntHandler &rArr; osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printchar
 <LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailPut
@@ -626,7 +626,7 @@ Global Symbols
 
 <P><STRONG><a name="[b9]"></a>printchar</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, uart.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
-<LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler_J
+<LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler
 </UL>
 
 <P><STRONG><a name="[b8]"></a>UARTprintstring</STRONG> (Thumb, 20 bytes, Stack size 4 bytes, uart.o(.text))
@@ -636,7 +636,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pag_ini_uart
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_t
-<LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler_J
+<LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler
 </UL>
 
 <P><STRONG><a name="[143]"></a>readchar</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, uart.o(.text), UNUSED)
@@ -1687,7 +1687,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sysMailAlloc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler_J
+<BR>[Called By]<UL><LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler
 </UL>
 
 <P><STRONG><a name="[bf]"></a>osMailCreate</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMailCreate))
@@ -1719,7 +1719,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMessagePut
 </UL>
-<BR>[Called By]<UL><LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler_J
+<BR>[Called By]<UL><LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler
 </UL>
 
 <P><STRONG><a name="[c0]"></a>osMessageCreate</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMessageCreate))

@@ -60,7 +60,6 @@ typedef struct{
 *----------------------------------------*/
 osMessageQId msg_console;
 osMessageQDef(msg_console,m_quantidade,msg_generic);
-
 osPoolId poolid_c;
 osPoolDef(pool_c,m_quantidade,msg_generic);
 
@@ -80,7 +79,7 @@ void init_all(){
 /*-----------------------------------------------------------------------------
 *      Funcoes de uso exclusivo do programa
 *------------------------------------------------------------------------------*/
-void UARTIntHandler_J(void){
+void UARTIntHandler(void){
 	char m;
 	UART_read * mailI;
 	while((UART0->FR & (1<<4)) != 0);

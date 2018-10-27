@@ -82,7 +82,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     GPIOC_Handler             ;   2: GPIO Port C
                 DCD     GPIOD_Handler             ;   3: GPIO Port D
                 DCD     GPIOE_Handler             ;   4: GPIO Port E
-                DCD     UARTIntHandler_J          ;   5: UART0 Rx and Tx
+                DCD     UARTIntHandler            ;   5: UART0 Rx and Tx
                 DCD     UART1_Handler             ;   6: UART1 Rx and Tx
                 DCD     SSI0_Handler              ;   7: SSI0 Rx and Tx
                 DCD     I2C0_Handler              ;   8: I2C0 Master and Slave
@@ -199,7 +199,7 @@ __Vectors_Size  EQU     __Vectors_End - __Vectors
 ;*****************************************
 ;	UART0 Handler
 ;*****************************************
-	EXTERN UARTIntHandler_J
+	EXTERN UARTIntHandler
 ;*****************************************
 
 ; Reset Handler
