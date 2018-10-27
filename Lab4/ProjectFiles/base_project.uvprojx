@@ -402,11 +402,6 @@
           <GroupName>Documentation</GroupName>
           <Files>
             <File>
-              <FileName>corres.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\corres.h</FilePath>
-            </File>
-            <File>
               <FileName>Abstract.txt</FileName>
               <FileType>5</FileType>
               <FilePath>.\Abstract.txt</FilePath>
@@ -899,11 +894,6 @@
         <Group>
           <GroupName>Documentation</GroupName>
           <Files>
-            <File>
-              <FileName>corres.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\corres.h</FilePath>
-            </File>
             <File>
               <FileName>Abstract.txt</FileName>
               <FileType>5</FileType>
