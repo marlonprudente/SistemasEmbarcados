@@ -31,6 +31,8 @@
 #include "mic.h"
 #include "accel.h"
 #include "led.h"
+#include "UART.h"
+#include "PWM.h"
 
 #define LED_A      0
 #define LED_B      1

@@ -22,3 +22,5 @@
 .\flash\exemplotiva.o: mic.h
 .\flash\exemplotiva.o: accel.h
 .\flash\exemplotiva.o: led.h
+.\flash\exemplotiva.o: UART.h
+.\flash\exemplotiva.o: PWM.h
