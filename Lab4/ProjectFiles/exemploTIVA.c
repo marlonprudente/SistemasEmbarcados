@@ -31,6 +31,7 @@
 #include "accel.h"
 #include "led.h"
 #include "UART.h"
+#include "PWM.h"
 #include "UART_CONSOLE_F.h"
 
 
@@ -114,6 +115,7 @@ void Console(const void *args){
 		osPoolFree(poolid_c,msg);
 		}
 }osThreadDef(Console,osPriorityNormal,1,0);
+
 void UART_t(const void *args){
 	UART_read *mail=0;
 	//msg_generic *msg_g = 0;

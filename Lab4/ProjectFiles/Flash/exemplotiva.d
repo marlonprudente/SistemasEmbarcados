@@ -22,4 +22,5 @@
 .\flash\exemplotiva.o: accel.h
 .\flash\exemplotiva.o: led.h
 .\flash\exemplotiva.o: UART.h
+.\flash\exemplotiva.o: PWM.h
 .\flash\exemplotiva.o: UART_CONSOLE_F.h
