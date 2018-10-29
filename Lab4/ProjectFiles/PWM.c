@@ -66,13 +66,20 @@ void init_PWM(){
 	MAP_TimerEnable(TIMER3_BASE, TIMER_B);
 }
 
-void ondaQuadrada(uint16_t angle){
+void alterarFrequencia(int frequencia){
 	
+	MAP_TimerPrescaleSet(TIMER3_BASE, TIMER_B, 1);
+	MAP_TimerLoadSet(TIMER3_BASE, TIMER_B, 80000);
+	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, 16000);
+}
+
+void ondaQuadrada(uint16_t angle){
+		MAP_TimerLoadSet(TIMER3_BASE, TIMER_B, g_ui16Period);
 		MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, 12000000/(angle*256));
 }
 
 void ondaSenoidal(uint16_t angle){
-	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, g_ui16perMin*angle/0xFFFF + g_ui16perMin);
+
 }
 
 void ondaTriangular(uint16_t angle){

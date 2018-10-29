@@ -69,6 +69,62 @@ osPoolDef(pool_c,m_quantidade,msg_generic);
  *  Transforming int to string
  *---------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------
+ *  Transforming int to string
+ *---------------------------------------------------------------------------*/
+static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base, uint8_t zeros){
+	static const char* pAscii = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	bool n = false;
+	int pos = 0, d = 0;
+	int64_t tmpValue = value;
+	// the buffer must not be null and at least have a length of 2 to handle one
+	// digit and null-terminator
+	if (pBuf == NULL || len < 2)
+			return;
+	// a valid base cannot be less than 2 or larger than 36
+	// a base value of 2 means binary representation. A value of 1 would mean only zeros
+	// a base larger than 36 can only be used if a larger alphabet were used.
+	if (base < 2 || base > 36)
+			return;
+	if (zeros > len)
+		return;
+	
+	// negative value
+	if (value < 0)
+	{
+			tmpValue = -tmpValue;
+			value    = -value;
+			pBuf[pos++] = '-';
+			n = true;
+	}
+
+	// calculate the required length of the buffer
+	do {
+			pos++;
+			tmpValue /= base;
+	} while(tmpValue > 0);
+
+
+	if (pos > len)
+			// the len parameter is invalid.
+			return;
+
+	if(zeros > pos){
+		pBuf[zeros] = '\0';
+		do{
+			pBuf[d++ + (n ? 1 : 0)] = pAscii[0]; 
+		}
+		while(zeros > d + pos);
+	}
+	else
+		pBuf[pos] = '\0';
+
+	pos += d;
+	do {
+			pBuf[--pos] = pAscii[value % base];
+			value /= base;
+	} while(value > 0);
+}
+/*----------------------------------------------------------------------------
  *    Initializations
  *---------------------------------------------------------------------------*/
 
@@ -116,6 +172,7 @@ void Console(const void *args){
 }osThreadDef(Console,osPriorityNormal,1,0);
 
 void UART_t(const void *args){
+	int teste = 320000;
 	UART_read *mail=0;
 	//msg_generic *msg_g = 0;
 	osEvent evento;
@@ -132,9 +189,15 @@ void UART_t(const void *args){
 						switch(mensagem){
 								case '1':
 									UARTprintstring("Frequencia aumentda\n\r");
+									teste+=1000;
+									alterarFrequencia(teste);
+									//UARTprintstring((char*)teste);
 									break;
 								case '2':
 									UARTprintstring("Frequencia diminuida\n\r");
+									teste-=1000;
+									alterarFrequencia(teste);
+									//UARTprintstring((char*)teste);
 									break;
 								case '3':
 									UARTprintstring("Amplitude aumentda\n\r");
@@ -148,7 +211,7 @@ void UART_t(const void *args){
 									break;
 								case '6':
 									UARTprintstring("Onda Senoidal Selecionada\n\r");
-									ondaSenoidal(180);
+									ondaSenoidal(64000);
 									break;
 								case '7':
 									UARTprintstring("Onda Dente-de-serra Selecionada\n\r");

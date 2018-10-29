@@ -4,6 +4,8 @@
 #define PI 3.14159265359
 
 extern void init_PWM();
+extern void alterarFrequencia(int frequencia);
+extern void alterarAmplitude(uint16_t amplitude);
 extern void ondaQuadrada(uint16_t angulo);
 extern void ondaSenoidal(uint16_t angulo);
 extern void ondaDenteSerra(uint16_t angulo);
