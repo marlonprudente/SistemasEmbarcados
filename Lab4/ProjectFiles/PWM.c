@@ -51,10 +51,10 @@ void init_PWM(){
 	// Sets the load register prescale. As the maximum load value is 16bits (65 535)
 	// and we need 16Mhz x 20 ms = 320 000, we set the prescale to 4, 
 	// and the timer will count 4+1 = 5 times the load register [...]
-	MAP_TimerPrescaleSet(TIMER3_BASE, TIMER_B, 4);
+	MAP_TimerPrescaleSet(TIMER3_BASE, TIMER_B, 1);
 
 	// [...] wich gives 320 000/5 = 64 000 for a 20ms period
-	g_ui16Period = 64000;
+	g_ui16Period = 80000;
 	// The minimum period is 16Mhz x 1ms = 16 000
 	g_ui16perMin = 16000;
 	duty_cycle = g_ui16perMin;
@@ -67,10 +67,17 @@ void init_PWM(){
 }
 
 void alterarFrequencia(int frequencia){
+//	uint32_t loadSet;
 	
-	MAP_TimerPrescaleSet(TIMER3_BASE, TIMER_B, 1);
-	MAP_TimerLoadSet(TIMER3_BASE, TIMER_B, 80000);
-	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, 16000);
+//	if(frequencia > 200)
+//		frequencia = 200;
+//	if(frequencia <= 0)
+//		frequencia = 1;
+	
+	//loadSet = 16000000 * (1/frequencia);
+	
+	MAP_TimerLoadSet(TIMER3_BASE, TIMER_B, 160000);
+	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, 80000);
 }
 
 void ondaQuadrada(uint16_t angle){

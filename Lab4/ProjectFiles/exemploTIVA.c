@@ -172,7 +172,7 @@ void Console(const void *args){
 }osThreadDef(Console,osPriorityNormal,1,0);
 
 void UART_t(const void *args){
-	int teste = 320000;
+	int teste = 1;
 	UART_read *mail=0;
 	//msg_generic *msg_g = 0;
 	osEvent evento;
@@ -189,13 +189,13 @@ void UART_t(const void *args){
 						switch(mensagem){
 								case '1':
 									UARTprintstring("Frequencia aumentda\n\r");
-									teste+=1000;
+									teste+=1;
 									alterarFrequencia(teste);
 									//UARTprintstring((char*)teste);
 									break;
 								case '2':
 									UARTprintstring("Frequencia diminuida\n\r");
-									teste-=1000;
+									teste-=1;
 									alterarFrequencia(teste);
 									//UARTprintstring((char*)teste);
 									break;
