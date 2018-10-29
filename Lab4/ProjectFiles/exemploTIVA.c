@@ -148,15 +148,15 @@ void UART_t(const void *args){
 									break;
 								case '6':
 									UARTprintstring("Onda Senoidal Selecionada\n\r");
-									ondaSenoidal(90);
+									ondaSenoidal(180);
 									break;
 								case '7':
 									UARTprintstring("Onda Dente-de-serra Selecionada\n\r");
-									ondaDenteSerra(90);
+									ondaDenteSerra(270);
 									break;
 								case '8':
 									UARTprintstring("Onda Triangular Selecionada\n\r");
-									ondaTriangular(90);
+									ondaTriangular(360);
 									break;
 								default:
 									UARTprintstring("Entrada invalida\n\r");

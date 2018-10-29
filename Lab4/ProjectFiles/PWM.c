@@ -68,17 +68,17 @@ void init_PWM(){
 
 void ondaQuadrada(uint16_t angle){
 	
-		MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, g_ui16perMin*angle/0xFFFF + g_ui16perMin);
+		MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, 12000000/(angle*256));
 }
 
 void ondaSenoidal(uint16_t angle){
-	
+	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, g_ui16perMin*angle/0xFFFF + g_ui16perMin);
 }
 
 void ondaTriangular(uint16_t angle){
-	
+	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, g_ui16perMin*angle/0xFFFF + g_ui16perMin);
 }
 
 void ondaDenteSerra(uint16_t angle){
-	
+	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, g_ui16perMin*angle/0xFFFF + g_ui16perMin);
 }
