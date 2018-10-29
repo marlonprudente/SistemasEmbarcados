@@ -75,7 +75,7 @@ osPoolDef(pool_c,m_quantidade,msg_generic);
 void init_all(){
 	init_UART();
 	cfaf128x128x16Init();
-
+	init_PWM();
 }	
 /*-----------------------------------------------------------------------------
 *      Funcoes de uso exclusivo do programa
@@ -144,15 +144,19 @@ void UART_t(const void *args){
 									break;
 								case '5':
 									UARTprintstring("Onda Quadrada Selecionada\n\r");
+									ondaQuadrada(90);
 									break;
 								case '6':
 									UARTprintstring("Onda Senoidal Selecionada\n\r");
+									ondaSenoidal(90);
 									break;
 								case '7':
 									UARTprintstring("Onda Dente-de-serra Selecionada\n\r");
+									ondaDenteSerra(90);
 									break;
 								case '8':
 									UARTprintstring("Onda Triangular Selecionada\n\r");
+									ondaTriangular(90);
 									break;
 								default:
 									UARTprintstring("Entrada invalida\n\r");
@@ -176,6 +180,8 @@ void UART_t(const void *args){
 	osThreadCreate(osThread(Console),NULL);
 	osKernelStart();
 	osThreadTerminate(osThreadGetId());
+	 
+	 ondaQuadrada(90);
 	 while(1){
 	 }
 }

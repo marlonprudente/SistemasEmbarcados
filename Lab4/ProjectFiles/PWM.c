@@ -70,3 +70,15 @@ void ondaQuadrada(uint16_t angle){
 	
 		MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, g_ui16perMin*angle/0xFFFF + g_ui16perMin);
 }
+
+void ondaSenoidal(uint16_t angle){
+	
+}
+
+void ondaTriangular(uint16_t angle){
+	
+}
+
+void ondaDenteSerra(uint16_t angle){
+	
+}
