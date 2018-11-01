@@ -64,8 +64,7 @@ static uint16_t g_ui16Period, g_ui16perMin;
  * @param  angle is the desired angle, where 0x0000 is the 1ms pulse (minimun angle) 
  *				and 0xFFFF is the 2ms pulse (maximum angle) 
  *******************************************************************************/
-void
-servo_write(uint16_t angle){
+void servo_write(uint16_t angle){
 	// Sets the match register of the PWM timer based on the load register, 
 	// modifying the pulse length relative to the wave period
 	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, g_ui16perMin*angle/0xFFFF + g_ui16perMin);
