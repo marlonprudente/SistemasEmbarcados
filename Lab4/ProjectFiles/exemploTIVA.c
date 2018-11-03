@@ -130,8 +130,8 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 
 void init_all(){
 	init_UART();
-	cfaf128x128x16Init();
 	init_PWM();
+	cfaf128x128x16Init();
 }	
 
 // Senoidal
@@ -666,69 +666,126 @@ void Console(const void *args){
 }osThreadDef(Console,osPriorityNormal,1,0);
 
 void UART_t(const void *args){
-	static uint16_t count = 0;
-	static uint8_t amplitude = 100;
-	int teste = 1;
-	UART_read *mail=0;
-	//msg_generic *msg_g = 0;
-	osEvent evento;
-	//uint8_t pag = 0;
-	char mensagem = NULL;
-	while(1){
-		evento=osMailGet(mid_UART,osWaitForever);
-		if(evento.status==osEventMail){
-			mail=evento.value.p;
-			if(mail){
-				mensagem = mail -> msg_UART;
-				osMailFree(mid_UART,mail);
-				
-						switch(mensagem){
-								case '1':
-									UARTprintstring("Frequencia aumentda\n\r");
-									while(1){																							// Aplica duty-cycle para sinal
-										pwmSetDuty(0xFFFE - ((float)square[count] * (amplitude/100.0)));
-									 // Itera sobre a tabela com os valores para a geração de sinais
-										count += 4;
-										if(count > 1023)
-											count = 0;
-									}
-									break;
-								case '2':
-									UARTprintstring("Frequencia diminuida\n\r");
-									Duty40();
-									break;
-								case '3':
-									UARTprintstring("Amplitude aumentda\n\r");
-									Duty60();
-									break;
-								case '4':
-									UARTprintstring("Amplitude diminuida\n\r");
-									Duty80();
-									break;
-								case '5':
-									UARTprintstring("Onda Quadrada Selecionada\n\r");
-									ondaQuadrada(90);
-									break;
-								case '6':
-									UARTprintstring("Onda Senoidal Selecionada\n\r");
-									//ondaSenoidal(64000);
-									break;
-								case '7':
-									UARTprintstring("Onda Dente-de-serra Selecionada\n\r");
-									ondaDenteSerra(270);
-									break;
-								case '8':
-									UARTprintstring("Onda Triangular Selecionada\n\r");
-									ondaTriangular(360);
-									break;
-								default:
-									UARTprintstring("Entrada invalida\n\r");
-									break;
-							}
+static uint16_t count = 0;
+static uint8_t amplitude = 100;
+int teste = 1;
+UART_read *mail=0;
+//msg_generic *msg_g = 0;
+osEvent evento;
+//uint8_t pag = 0;
+char mensagem = NULL;
+while(1){
+	evento=osMailGet(mid_UART,osWaitForever);
+	if(evento.status==osEventMail){
+		mail=evento.value.p;
+		if(mail){
+			mensagem = mail -> msg_UART;
+			osMailFree(mid_UART,mail);
+				switch(mensagem){
+					case '1':
+						UARTprintstring("Frequencia aumentda\n\r");
+						while(1){																							// Aplica duty-cycle para sinal
+							pwmSetDuty(0xFFFE - ((float)square[count] * (amplitude/100.0)));
+						 // Itera sobre a tabela com os valores para a geração de sinais
+							count += 4;
+							if(count > 1023)
+								count = 0;
 						}
-					}
+						break;
+					case '2':
+						UARTprintstring("Frequencia diminuida\n\r");
+						Duty40();
+						break;
+					case '3':
+						UARTprintstring("Amplitude aumentda\n\r");
+						Duty60();
+						break;
+					case '4':
+						UARTprintstring("Amplitude diminuida\n\r");
+						Duty80();
+						break;
+					case '5':
+						UARTprintstring("Onda Quadrada Selecionada\n\r");
+					//inserir o sinal para a thread
+						break;
+					case '6':
+						UARTprintstring("Onda Senoidal Selecionada\n\r");
+					//inserir o sinal para a thread
+						break;
+					case '7':
+						UARTprintstring("Onda Dente-de-serra Selecionada\n\r");
+					//inserir o sinal para a thread
+						break;
+					case '8':
+						UARTprintstring("Onda Triangular Selecionada\n\r");
+					//inserir o sinal para a thread
+						break;
+					default:
+						UARTprintstring("Entrada invalida\n\r");
+						break;
 				}
-			}osThreadDef(UART_t,osPriorityAboveNormal,1,0);
+			}
+		}
+	}
+}osThreadDef(UART_t,osPriorityAboveNormal,1,0);
+/*-----------------------------------------------------------------------------
+*      Threads de PWM
+*------------------------------------------------------------------------------*/
+void PWM_sen(const void *args){
+	osEvent evt;
+	osStatus status;
+	uint8_t onda = 0;
+	while(1){
+		evt = osSignalWait(0x0001, osWaitForever);
+		if (evt.status == osEventSignal)  
+		{
+			ondaSenoidal(90,90);
+		}
+	}
+	
+}osThreadDef(PWM_sen,osPriorityAboveNormal,1,0);
+
+void PWM_quad(const void *args){
+	osEvent evt;
+	osStatus status;
+	uint8_t onda = 0;
+	while(1){
+		evt = osSignalWait(0x0001, osWaitForever);
+		if (evt.status == osEventSignal)  
+		{
+			ondaQuadrada(90);
+		}
+	}
+	
+}osThreadDef(PWM_quad,osPriorityAboveNormal,1,0);
+
+void PWM_Tri(const void *args){
+	osEvent evt;
+	osStatus status;
+	uint8_t onda = 0;
+	while(1){
+		evt = osSignalWait(0x0001, osWaitForever);
+		if (evt.status == osEventSignal)  
+		{
+			ondaTriangular(360);
+		}
+	}
+	
+}osThreadDef(PWM_Tri,osPriorityAboveNormal,1,0);
+
+void PWM_den(const void *args){
+	osEvent evt;
+	osStatus status;
+	uint8_t onda = 0;
+	while(1){
+		evt = osSignalWait(0x0001, osWaitForever);
+		if (evt.status == osEventSignal)  
+		{
+			ondaDenteSerra(270);
+		}
+	}
+	
+}osThreadDef(PWM_den,osPriorityAboveNormal,1,0);
 /*----------------------------------------------------------------------------
  *      Main
 *---------------------------------------------------------------------------*/
@@ -742,6 +799,10 @@ void UART_t(const void *args){
 	
 	//poolid_c = osPoolCreate(osPool(pool_c));
 	osThreadCreate(osThread(UART_t),NULL);
+  osThreadCreate(osThread(PWM_sen),NULL);
+  osThreadCreate(osThread(PWM_quad),NULL);
+  osThreadCreate(osThread(PWM_Tri),NULL);
+  osThreadCreate(osThread(PWM_den),NULL);
 	osThreadCreate(osThread(Console),NULL);
 	osKernelStart();
 	osThreadTerminate(osThreadGetId());

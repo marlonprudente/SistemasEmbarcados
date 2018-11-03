@@ -19,7 +19,7 @@ SysCtlClockFreqSet( 				\
 #endif
 
 static uint32_t g_ui32SysClock;
-static uint16_t g_ui16Period, g_ui16perMin;
+static uint32_t g_ui16Period, g_ui16perMin;
 
 void init_PWM(){
 		uint32_t duty_cycle;	
