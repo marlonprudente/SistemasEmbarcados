@@ -218,31 +218,36 @@ while(1){
 						break;
 					case '5':
 						UARTprintstring("Onda Quadrada Selecionada\n\r");
-						//onda_tipo = 1;
-						//osSignalSet(id_ondas, 0x0007);
-						pwmSetDuty(0xFFFE - ((float)square[count] * (amplitude/100.0)));
+						onda_tipo = 1;
+						osSignalSet(id_ondas, 0x0007);
+//					while(1){
+//						pwmSetDuty(0xFFFE - ((float)square[count] * (amplitude/100.0)));
+//						if(count>1023){
+//							count = 0;
+//						}
+//					}
 						break;
 					case '6':
 						UARTprintstring("Onda Senoidal Selecionada\n\r");	
-						//onda_tipo = 2;
-						//osSignalSet(id_ondas, 0x0007);					
-						pwmSetDuty(0xFFFE - ((float)sine[count] * (amplitude/100.0)));
+						onda_tipo = 2;
+						osSignalSet(id_ondas, 0x0007);					
+						//pwmSetDuty(0xFFFE - ((float)sine[count] * (amplitude/100.0)));
 						// Itera sobre a tabela com os valores para a geração de sinais
 						//osSignalSet(id_PWM_sen, 0x0003);						
 						break;
 					case '7':						
 						UARTprintstring("Onda Dente-de-serra Selecionada\n\r");	
-						//onda_tipo = 3;
-						//osSignalSet(id_ondas, 0x0007);					
-						pwmSetDuty(0xFFFE - ((float)sawtooth[count] * (amplitude/100.0)));
+						onda_tipo = 3;
+						osSignalSet(id_ondas, 0x0007);					
+						//pwmSetDuty(0xFFFE - ((float)sawtooth[count] * (amplitude/100.0)));
 						// Itera sobre a tabela com os valores para a geração de sinais
 						//osSignalSet(id_PWM_den, 0x0004);						
 						break;
 					case '8':
 						UARTprintstring("Onda Triangular Selecionada\n\r");	
-						//onda_tipo = 4;
-						//osSignalSet(id_ondas, 0x0007);					
-						pwmSetDuty(0xFFFE - ((float)triangular[count] * (amplitude/100.0)));
+						onda_tipo = 4;
+						osSignalSet(id_ondas, 0x0007);					
+						//pwmSetDuty(0xFFFE - ((float)triangular[count] * (amplitude/100.0)));
 													 // Itera sobre a tabela com os valores para a geração de sinais
 
 						//osSignalSet(id_PWM_tri, 0x0005);
@@ -283,13 +288,13 @@ void loop_ondas(const void *args){
 	uint16_t count = 0;
 	while(1){
 			if(onda_tipo == 1)
-				pwmSetDuty(0xFFFE - ((float)square[count]));
+				pwmSetDuty(0xFFFE - ((float)square[count] * 1.0));
 			if(onda_tipo == 2)
-				pwmSetDuty(0xFFFE - ((float)sine[count]));
+				pwmSetDuty(0xFFFE - ((float)sine[count] * 1.0));
 			if(onda_tipo == 3)
-				pwmSetDuty(0xFFFE - ((float)sawtooth[count]));
+				pwmSetDuty(0xFFFE - ((float)sawtooth[count] * 1.0));
 			if(onda_tipo == 4)
-				pwmSetDuty(0xFFFE - ((float)triangular[count]));
+				pwmSetDuty(0xFFFE - ((float)triangular[count] * 1.0));
 			
 		count+= 4;
 		if(count>1023){
@@ -372,8 +377,8 @@ void PWM_den(const void *args){
   //id_PWM_tri = osThreadCreate(osThread(PWM_tri),NULL);
   //id_PWM_den = osThreadCreate(osThread(PWM_den),NULL);
 	osThreadCreate(osThread(Console),NULL);
-	//id_ondas = osThreadCreate(osThread(ondas_PWM),NULL);
-	//id_loop = osThreadCreate(osThread(loop_ondas),NULL);
+	id_ondas = osThreadCreate(osThread(ondas_PWM),NULL);
+	id_loop = osThreadCreate(osThread(loop_ondas),NULL);
 	osKernelStart();
 	osDelay(osWaitForever);
 }
