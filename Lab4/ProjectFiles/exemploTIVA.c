@@ -41,6 +41,10 @@ osThreadId id_PWM_sen;
 osThreadId id_PWM_quad;
 osThreadId id_PWM_den;
 osThreadId id_PWM_tri;
+osThreadId id_ondas;
+osThreadId id_loop;
+
+uint16_t onda_tipo;
 /*================================
 =========Mail Handler============
 =================================*/
@@ -194,13 +198,11 @@ while(1){
 				switch(mensagem){
 					case '1':
 						UARTprintstring("Frequencia aumentda\n\r");
-						while(1){																							// Aplica duty-cycle para sinal
-							pwmSetDuty(0xFFFE - ((float)square[count] * (amplitude/100.0)));
+						Duty80();
+						//while(1){																							// Aplica duty-cycle para sinal
+							//pwmSetDuty(0xFFFE - ((float)square[count] * (amplitude/100.0)));
 						 // Itera sobre a tabela com os valores para a geração de sinais
-							count += 4;
-							if(count > 1023)
-								count = 0;
-						}
+
 						break;
 					case '2':
 						UARTprintstring("Frequencia diminuida\n\r");
@@ -216,19 +218,35 @@ while(1){
 						break;
 					case '5':
 						UARTprintstring("Onda Quadrada Selecionada\n\r");
-						osSignalSet(id_PWM_quad, 0x0002);
+						//onda_tipo = 1;
+						//osSignalSet(id_ondas, 0x0007);
+						pwmSetDuty(0xFFFE - ((float)square[count] * (amplitude/100.0)));
 						break;
 					case '6':
-						UARTprintstring("Onda Senoidal Selecionada\n\r");
-						osSignalSet(id_PWM_sen, 0x0003);
+						UARTprintstring("Onda Senoidal Selecionada\n\r");	
+						//onda_tipo = 2;
+						//osSignalSet(id_ondas, 0x0007);					
+						pwmSetDuty(0xFFFE - ((float)sine[count] * (amplitude/100.0)));
+						// Itera sobre a tabela com os valores para a geração de sinais
+						//osSignalSet(id_PWM_sen, 0x0003);						
 						break;
-					case '7':
-						UARTprintstring("Onda Dente-de-serra Selecionada\n\r");
-						osSignalSet(id_PWM_den, 0x0004);
+					case '7':						
+						UARTprintstring("Onda Dente-de-serra Selecionada\n\r");	
+						//onda_tipo = 3;
+						//osSignalSet(id_ondas, 0x0007);					
+						pwmSetDuty(0xFFFE - ((float)sawtooth[count] * (amplitude/100.0)));
+						// Itera sobre a tabela com os valores para a geração de sinais
+						//osSignalSet(id_PWM_den, 0x0004);						
 						break;
 					case '8':
-						UARTprintstring("Onda Triangular Selecionada\n\r");
-						osSignalSet(id_PWM_tri, 0x0005);
+						UARTprintstring("Onda Triangular Selecionada\n\r");	
+						//onda_tipo = 4;
+						//osSignalSet(id_ondas, 0x0007);					
+						pwmSetDuty(0xFFFE - ((float)triangular[count] * (amplitude/100.0)));
+													 // Itera sobre a tabela com os valores para a geração de sinais
+
+						//osSignalSet(id_PWM_tri, 0x0005);
+						
 						break;
 					default:
 						UARTprintstring("Entrada invalida\n\r");
@@ -241,6 +259,46 @@ while(1){
 /*-----------------------------------------------------------------------------
 *      Threads de PWM
 *------------------------------------------------------------------------------*/
+void ondas_PWM(const void *args){
+	osEvent evt;
+	osStatus status;
+	while(1){
+		evt = osSignalWait(0x0007, osWaitForever);
+		if (evt.status == osEventSignal)  
+		{
+			if(onda_tipo == 1)
+				pwmSetDuty(0xFFFE - ((float)square[0])); //Quadrada
+			if(onda_tipo == 2)
+				pwmSetDuty(0xFFFE - ((float)sine[0]));
+			if(onda_tipo == 3)
+				pwmSetDuty(0xFFFE - ((float)sawtooth[0]));
+			if(onda_tipo == 4)
+				pwmSetDuty(0xFFFE - ((float)triangular[0]));
+		}
+		
+	}
+}osThreadDef(ondas_PWM,osPriorityAboveNormal,1,0);
+
+void loop_ondas(const void *args){
+	uint16_t count = 0;
+	while(1){
+			if(onda_tipo == 1)
+				pwmSetDuty(0xFFFE - ((float)square[count]));
+			if(onda_tipo == 2)
+				pwmSetDuty(0xFFFE - ((float)sine[count]));
+			if(onda_tipo == 3)
+				pwmSetDuty(0xFFFE - ((float)sawtooth[count]));
+			if(onda_tipo == 4)
+				pwmSetDuty(0xFFFE - ((float)triangular[count]));
+			
+		count+= 4;
+		if(count>1023){
+			count = 0;
+		}
+		
+	}
+}osThreadDef(loop_ondas,osPriorityAboveNormal,1,0);
+
 void PWM_sen(const void *args){
 	osEvent evt;
 	osStatus status;
@@ -306,14 +364,16 @@ void PWM_den(const void *args){
 	osKernelInitialize();
 	mid_UART= osMailCreate(osMailQ(m_UART), NULL);
 	msg_console = osMessageCreate(osMessageQ(msg_console),NULL);
-	
+	onda_tipo = 0;
 	 	 
-	osThreadCreate(osThread(UART_t),NULL);
-  id_PWM_sen = osThreadCreate(osThread(PWM_sen),NULL);
-  id_PWM_quad = osThreadCreate(osThread(PWM_quad),NULL);
-  id_PWM_tri = osThreadCreate(osThread(PWM_tri),NULL);
-  id_PWM_den = osThreadCreate(osThread(PWM_den),NULL);
+	osThreadCreate(osThread(UART_t),NULL);	 
+  //id_PWM_sen = osThreadCreate(osThread(PWM_sen),NULL);
+  //id_PWM_quad = osThreadCreate(osThread(PWM_quad),NULL);
+  //id_PWM_tri = osThreadCreate(osThread(PWM_tri),NULL);
+  //id_PWM_den = osThreadCreate(osThread(PWM_den),NULL);
 	osThreadCreate(osThread(Console),NULL);
+	//id_ondas = osThreadCreate(osThread(ondas_PWM),NULL);
+	//id_loop = osThreadCreate(osThread(loop_ondas),NULL);
 	osKernelStart();
 	osDelay(osWaitForever);
 }
