@@ -87,8 +87,8 @@ servo_init(){
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOM);
 	
 	// Wait system enabling be ready
-	while(!MAP_SysCtlPeripheralReady(SYSCTL_PERIPH_TIMER3) &
-				!MAP_SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOM));
+		SysCtlDelay(10);
+
 
 	// The used port is PM3, we configure it to use the timer 
 	MAP_GPIOPinConfigure(GPIO_PM3_T3CCP1);
@@ -110,7 +110,7 @@ servo_init(){
 
 	// [...] wich gives 320 000/5 = 64 000 for a 20ms period
 	g_ui16Period = 64000;
-	// The minimum period is 16Mhz x 2ms = 32 000
+	// The minimum period is 16Mhz x 1ms = 16 000
 	g_ui16perMin = 16000;
 	duty_cycle = g_ui16perMin;
 		

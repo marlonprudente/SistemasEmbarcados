@@ -162,7 +162,7 @@ void fibonacci_thread(void const *args){
 				//não pertence	
 			}
 		}
-	}
+	}osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 
 void primo_thread(void const *args){
 	uint32_t aux;
@@ -183,8 +183,27 @@ void primo_thread(void const *args){
 			//não primo
 		}
 	}
-}
+}osThreadDef(primo_thread, osPriorityNormal, 1, 0);
 
+void garra_thread(void const *args){
+	uint16_t angleR = 1000;
+	uint16_t angleX = 16000;
+	uint16_t angleY = 8000;
+	while(1){
+		servo_write(angleR);
+		if(angleR > 100000)
+			{
+				angleR-= 1000;
+			}
+		else if(angleR < 100000)
+		{
+			angleR+= 1000;
+		}
+//	servo_writeRot(angleR);
+//	servo_writePosX(angleX);
+//	servo_writePosX(angleY);
+	}		
+}osThreadDef(garra_thread, osPriorityNormal, 1, 0);
 	
 uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 	uint8_t *max = &r, 
@@ -215,8 +234,9 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
  *---------------------------------------------------------------------------*/
 int main (void) {
 
-  
+  uint32_t angleR = 1000;
 	//Initializing all peripherals
+	osKernelInitialize();
 	init_all();
 	GrContextInit(&sContext, &g_sCfaf128x128x16);
 	
@@ -228,9 +248,13 @@ int main (void) {
 	
 	//Escreve menu lateral:
 	GrStringDraw(&sContext,"Primo:", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-
-  while(1){
-
+	
+	//threads
+	osThreadCreate(osThread(primo_thread), NULL);
+	osThreadCreate(osThread(fibonacci_thread), NULL);
+	osThreadCreate(osThread(garra_thread), NULL);
+	osKernelStart();
+  while(1){	
 			
 	}	
 }
