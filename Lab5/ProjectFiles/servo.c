@@ -110,7 +110,7 @@ servo_init(){
 
 	// [...] wich gives 320 000/5 = 64 000 for a 20ms period
 	g_ui16Period = 64000;
-	// The minimum period is 16Mhz x 1ms = 16 000
+	// The minimum period is 16Mhz x 2ms = 32 000
 	g_ui16perMin = 16000;
 	duty_cycle = g_ui16perMin;
 		
