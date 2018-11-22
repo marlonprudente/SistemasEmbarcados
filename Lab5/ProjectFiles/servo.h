@@ -26,7 +26,12 @@
 //extern void servo_writeRot(uint16_t angle);
 //extern void servo_writePosX(uint16_t angle);
 //extern void servo_writePosY(uint16_t angle);
+extern void servo_writeRot(uint16_t angle);
+extern void servo_writePosX(uint16_t angle);
+extern void servo_writePosY(uint16_t angle);
+
 extern void servo_write(uint16_t angle);
+
 extern void servo_init();
 extern void teste(uint16_t teste);
 extern void teste2(uint16_t num);

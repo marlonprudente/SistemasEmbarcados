@@ -185,26 +185,45 @@ void primo_thread(void const *args){
 	}
 }osThreadDef(primo_thread, osPriorityNormal, 1, 0);
 
-void garra_thread(void const *args){
-	uint16_t angleR = 1000;
-	uint16_t angleX = 16000;
-	uint16_t angleY = 8000;
+void Rotacao_thread(void const *args){
+	uint16_t angle = 16000;
 	while(1){
-		servo_write(angleR);
-		if(angleR > 100000)
-			{
-				angleR-= 1000;
-			}
-		else if(angleR < 100000)
-		{
-			angleR+= 1000;
-		}
-//	servo_writeRot(angleR);
-//	servo_writePosX(angleX);
-//	servo_writePosX(angleY);
-	}		
-}osThreadDef(garra_thread, osPriorityNormal, 1, 0);
-	
+		if (angle == 32000){
+		angle = 16000;
+		servo_writeRot(angle);
+		osDelay(10000);
+		servo_writePosX(angle);
+		osDelay(10000);
+		servo_writePosY(angle);
+		osDelay(10000);
+		}else{
+		
+		angle = 32000;
+		servo_writeRot(angle);
+		osDelay(10000);
+		servo_writePosX(angle);
+		osDelay(10000);
+		servo_writePosX(angle);
+		osDelay(10000);
+	}
+}
+}osThreadDef(Rotacao_thread, osPriorityNormal, 1, 0);
+
+void UpDown_thread(void const *args){
+	uint16_t angle = 16000;
+	while(1){
+		if (angle == 32000){
+		angle = 16000;
+		servo_writeRot(angle);
+		osDelay(10000);
+		}else{
+		osDelay(10000);
+		angle = 32000;
+		servo_writeRot(angle);
+	}
+}
+}osThreadDef(UpDown_thread, osPriorityNormal, 1, 0);
+
 uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 	uint8_t *max = &r, 
 					*mid = &g, 
@@ -248,11 +267,12 @@ int main (void) {
 	
 	//Escreve menu lateral:
 	GrStringDraw(&sContext,"Primo:", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-	
+
 	//threads
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
-	osThreadCreate(osThread(garra_thread), NULL);
+	osThreadCreate(osThread(Rotacao_thread), NULL);
+	osThreadCreate(osThread(UpDown_thread), NULL);
 	osKernelStart();
   while(1){	
 			
