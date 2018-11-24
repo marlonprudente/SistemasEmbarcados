@@ -34,7 +34,12 @@ void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
   SystemCoreClock = __SYSTEM_CLOCK;
 
 }
-
+/*----------------------------------------------------------------------------
+ UART HANDLER
+ *----------------------------------------------------------------------------*/
+extern void UARTIntHandler(void);
+#pragma call_graph_root ="interrupt"
+__weak void UARTIntHandler(void){while(1){}}	
 /**
  * Initialize the system
  *

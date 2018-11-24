@@ -14,7 +14,7 @@
 //
 //*****************************************************************************
 extern void cfaf128x128x16Init(void);
-extern const tDisplay g_sCfaf128x128x16;
+extern tDisplay g_sCfaf128x128x16;
 
 //Colors
 extern const uint16_t blackColor;
