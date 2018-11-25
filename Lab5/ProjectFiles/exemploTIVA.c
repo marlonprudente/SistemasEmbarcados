@@ -10,7 +10,11 @@
  * 		Guilherme Jacichen     - <jacichen@alunos.utfpr.edu.br>
  * 		Jessica Isoton Sampaio - <jessicasampaio@alunos.utfpr.edu.br>
  * 		Mariana Carrião        - <mcarriao@alunos.utfpr.edu.br>
- *===========================================================================*/
+ *===========================================================================
+ * PROJETO FINAL - 2018.2 - Marlon Prudente / Mateus Oliveira
+ *
+ */
+ 
 #include "cmsis_os.h"
 #include "TM4C129.h"                    // Device header
 #include <stdbool.h>
@@ -37,16 +41,9 @@
 
 
 #define m_quantidade 1
-osThreadId id_PWM_sen;
-osThreadId id_PWM_quad;
-osThreadId id_PWM_den;
-osThreadId id_PWM_tri;
-osThreadId id_ondas;
-osThreadId id_loop;
 
 //To print on the screen
 tContext sContext;
-uint16_t onda_tipo;
 uint32_t primo = 0;
 uint32_t fibonacci = 1;
 /*================================
@@ -158,8 +155,7 @@ void fibonacci_thread(void const *args){
 void primo_thread(void const *args){
 	uint32_t aux;
 	int cont = 0;
-	while(1){
-	
+	while(1){	
 		cont = 0;
 		for (aux = 3; aux*aux < primo; aux=aux+2){
 			if(primo%aux == 0)
@@ -235,6 +231,7 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 					(((uint32_t) g) <<  8) | 
 					( (uint32_t) b       );
 }
+
 
 void init_all(){
 	init_UART();
