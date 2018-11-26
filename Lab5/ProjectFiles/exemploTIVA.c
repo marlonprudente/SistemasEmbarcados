@@ -46,6 +46,9 @@
 tContext sContext;
 uint32_t primo = 0;
 uint32_t fibonacci = 1;
+osMutexId mutex_display_id;
+osSemaphoreId escalonador;                         // Semaphore ID
+osSemaphoreDef(escalonador);                       // Semaphore definition
 /*================================
 =========Mail Handler============
 =================================*/
@@ -133,10 +136,14 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
  *---------------------------------------------------------------------------*/
 void fibonacci_thread(void const *args){
 	uint32_t num1 = 0,num2 = 1,num3;
+	int32_t value;
+	char fibonacciChar[32];
 	
 	while(1){
-		num3 = num1 + num2;
-		
+		osDelay(1000);
+		value = osSemaphoreWait(escalonador,500);
+				if(value > 0){
+		num3 = num1 + num2;		
 			while(num3 < fibonacci)
 				{
 						num1 = num2;
@@ -144,33 +151,59 @@ void fibonacci_thread(void const *args){
 						num3 = num1 + num2;
 				}
 			if(num3 == fibonacci){
-				//pertence
+			osMutexWait(mutex_display_id,osWaitForever);
+			intToString(primo,fibonacciChar,30,10,10);
+			GrFlush(&sContext);
+			GrContextForegroundSet(&sContext, ClrWhite);
+			GrContextBackgroundSet(&sContext, ClrBlack);
+			UARTprintstring("Fibonacci encontrado:\r");
+			UARTprintstring(fibonacciChar);
+			GrStringDraw(&sContext,(char*)fibonacciChar, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*1, true);
+			osMutexRelease(mutex_display_id);
 			}
 			else{
 				//não pertence	
 			}
 		}
+				fibonacci++;
+		}
 	}osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 
 void primo_thread(void const *args){
+	int32_t value;
+	char primoChar[32];
 	uint32_t aux;
-	int cont = 0;
-	while(1){	
-		cont = 0;
-		for (aux = 3; aux*aux < primo; aux=aux+2){
-			if(primo%aux == 0)
-				cont++;
-			if(cont>0)
-				break;
+	int div;
+	while(1){
+		osDelay(200);
+		value = osSemaphoreWait(escalonador,60);
+		if(value > 0){		
+		div = 0;
+		for (aux = 1; aux <= primo; aux++){
+			if(primo%aux == 0){
+				div++;
+			}
 		}
-		if (cont == 0){	
-			//primo
+		if (div == 2){
+			osMutexWait(mutex_display_id,osWaitForever);
+			intToString(primo,primoChar,30,10,10);
+			GrFlush(&sContext);
+			GrContextForegroundSet(&sContext, ClrWhite);
+			GrContextBackgroundSet(&sContext, ClrBlack);
+			UARTprintstring("Primo encontrado:\r");
+			UARTprintstring(primoChar);
+			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*8, (sContext.psFont->ui8Height+2)*0, true);
+			osMutexRelease(mutex_display_id);
 		}
 		else{
-			//não primo
+			
 		}
+			
+		}
+		primo =  primo + 1;
+		osSemaphoreRelease(escalonador);
 	}
-}osThreadDef(primo_thread, osPriorityNormal, 1, 0);
+}osThreadDef(primo_thread, osPriorityRealtime, 1, 0);
 
 void Rotacao_thread(void const *args){
 	uint16_t angle = 16000;
@@ -211,28 +244,6 @@ void UpDown_thread(void const *args){
 }
 }osThreadDef(UpDown_thread, osPriorityNormal, 1, 0);
 
-uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
-	uint8_t *max = &r, 
-					*mid = &g, 
-					*min = &b,
-					*aux, 
-					div, num;
-	if (*mid > *max){ aux = max; max = mid; mid = aux; }
-	if (*min > *mid){ aux = mid; mid = min; min = aux; }
-	if (*mid > *max){	aux = max; max = mid; mid = aux; }
-	if(*max != *min){
-		div = *max-*min;
-		num = *mid-*min;
-		*max = 0xFF;
-		*min = 0x00;
-		*mid = (uint8_t) num*0xFF/div;
-	}
-	return 	(((uint32_t) r) << 16) | 
-					(((uint32_t) g) <<  8) | 
-					( (uint32_t) b       );
-}
-
-
 void init_all(){
 	init_UART();
 	servo_init();
@@ -260,6 +271,26 @@ void UARTIntHandler(void){
 /*-----------------------------------------------------------------------------
 *      Threads
 *------------------------------------------------------------------------------*/
+void geracao_pontos(const void *args){
+	int32_t value;
+	char numero[32];
+	uint32_t aux = 0;
+	while(1){
+		osDelay(100);
+		value = osSemaphoreWait(escalonador,70);
+		if(value > 0){			
+			osMutexWait(mutex_display_id,osWaitForever);
+			intToString(aux,numero,30,10,10);
+			GrFlush(&sContext);
+			GrContextForegroundSet(&sContext, ClrWhite);
+			GrContextBackgroundSet(&sContext, ClrBlack);
+			GrStringDraw(&sContext,(char*)numero, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*2, true);
+			osMutexRelease(mutex_display_id);
+		}
+		aux++;
+		osSemaphoreRelease(escalonador);
+	}
+}osThreadDef(geracao_pontos,osPriorityLow,1,0);
 
 void Console(const void *args){
 	bool ini_uart = true;
@@ -273,7 +304,7 @@ void Console(const void *args){
 		evt = osMessageGet(msg_console,osWaitForever);
 		osPoolFree(poolid_c,msg);
 		}
-}osThreadDef(Console,osPriorityNormal,1,0);
+}osThreadDef(Console,osPriorityHigh,1,0);
 
 void UART_t(const void *args){
 static uint16_t count = 0;
@@ -315,10 +346,7 @@ while(1){
 			}
 		}
 	}
-}osThreadDef(UART_t,osPriorityAboveNormal,1,0);
-/*-----------------------------------------------------------------------------
-*      Threads de PWM
-*------------------------------------------------------------------------------*/
+}osThreadDef(UART_t,osPriorityHigh,1,0);
 
 /*----------------------------------------------------------------------------
  *      Main
@@ -330,6 +358,7 @@ while(1){
 	osKernelInitialize();
 	mid_UART= osMailCreate(osMailQ(m_UART), NULL);
 	msg_console = osMessageCreate(osMessageQ(msg_console),NULL);
+	escalonador = osSemaphoreCreate(osSemaphore(escalonador), 1);
 	GrContextInit(&sContext, &g_sCfaf128x128x16);
 	
 	GrFlush(&sContext);
@@ -339,13 +368,15 @@ while(1){
 	GrContextBackgroundSet(&sContext, ClrBlack);
 	 //Escreve menu lateral:
 	GrStringDraw(&sContext,"Primo:", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-	 	 
+	GrStringDraw(&sContext,"Fibonacci:", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
+	GrStringDraw(&sContext,"G.Pontos:", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
 	osThreadCreate(osThread(UART_t),NULL);
 	osThreadCreate(osThread(Console),NULL);
-	 osThreadCreate(osThread(primo_thread), NULL);
+	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
 	osThreadCreate(osThread(Rotacao_thread), NULL);
 	osThreadCreate(osThread(UpDown_thread), NULL);
+	osThreadCreate(osThread(geracao_pontos), NULL);
 	osKernelStart();
 	osDelay(osWaitForever);
 }
