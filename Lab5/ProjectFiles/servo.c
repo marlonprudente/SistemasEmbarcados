@@ -10,7 +10,7 @@
 // All rights reserved. 
 // Software License Agreement
 //...............................................................................
-
+#include "cmsis_os.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include "inc/hw_memmap.h"
@@ -57,7 +57,7 @@ SysCtlClockFreqSet( 				\
 // |<----------------------- 20 ms ---------------------->|
 
 static uint32_t g_ui32SysClock;
-static uint16_t g_ui16Period, g_ui16perMin;
+static uint16_t g_ui16Period, g_ui16perMin = 16000;
 
 /*******************************************************************************
  * @brief Modifies the value of the duty cycle of the Servo Motor's PWM.
@@ -65,7 +65,8 @@ static uint16_t g_ui16Period, g_ui16perMin;
  *				and 0xFFFF is the 2ms pulse (maximum angle) 
  *******************************************************************************/
 void servo_writeRot(uint16_t angle){
-	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, angle);
+	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B,angle);
+	//g_ui16perMin*angle/0xFFFF + g_ui16perMin
 }
 void servo_writePosX(uint16_t angle){
 	MAP_TimerMatchSet(TIMER4_BASE, TIMER_B, angle);
@@ -80,16 +81,16 @@ void servo_writePosY(uint16_t angle){
 void 
 servo_init(){
 	uint32_t duty_cycle;	
-	
+	uint16_t inicialY, inicialX, inicialR;
 	// Configure/Get Clock
 	g_ui32SysClock = __SysCtlClockGet();
 	
 	// Enabling system's peripherals (timer and gpio)
-	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER3);
-	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOM);
-	
+	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER3);	
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER4);
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER2);
+	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOM);
+
 	// Wait system enabling be ready
 		SysCtlDelay(10);
 	
@@ -136,7 +137,7 @@ servo_init(){
 	// [...] wich gives 320 000/5 = 64 000 for a 20ms period
 	g_ui16Period = 64000;
 	// The minimum period is 16Mhz x 1ms = 16 000
-	g_ui16perMin = 8000;
+	g_ui16perMin = 16000;
 	duty_cycle = g_ui16perMin;
 		
 	// Sets the load (wave period), the match (pulse length) registers
@@ -148,4 +149,13 @@ servo_init(){
 	MAP_TimerEnable(TIMER3_BASE, TIMER_B);
 	MAP_TimerEnable(TIMER4_BASE, TIMER_B);
 	MAP_TimerEnable(TIMER2_BASE, TIMER_B);
+	inicialY = 1000;
+	inicialX = 5000;
+	inicialR = 20000;
+	servo_writePosY(inicialY);
+	osDelay(5000);
+	servo_writePosX(inicialX);
+	osDelay(5000);
+	servo_writeRot(inicialR);
+	osDelay(5000);
 }
