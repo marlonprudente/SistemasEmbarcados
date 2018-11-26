@@ -274,7 +274,7 @@ void Console(const void *args){
 }osThreadDef(Console,osPriorityNormal,1,0);
 
 void UART_t(const void *args){
-static uint16_t count = 0;
+static uint16_t count = 100;
 static uint8_t amplitude = 100;
 int teste = 1;
 UART_read *mail=0;
@@ -298,7 +298,7 @@ while(1){
 						UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
 						//servo_writeRot(32000);
 						//servo_writePosX(1000);
-					servo_writePosY(3000);
+					servo_writePosY(5000);
 					osDelay(5000);
 						break;
 					case '3':
@@ -311,12 +311,14 @@ while(1){
 						break;
 					case '5':
 						UARTprintstring("5 - PARANDO ANDAMENTO DO DESENHO...\n\r");
-						servo_writeRot(32000);
+						servo_writeRot(20000+ count);
+						count +=100;
 						break;
 					case '6':
 						UARTprintstring("6 - DESENHANDO...\n\r");		
-						servo_writeRot(16000);					
-						break;
+						servo_writeRot(20000 - count);					
+						count -=100;
+					break;
 					default:
 						UARTprintstring("Entrada invalida\n\r");
 						break;

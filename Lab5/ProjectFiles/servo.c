@@ -66,7 +66,7 @@ static uint16_t g_ui16Period, g_ui16perMin = 16000;
  *******************************************************************************/
 void servo_writeRot(uint16_t angle){
 	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B,angle);
-	
+	//g_ui16perMin*angle/0xFFFF + g_ui16perMin
 }
 void servo_writePosX(uint16_t angle){
 	MAP_TimerMatchSet(TIMER4_BASE, TIMER_B, angle);
@@ -86,11 +86,11 @@ servo_init(){
 	g_ui32SysClock = __SysCtlClockGet();
 	
 	// Enabling system's peripherals (timer and gpio)
-	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER3);
-	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOM);
-	
+	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER3);	
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER4);
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER2);
+	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOM);
+
 	// Wait system enabling be ready
 		SysCtlDelay(10);
 	
@@ -137,7 +137,7 @@ servo_init(){
 	// [...] wich gives 320 000/5 = 64 000 for a 20ms period
 	g_ui16Period = 64000;
 	// The minimum period is 16Mhz x 1ms = 16 000
-	g_ui16perMin = 8000;
+	g_ui16perMin = 16000;
 	duty_cycle = g_ui16perMin;
 		
 	// Sets the load (wave period), the match (pulse length) registers
