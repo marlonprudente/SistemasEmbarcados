@@ -274,9 +274,9 @@ void Console(const void *args){
 }osThreadDef(Console,osPriorityNormal,1,0);
 
 void UART_t(const void *args){
-static uint16_t count = 100;
+static uint16_t count = 0;
 static uint8_t amplitude = 100;
-int teste = 1;
+int teste = 1, i, auxR = 0, auxX = 0;
 UART_read *mail=0;
 osEvent evento;
 char mensagem = NULL;
@@ -290,35 +290,46 @@ while(1){
 				switch(mensagem){
 					case '1':
 						UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r");
-						servo_writePosY(1000);
-						//servo_writePosX(10000);
-						//servo_writeRot(16000);
-						break;
+						
+
+					
+					servo_writePosX(7000);
+					servo_writeRot(25000);
+					osDelay(10000);
+					servo_writePosX(7000);
+					servo_writeRot(21500);
+					osDelay(10000);
+					servo_writeRot(21500);
+					servo_writePosX(7000);
+					servo_writePosY(7000);
+					osDelay(10000);	
+					servo_writePosX(15000);
+					servo_writeRot(20000);
+					osDelay(10000);
+					servo_writePosX(20000);
+					servo_writeRot(25000);
+					osDelay(10000);
+					break;
 					case '2':
-						UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
-						//servo_writeRot(32000);
-						//servo_writePosX(1000);
-					servo_writePosY(5000);
-					osDelay(5000);
-						break;
+					UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
+					break;
 					case '3':
 						UARTprintstring("3 - CIRCULO SELECIONADO (6 - p/ desenhar)\n\r");
-						servo_writePosX(10000);
+						
 						break;
 					case '4':
 						UARTprintstring("4 - BANDEIRA SELECIONADO (6 - p/ desenhar)\n\r");
-						servo_writePosX(1000);
+						
 						break;
 					case '5':
 						UARTprintstring("5 - PARANDO ANDAMENTO DO DESENHO...\n\r");
-						servo_writeRot(20000+ count);
-						count +=100;
+						servo_writeRot(18000);
+					
 						break;
 					case '6':
 						UARTprintstring("6 - DESENHANDO...\n\r");		
-						servo_writeRot(20000 - count);					
-						count -=100;
-					break;
+						servo_writePosX(7500);					
+						break;
 					default:
 						UARTprintstring("Entrada invalida\n\r");
 						break;

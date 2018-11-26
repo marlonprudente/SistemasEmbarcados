@@ -149,13 +149,18 @@ servo_init(){
 	MAP_TimerEnable(TIMER3_BASE, TIMER_B);
 	MAP_TimerEnable(TIMER4_BASE, TIMER_B);
 	MAP_TimerEnable(TIMER2_BASE, TIMER_B);
-	inicialY = 1000;
-	inicialX = 5000;
-	inicialR = 20000;
-	servo_writePosY(inicialY);
+	inicialY = 7000;
+	inicialX = 20000;
+	inicialR = 28000;
+	servo_writePosY(1500);
+	osDelay(5000);
+	servo_writePosX(5000);
+	osDelay(5000);
+	
+	servo_writeRot(inicialR);
 	osDelay(5000);
 	servo_writePosX(inicialX);
 	osDelay(5000);
-	servo_writeRot(inicialR);
+	servo_writePosY(inicialY);
 	osDelay(5000);
 }
