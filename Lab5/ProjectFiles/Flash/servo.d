@@ -1,6 +1,8 @@
 .\flash\servo.o: servo.c
-.\flash\servo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\flash\servo.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\RTOS\RTX\INC\cmsis_os.h
 .\flash\servo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\flash\servo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\flash\servo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\flash\servo.o: ..\inc/hw_memmap.h
 .\flash\servo.o: ..\driverlib/pin_map.h
 .\flash\servo.o: ..\driverlib/gpio.h

@@ -10,7 +10,7 @@
 // All rights reserved. 
 // Software License Agreement
 //...............................................................................
-
+#include "cmsis_os.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include "inc/hw_memmap.h"
@@ -80,7 +80,7 @@ void servo_writePosY(uint16_t angle){
 void 
 servo_init(){
 	uint32_t duty_cycle;	
-	
+	uint16_t inicialY, inicialX, inicialR;
 	// Configure/Get Clock
 	g_ui32SysClock = __SysCtlClockGet();
 	
@@ -148,4 +148,13 @@ servo_init(){
 	MAP_TimerEnable(TIMER3_BASE, TIMER_B);
 	MAP_TimerEnable(TIMER4_BASE, TIMER_B);
 	MAP_TimerEnable(TIMER2_BASE, TIMER_B);
+	inicialY = 5000;
+	inicialX = 1000;
+	inicialR = 24000;
+	servo_writePosY(inicialY);
+	osDelay(10000);
+	servo_writePosX(inicialX);
+	osDelay(10000);
+	servo_writeRot(inicialR);
+	osDelay(10000);
 }

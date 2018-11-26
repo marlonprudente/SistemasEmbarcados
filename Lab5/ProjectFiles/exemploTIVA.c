@@ -140,7 +140,15 @@ static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, 
 void init_all(){
 	cfaf128x128x16Init();
 	servo_init();
-	
+}
+void posicao_inicial()
+{
+	servo_writePosY(5000);
+	osDelay(10000);
+	servo_writePosX(1000);
+	osDelay(10000);
+	servo_writeRot(24000);
+	osDelay(10000);
 }
 
 void fibonacci_thread(void const *args){
@@ -188,40 +196,32 @@ void primo_thread(void const *args){
 void Rotacao_thread(void const *args){
 	uint16_t angle = 16000;
 	while(1){
-		if (angle == 32000){
-		angle = 16000;
-		servo_writeRot(angle);
-		osDelay(10000);
-		servo_writePosX(angle);
-		osDelay(10000);
-		servo_writePosY(angle);
-		osDelay(10000);
-		}else{
+//		angle = 16000;
+//		servo_writeRot(angle);
 		
-		angle = 32000;
-		servo_writeRot(angle);
-		osDelay(10000);
-		servo_writePosX(angle);
-		osDelay(10000);
-		servo_writePosX(angle);
-		osDelay(10000);
 	}
-}
 }osThreadDef(Rotacao_thread, osPriorityNormal, 1, 0);
 
 void UpDown_thread(void const *args){
-	uint16_t angle = 16000;
+	uint16_t angleX=8000, angleY, angleR = 24000;
 	while(1){
-		if (angle == 32000){
-		angle = 16000;
-		servo_writeRot(angle);
-		osDelay(10000);
-		}else{
-		osDelay(10000);
-		angle = 32000;
-		servo_writeRot(angle);
+			servo_writeRot(angleR);
+			servo_writePosX(angleX);
+angleX-=140;
+		angleR+=60;
+//		servo_writeRot(21000);
+//		osDelay(10000);
+//		servo_writePosX(16000);
+//		osDelay(10000);
+//		servo_writePosY(8000);
+//		osDelay(10000);
+//		servo_writeRot(27000);
+//		osDelay(10000);
+//		servo_writePosX(1000);
+//		osDelay(10000);
+//		servo_writePosY(8000);
+//		osDelay(10000);
 	}
-}
 }osThreadDef(UpDown_thread, osPriorityNormal, 1, 0);
 
 uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){

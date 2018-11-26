@@ -58,11 +58,15 @@ C:\Users\User\Desktop\SistemasEmbarcados\Lab5\ProjectFiles\joy.h(20): warning:  
   extern bool joy_read_center();
 C:\Users\User\Desktop\SistemasEmbarcados\Lab5\ProjectFiles\mic.h(23): warning:  #1-D: last line of file ends without a newline
   #endif //__MIC_H__
+C:\Users\User\Desktop\SistemasEmbarcados\Lab5\ProjectFiles\exemploTIVA.c(197): warning:  #177-D: variable "angle"  was declared but never referenced
+        uint16_t angle = 16000;
+C:\Users\User\Desktop\SistemasEmbarcados\Lab5\ProjectFiles\exemploTIVA.c(206): warning:  #177-D: variable "angleY"  was declared but never referenced
+        uint16_t angleX=8000, angleY, angleR = 24000;
 C:\Users\User\Desktop\SistemasEmbarcados\Lab5\ProjectFiles\exemploTIVA.c(256): warning:  #177-D: variable "angleR"  was declared but never referenced
     uint32_t angleR = 1000;
 C:\Users\User\Desktop\SistemasEmbarcados\Lab5\ProjectFiles\exemploTIVA.c(106): warning:  #177-D: function "floatToString"  was declared but never referenced
   static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, uint8_t zeros, uint8_t precision){
-exemploTIVA.c: 17 warnings, 0 errors
+exemploTIVA.c: 19 warnings, 0 errors
 compiling buzzer.c...
 C:\Users\User\Desktop\SistemasEmbarcados\Lab5\ProjectFiles\buzzer.h(18): warning:  #1295-D: Deprecated declaration buzzer_init - give arg types
   extern void buzzer_init();
@@ -166,8 +170,8 @@ compiling RTX_Conf_CM.c...
 assembling startup_TM4C129.s...
 compiling system_TM4C129.c...
 linking...
-Program Size: Code=11652 RO-data=2868 RW-data=88 ZI-data=9880  
-".\Flash\base_project.axf" - 0 Error(s), 56 Warning(s).
+Program Size: Code=11644 RO-data=2868 RW-data=88 ZI-data=9880  
+".\Flash\base_project.axf" - 0 Error(s), 58 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -198,25 +202,25 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.1.2
 
    * Component: ARM::CMSIS:RTOS:Keil RTX:4.81.1
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
-      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
-      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM4.lib
       Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
       Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
-      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM4.lib
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
 
    * Component: Keil::Device:Startup:1.0.0
-      Source file:   Device\Source\ARM\startup_TM4C129.s
-      Source file:   Device\Source\system_TM4C129.c
       Include file:  Device\Include\TM4C129\TM4C129.h
-Build Time Elapsed:  00:00:06
+      Source file:   Device\Source\system_TM4C129.c
+      Source file:   Device\Source\ARM\startup_TM4C129.s
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
