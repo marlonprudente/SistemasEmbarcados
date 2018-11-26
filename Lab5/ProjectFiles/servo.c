@@ -57,7 +57,7 @@ SysCtlClockFreqSet( 				\
 // |<----------------------- 20 ms ---------------------->|
 
 static uint32_t g_ui32SysClock;
-static uint16_t g_ui16Period, g_ui16perMin;
+static uint16_t g_ui16Period, g_ui16perMin = 16000;
 
 /*******************************************************************************
  * @brief Modifies the value of the duty cycle of the Servo Motor's PWM.
@@ -65,7 +65,8 @@ static uint16_t g_ui16Period, g_ui16perMin;
  *				and 0xFFFF is the 2ms pulse (maximum angle) 
  *******************************************************************************/
 void servo_writeRot(uint16_t angle){
-	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B, angle);
+	MAP_TimerMatchSet(TIMER3_BASE, TIMER_B,angle);
+	
 }
 void servo_writePosX(uint16_t angle){
 	MAP_TimerMatchSet(TIMER4_BASE, TIMER_B, angle);
@@ -148,13 +149,13 @@ servo_init(){
 	MAP_TimerEnable(TIMER3_BASE, TIMER_B);
 	MAP_TimerEnable(TIMER4_BASE, TIMER_B);
 	MAP_TimerEnable(TIMER2_BASE, TIMER_B);
-	inicialY = 5000;
-	inicialX = 1000;
-	inicialR = 24000;
+	inicialY = 1000;
+	inicialX = 5000;
+	inicialR = 20000;
 	servo_writePosY(inicialY);
-	osDelay(10000);
+	osDelay(5000);
 	servo_writePosX(inicialX);
-	osDelay(10000);
+	osDelay(5000);
 	servo_writeRot(inicialR);
-	osDelay(10000);
+	osDelay(5000);
 }

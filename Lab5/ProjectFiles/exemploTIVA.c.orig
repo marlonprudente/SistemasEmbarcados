@@ -131,7 +131,12 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 /*----------------------------------------------------------------------------
  *    Initializations
  *---------------------------------------------------------------------------*/
+<<<<<<< HEAD
 
+void init_all(){
+	cfaf128x128x16Init();
+	servo_init();
+}
 void posicao_inicial()
 {
 	servo_writePosY(5000);
@@ -141,6 +146,9 @@ void posicao_inicial()
 	servo_writeRot(24000);
 	osDelay(10000);
 }
+
+=======
+>>>>>>> 61c82ac91646b68f719c3b5ae779f75a8ad1d79c
 void fibonacci_thread(void const *args){
 	uint32_t num1 = 0,num2 = 1,num3;
 	
@@ -160,7 +168,7 @@ void fibonacci_thread(void const *args){
 				//não pertence	
 			}
 		}
-}osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
+	}osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 
 void primo_thread(void const *args){
 	uint32_t aux;
@@ -194,6 +202,10 @@ void Rotacao_thread(void const *args){
 void UpDown_thread(void const *args){
 	uint16_t angleX=8000, angleY, angleR = 24000;
 	while(1){
+			servo_writeRot(angleR);
+			servo_writePosX(angleX);
+angleX-=140;
+		angleR+=60;
 //		servo_writeRot(21000);
 //		osDelay(10000);
 //		servo_writePosX(16000);
@@ -290,32 +302,21 @@ while(1){
 				switch(mensagem){
 					case '1':
 						UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r");
-						servo_writePosY(1000);
-						//servo_writePosX(10000);
-						//servo_writeRot(16000);
 						break;
 					case '2':
 						UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
-						//servo_writeRot(32000);
-						//servo_writePosX(1000);
-					servo_writePosY(3000);
-					osDelay(5000);
 						break;
 					case '3':
 						UARTprintstring("3 - CIRCULO SELECIONADO (6 - p/ desenhar)\n\r");
-						servo_writePosX(10000);
 						break;
 					case '4':
 						UARTprintstring("4 - BANDEIRA SELECIONADO (6 - p/ desenhar)\n\r");
-						servo_writePosX(1000);
 						break;
 					case '5':
 						UARTprintstring("5 - PARANDO ANDAMENTO DO DESENHO...\n\r");
-						servo_writeRot(32000);
 						break;
 					case '6':
-						UARTprintstring("6 - DESENHANDO...\n\r");		
-						servo_writeRot(16000);					
+						UARTprintstring("6 - DESENHANDO...\n\r");					
 						break;
 					default:
 						UARTprintstring("Entrada invalida\n\r");
