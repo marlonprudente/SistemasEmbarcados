@@ -51,8 +51,6 @@ __heap_limit
 
                 PRESERVE8
                 THUMB
-
-
 ; Vector Table Mapped to Address 0 at Reset
 
                 AREA    RESET, DATA, READONLY
@@ -84,7 +82,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     GPIOC_Handler             ;   2: GPIO Port C
                 DCD     GPIOD_Handler             ;   3: GPIO Port D
                 DCD     GPIOE_Handler             ;   4: GPIO Port E
-                DCD     UART0_Handler             ;   5: UART0 Rx and Tx
+                DCD     UARTIntHandler            ;   5: UART0 Rx and Tx
                 DCD     UART1_Handler             ;   6: UART1 Rx and Tx
                 DCD     SSI0_Handler              ;   7: SSI0 Rx and Tx
                 DCD     I2C0_Handler              ;   8: I2C0 Master and Slave
@@ -198,6 +196,11 @@ __Vectors_Size  EQU     __Vectors_End - __Vectors
 
                 AREA    |.text|, CODE, READONLY
 
+;*****************************************
+;	UART0 Handler
+;*****************************************
+	EXTERN UARTIntHandler
+;*****************************************
 
 ; Reset Handler
 
@@ -291,7 +294,7 @@ GPIOE_Handler\
 UART0_Handler\
                 PROC
                 EXPORT  UART0_Handler [WEAK]
-                B       .
+				B       .
                 ENDP
 
 UART1_Handler\

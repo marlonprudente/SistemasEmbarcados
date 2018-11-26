@@ -101,11 +101,11 @@ const uint16_t darkGrayColor = 0x39E7;
 
 #ifndef __SysCtlClockGet
 #define __SysCtlClockGet()	\
-SysCtlClockFreqSet( 				\
-	SYSCTL_XTAL_25MHZ	| 			\
-	SYSCTL_OSC_MAIN 	| 			\
-	SYSCTL_USE_PLL 		| 			\
-	SYSCTL_CFG_VCO_480, 			\
+SysCtlClockFreqSet( 			\
+	SYSCTL_XTAL_25MHZ	| 		\
+	SYSCTL_OSC_MAIN 	| 		\
+	SYSCTL_USE_PLL 		| 		\
+	SYSCTL_CFG_VCO_480, 		\
 	120000000)
 #endif
 
@@ -709,7 +709,7 @@ cfaf128x128x16Flush(void *pvDisplayData)
 //! CFAF128128B-0145T panel with ST7735 controller.
 //
 //*****************************************************************************
-const tDisplay g_sCfaf128x128x16 =
+tDisplay g_sCfaf128x128x16 =
 {
     sizeof(tDisplay),
     0,

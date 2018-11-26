@@ -10,7 +10,11 @@
  * 		Guilherme Jacichen     - <jacichen@alunos.utfpr.edu.br>
  * 		Jessica Isoton Sampaio - <jessicasampaio@alunos.utfpr.edu.br>
  * 		Mariana Carrião        - <mcarriao@alunos.utfpr.edu.br>
- *===========================================================================*/
+ *===========================================================================
+ * PROJETO FINAL - 2018.2 - Marlon Prudente / Mateus Oliveira
+ *
+ */
+ 
 #include "cmsis_os.h"
 #include "TM4C129.h"                    // Device header
 #include <stdbool.h>
@@ -20,7 +24,6 @@
  * include libraries from drivers
  *----------------------------------------------------------------------------*/
 
-#include "rgb.h"
 #include "cfaf128x128x16.h"
 #include "servo.h"
 #include "temp.h"
@@ -31,17 +34,43 @@
 #include "mic.h"
 #include "accel.h"
 #include "led.h"
+#include "UART.h"
+#include "PWM.h"
+#include "UART_CONSOLE_F.h"
+#include "ondas.h"
 
-#define LED_A      0
-#define LED_B      1
-#define LED_C      2
-#define LED_D      3
-#define LED_CLK    7
 
-uint32_t primo = 0;
-uint32_t fibonacci = 1;
+#define m_quantidade 1
+
 //To print on the screen
 tContext sContext;
+uint32_t primo = 0;
+uint32_t fibonacci = 1;
+/*================================
+=========Mail Handler============
+=================================*/
+typedef struct{
+	uint8_t msg_UART;
+}UART_read;
+/*----------------------------------------
+*		Mail
+*----------------------------------------*/
+osMailQId mid_UART;
+osMailQDef(m_UART,m_quantidade,UART_read);
+/*================================
+=========Msg Handler============
+=================================*/
+typedef struct{
+	uint32_t msg_value;
+	uint8_t msg_page;
+}msg_generic;
+/*----------------------------------------
+*		Mail
+*----------------------------------------*/
+osMessageQId msg_console;
+osMessageQDef(msg_console,m_quantidade,msg_generic);
+osPoolId poolid_c;
+osPoolDef(pool_c,m_quantidade,msg_generic);
 
 /*----------------------------------------------------------------------------
  *  Transforming int to string
@@ -51,18 +80,15 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 	bool n = false;
 	int pos = 0, d = 0;
 	int64_t tmpValue = value;
-
 	// the buffer must not be null and at least have a length of 2 to handle one
 	// digit and null-terminator
 	if (pBuf == NULL || len < 2)
 			return;
-
 	// a valid base cannot be less than 2 or larger than 36
 	// a base value of 2 means binary representation. A value of 1 would mean only zeros
 	// a base larger than 36 can only be used if a larger alphabet were used.
 	if (base < 2 || base > 36)
 			return;
-
 	if (zeros > len)
 		return;
 	
@@ -102,44 +128,9 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 			value /= base;
 	} while(value > 0);
 }
-
-static void floatToString(float value, char *pBuf, uint32_t len, uint32_t base, uint8_t zeros, uint8_t precision){
-	static const char* pAscii = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	uint8_t start = 0xFF;
-	if(len < 2)
-		return;
-	
-	if (base < 2 || base > 36)
-		return;
-	
-	if(zeros + precision + 1 > len)
-		return;
-	
-	intToString((int64_t) value, pBuf, len, base, zeros);
-	while(pBuf[++start] != '\0' && start < len); 
-
-	if(start + precision + 1 > len)
-		return;
-	
-	pBuf[start+precision+1] = '\0';
-	
-	if(value < 0)
-		value = -value;
-	pBuf[start++] = '.';
-	while(precision-- > 0){
-		value -= (uint32_t) value;
-		value *= (float) base;
-		pBuf[start++] = pAscii[(uint32_t) value];
-	}
-}
-
 /*----------------------------------------------------------------------------
  *    Initializations
  *---------------------------------------------------------------------------*/
-
-void init_all(){
-	cfaf128x128x16Init();
-	servo_init();
 }
 void posicao_inicial()
 {
@@ -149,8 +140,6 @@ void posicao_inicial()
 	osDelay(10000);
 	servo_writeRot(24000);
 	osDelay(10000);
-}
-
 void fibonacci_thread(void const *args){
 	uint32_t num1 = 0,num2 = 1,num3;
 	
@@ -175,8 +164,7 @@ void fibonacci_thread(void const *args){
 void primo_thread(void const *args){
 	uint32_t aux;
 	int cont = 0;
-	while(1){
-	
+	while(1){	
 		cont = 0;
 		for (aux = 3; aux*aux < primo; aux=aux+2){
 			if(primo%aux == 0)
@@ -245,18 +233,104 @@ uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
 					( (uint32_t) b       );
 }
 
-	
 
+void init_all(){
+	init_UART();
+	servo_init();
+	cfaf128x128x16Init();
+}	
+
+/*-----------------------------------------------------------------------------
+*      Funcoes de uso exclusivo do programa
+*------------------------------------------------------------------------------*/
+void UARTIntHandler(void){
+	char m;
+	UART_read * mailI;
+	while((UART0->FR & (1<<4)) != 0);
+	m = UART0->DR;
+	UART0	->	RIS |= (1<<4);
+	mailI = (UART_read*)osMailAlloc(mid_UART,0);
+	if(mailI){
+		mailI	-> msg_UART = m;
+		osMailPut(mid_UART,mailI);
+	}
+	UARTprintstring("Input:");
+	printchar(m);
+	UARTprintstring("\n\r");
+}
+/*-----------------------------------------------------------------------------
+*      Threads
+*------------------------------------------------------------------------------*/
+
+void Console(const void *args){
+	bool ini_uart = true;
+	osEvent evt;
+	msg_generic *msg = 0;
+	while(1){
+		if(ini_uart){
+			pag_ini_uart();
+			ini_uart=false;
+		}
+		evt = osMessageGet(msg_console,osWaitForever);
+		osPoolFree(poolid_c,msg);
+		}
+}osThreadDef(Console,osPriorityNormal,1,0);
+
+void UART_t(const void *args){
+static uint16_t count = 0;
+static uint8_t amplitude = 100;
+int teste = 1;
+UART_read *mail=0;
+osEvent evento;
+char mensagem = NULL;
+while(1){
+	evento=osMailGet(mid_UART,osWaitForever);
+	if(evento.status==osEventMail){
+		mail=evento.value.p;
+		if(mail){
+			mensagem = mail -> msg_UART;
+			osMailFree(mid_UART,mail);
+				switch(mensagem){
+					case '1':
+						UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r");
+						break;
+					case '2':
+						UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
+						break;
+					case '3':
+						UARTprintstring("3 - CIRCULO SELECIONADO (6 - p/ desenhar)\n\r");
+						break;
+					case '4':
+						UARTprintstring("4 - BANDEIRA SELECIONADO (6 - p/ desenhar)\n\r");
+						break;
+					case '5':
+						UARTprintstring("5 - PARANDO ANDAMENTO DO DESENHO...\n\r");
+						break;
+					case '6':
+						UARTprintstring("6 - DESENHANDO...\n\r");					
+						break;
+					default:
+						UARTprintstring("Entrada invalida\n\r");
+						break;
+				}
+			}
+		}
+	}
+}osThreadDef(UART_t,osPriorityAboveNormal,1,0);
+/*-----------------------------------------------------------------------------
+*      Threads de PWM
+*------------------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------------
  *      Main
- *---------------------------------------------------------------------------*/
-int main (void) {
+*---------------------------------------------------------------------------*/
 
-  uint32_t angleR = 1000;
-	//Initializing all peripherals
-	osKernelInitialize();
+
+ int main (void) {	 
 	init_all();
+	osKernelInitialize();
+	mid_UART= osMailCreate(osMailQ(m_UART), NULL);
+	msg_console = osMessageCreate(osMessageQ(msg_console),NULL);
 	GrContextInit(&sContext, &g_sCfaf128x128x16);
 	
 	GrFlush(&sContext);
@@ -264,17 +338,15 @@ int main (void) {
 	
 	GrContextForegroundSet(&sContext, ClrWhite);
 	GrContextBackgroundSet(&sContext, ClrBlack);
-	
-	//Escreve menu lateral:
+	 //Escreve menu lateral:
 	GrStringDraw(&sContext,"Primo:", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-
-	//threads
-	osThreadCreate(osThread(primo_thread), NULL);
+	 	 
+	osThreadCreate(osThread(UART_t),NULL);
+	osThreadCreate(osThread(Console),NULL);
+	 osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
 	osThreadCreate(osThread(Rotacao_thread), NULL);
 	osThreadCreate(osThread(UpDown_thread), NULL);
 	osKernelStart();
-  while(1){	
-			
-	}	
+	osDelay(osWaitForever);
 }
