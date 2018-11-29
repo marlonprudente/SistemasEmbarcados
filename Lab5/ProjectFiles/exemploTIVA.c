@@ -144,6 +144,48 @@ void posicao_inicial()
 	servo_writeRot(24000);
 	osDelay(10000);
 }
+
+void desenha_quadrado(void)
+{
+	servo_writePosY(8000);
+	servo_writePosX(7000);
+	servo_writeRot(25000);
+	osDelay(10000);
+	servo_writePosX(7000);
+	servo_writeRot(20000);
+	osDelay(10000);
+	servo_writePosX(7000);
+	servo_writePosY(7000);
+	servo_writeRot(19000);
+	osDelay(10000);	
+	servo_writePosX(15000);
+	servo_writeRot(20000);
+	osDelay(10000);
+	servo_writePosX(20000);
+	servo_writeRot(28000);
+	osDelay(10000);
+}
+
+void desenha_losango()
+{
+	servo_writeRot(25000);
+	servo_writePosX(11800);
+	//servo_writePosY(7000);
+	osDelay(10000);	
+	servo_writePosY(9000);
+	servo_writePosX(6500);
+	servo_writeRot(22000);
+	osDelay(10000);
+	servo_writeRot(19000);
+	servo_writePosX(10000);
+	osDelay(10000);	
+	servo_writeRot(23000);
+	servo_writePosX(17500);
+	osDelay(10000);	
+	servo_writePosY(7000);
+	servo_writeRot(27000);
+	servo_writePosX(10000);
+}
 void fibonacci_thread(void const *args){
 	uint32_t num1 = 0,num2 = 1,num3;
 	int32_t value;
@@ -200,8 +242,8 @@ void primo_thread(void const *args){
 			GrFlush(&sContext);
 			GrContextForegroundSet(&sContext, ClrWhite);
 			GrContextBackgroundSet(&sContext, ClrBlack);
-			UARTprintstring("Primo encontrado:\r");
-			UARTprintstring(primoChar);
+			//UARTprintstring("Primo encontrado:\r");
+			//UARTprintstring(primoChar);
 			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*8, (sContext.psFont->ui8Height+2)*0, true);
 			osMutexRelease(mutex_display_id);
 		}
@@ -223,24 +265,6 @@ void Rotacao_thread(void const *args){
 		
 	}
 }osThreadDef(Rotacao_thread, osPriorityNormal, 1, 0);
-
-void UpDown_thread(void const *args){
-	uint16_t angleX=8000, angleY, angleR = 24000;
-	while(1){
-//		servo_writeRot(21000);
-//		osDelay(10000);
-//		servo_writePosX(16000);
-//		osDelay(10000);
-//		servo_writePosY(8000);
-//		osDelay(10000);
-//		servo_writeRot(27000);
-//		osDelay(10000);
-//		servo_writePosX(1000);
-//		osDelay(10000);
-//		servo_writePosY(8000);
-//		osDelay(10000);
-	}
-}osThreadDef(UpDown_thread, osPriorityNormal, 1, 0);
 
 void init_all(){
 	init_UART();
@@ -320,41 +344,41 @@ while(1){
 			osMailFree(mid_UART,mail);
 				switch(mensagem){
 					case '1':
-						UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r");
-						
-
-					
-					servo_writePosX(7000);
-					servo_writeRot(25000);
-					osDelay(10000);
-					servo_writePosX(7000);
-					servo_writeRot(21500);
-					osDelay(10000);
-					servo_writeRot(21500);
-					servo_writePosX(7000);
-					servo_writePosY(7000);
-					osDelay(10000);	
-					servo_writePosX(15000);
-					servo_writeRot(20000);
-					osDelay(10000);
-					servo_writePosX(20000);
-					servo_writeRot(25000);
-					osDelay(10000);
+					UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r");
+					desenha_quadrado();
 					break;
 					case '2':
 					UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
+						desenha_losango();					
 					break;
 					case '3':
 						UARTprintstring("3 - CIRCULO SELECIONADO (6 - p/ desenhar)\n\r");
-						
+//						servo_writeRot(24000);
+//						servo_writePosX(11800);
+//						//servo_writePosY(7000);
+//						osDelay(10000);	
+//						servo_writePosY(9000);
+//						servo_writePosX(13000);
+//						osDelay(500);
+//						servo_writeRot(22000);
+//						osDelay(1000);
+//						servo_writeRot(19000);
+//						servo_writePosX(10000);
+//						osDelay(1000);	
+//						servo_writeRot(23000);
+//						servo_writePosX(17500);
+//						osDelay(1000);	
+//						servo_writePosY(7000);
+//						servo_writeRot(27000);
+//						servo_writePosX(10000);
 						break;
 					case '4':
 						UARTprintstring("4 - BANDEIRA SELECIONADO (6 - p/ desenhar)\n\r");
-						
+						desenha_quadrado();
+					desenha_losango();
 						break;
 					case '5':
 						UARTprintstring("5 - PARANDO ANDAMENTO DO DESENHO...\n\r");
-						servo_writeRot(18000);
 					
 						break;
 					case '6':
@@ -369,6 +393,8 @@ while(1){
 		}
 	}
 }osThreadDef(UART_t,osPriorityHigh,1,0);
+
+
 
 /*----------------------------------------------------------------------------
  *      Main
@@ -397,7 +423,6 @@ while(1){
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
 	osThreadCreate(osThread(Rotacao_thread), NULL);
-	osThreadCreate(osThread(UpDown_thread), NULL);
 	osThreadCreate(osThread(geracao_pontos), NULL);
 	osKernelStart();
 	osDelay(osWaitForever);

@@ -163,4 +163,6 @@ servo_init(){
 	osDelay(5000);
 	servo_writePosY(inicialY);
 	osDelay(5000);
+	
+	
 }
