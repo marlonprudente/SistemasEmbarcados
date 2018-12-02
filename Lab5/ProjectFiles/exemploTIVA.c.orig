@@ -39,22 +39,33 @@
 #include "UART_CONSOLE_F.h"
 #include "ondas.h"
 
-
+#define TAM_MAILQUEUE 16  
 #define m_quantidade 1
+
+osMailQId id_mail_Gantt; 
 
 //To print on the screen
 tContext sContext;
 uint32_t primo = 0;
 uint32_t fibonacci = 1;
+osMutexId mutex_display_id;
+osSemaphoreId escalonador;                         // Semaphore ID
+osSemaphoreDef(escalonador);                       // Semaphore definition
 /*================================
 =========Mail Handler============
 =================================*/
 typedef struct{
 	uint8_t msg_UART;
 }UART_read;
+
+typedef struct {                                                
+  //char Buffer[32];
+  uint8_t id;
+} struct_Gantt;
 /*----------------------------------------
 *		Mail
 *----------------------------------------*/
+osMailQDef(mail_Gantt, TAM_MAILQUEUE, struct_Gantt);
 osMailQId mid_UART;
 osMailQDef(m_UART,m_quantidade,UART_read);
 /*================================
@@ -131,30 +142,333 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 /*----------------------------------------------------------------------------
  *    Initializations
  *---------------------------------------------------------------------------*/
-<<<<<<< HEAD
 
-void init_all(){
-	cfaf128x128x16Init();
-	servo_init();
-}
 void posicao_inicial()
 {
-	servo_writePosY(5000);
+	servo_writePosY(1500);
+	osDelay(5000);
+	servo_writePosX(5000);
+	osDelay(5000);
+	servo_writeRot(28000);
 	osDelay(10000);
-	servo_writePosX(1000);
+	servo_writeRot(28000);
+	osDelay(5000);
+	servo_writePosX(20000);
+	osDelay(5000);
+	servo_writePosY(7000);
+	osDelay(5000);
+}
+void desenha_circulo(void)
+{
+	struct_Gantt *pMailGantt = 0;
+	int i, auxR, auxX;
+	servo_writePosY(1500);
+	osDelay(5000);
+	servo_writePosX(5000);
+	osDelay(5000);
+	servo_writeRot(28000);
 	osDelay(10000);
-	servo_writeRot(24000);
+
+	servo_writePosX(9000);
+	osDelay(5000);
+	servo_writeRot(23000);
+	osDelay(5000);
+	servo_writePosY(6000);
 	osDelay(10000);
+	auxR = 23000;
+	auxX = 9000;
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 200;
+		auxX+= 150;
+		osDelay(5000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX+= 150;
+		osDelay(5000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX+= 280;
+		osDelay(5000);
+	}
+	
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 200;
+		auxX+= 160;
+		osDelay(5000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 150;
+		auxX+= 200;
+		osDelay(5000);
+<<<<<<< HEAD
+	}
+	servo_writePosY(5500);
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 150;
+		auxX+= 350;
+		osDelay(5000);
+	}
+	auxX += 500;
+	servo_writePosX(auxX);
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 150;
+		auxX+= 350;
+		osDelay(5000);
+	}
+	auxX += 500;
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 200;
+		auxX-= 160;
+		osDelay(5000);
+	}
+	auxX += 500;
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 150;
+		auxX-= 160;
+		osDelay(5000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 150;
+		auxX-= 290;
+		osDelay(5000);
+	}
+	servo_writePosY(6500);
+	auxX-= 550;
+	servo_writePosX(auxX);
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 200;
+		auxX-= 150;
+		osDelay(5000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX-= 150;
+		osDelay(5000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX-= 280;
+		osDelay(5000);
+	}
+							
+	for(i = 0; i < 4; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 200;
+		auxX-= 150;
+		osDelay(5000);
+	}
+	for(i = 0; i < 4; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX-= 150;
+		osDelay(5000);
+	}
+	for(i = 0; i < 4; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX-= 280;
+		osDelay(5000);
+	}
+	pMailGantt->id = 4;
+	osMailPut(id_mail_Gantt, pMailGantt); 
+=======
+		servo_writePosY(6000);
+		osDelay(10000);
+		auxR = 23000;
+		auxX = 9000;
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR-= 200;
+			auxX+= 150;
+			osDelay(5000);
+		}
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR-= 150;
+			auxX+= 150;
+			osDelay(5000);
+		}
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR-= 150;
+			auxX+= 280;
+			osDelay(5000);
+		}
+		
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR+= 200;
+			auxX+= 160;
+			osDelay(5000);
+		}
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR+= 150;
+			auxX+= 200;
+			osDelay(5000);
+		}
+		servo_writePosY(5500);
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR+= 150;
+			auxX+= 350;
+			osDelay(5000);
+		}
+		auxX += 500;
+		servo_writePosX(auxX);
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR+= 150;
+			auxX+= 350;
+			osDelay(5000);
+		}
+		auxX += 500;
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR+= 200;
+			auxX-= 160;
+			osDelay(5000);
+		}
+		auxX += 500;
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR+= 150;
+			auxX-= 160;
+			osDelay(5000);
+		}
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR+= 150;
+			auxX-= 290;
+			osDelay(5000);
+		}
+		servo_writePosY(6500);
+		auxX-= 550;
+		servo_writePosX(auxX);
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR-= 200;
+			auxX-= 150;
+			osDelay(5000);
+		}
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR-= 150;
+			auxX-= 150;
+			osDelay(5000);
+		}
+		for(i = 0; i < 3; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR-= 150;
+			auxX-= 280;
+			osDelay(5000);
+		}
+								
+		for(i = 0; i < 4; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR-= 200;
+			auxX-= 150;
+			osDelay(5000);
+		}
+		for(i = 0; i < 4; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR-= 150;
+			auxX-= 150;
+			osDelay(5000);
+		}
+		for(i = 0; i < 4; i++){
+			servo_writeRot(auxR);servo_writePosX(auxX);
+			auxR-= 150;
+			auxX-= 280;
+			osDelay(5000);
+		}
+		pMailGantt = osMailAlloc(id_mail_Gantt,0);
+		pMailGantt->id = 4;
+		osMailPut(id_mail_Gantt, pMailGantt); 
+>>>>>>> 8693b68f4619872680173c8abd01b04f8e2b105a
+						
+}
+void desenha_quadrado(void)
+{
+	struct_Gantt *pMailGantt = 0;
+	servo_writePosY(8000);
+	servo_writePosX(7000);
+	servo_writeRot(25000);
+	osDelay(10000);
+	servo_writePosX(7000);
+	servo_writeRot(19000);
+	osDelay(10000);
+	servo_writePosX(7000);
+	servo_writePosY(7000);
+	servo_writeRot(20000);
+	osDelay(1000);	
+	servo_writePosX(21000);
+	servo_writeRot(18000);
+	osDelay(10000);
+	servo_writePosX(20000);
+	servo_writeRot(28000);
+	osDelay(10000);
+	pMailGantt = osMailAlloc(id_mail_Gantt,0);
+	pMailGantt->id = 4;
+	osMailPut(id_mail_Gantt, pMailGantt); 
 }
 
+void desenha_losango()
+{
+	struct_Gantt *pMailGantt = 0;
+	servo_writeRot(26000);
+	servo_writePosX(12000);
+	//servo_writePosY(7000);
+	osDelay(10000);	
+	servo_writeRot(22000);
+	osDelay(1000);
+	servo_writePosX(6500);
+	servo_writePosY(7500);
+	osDelay(10000);
+	servo_writeRot(19000);
+	servo_writePosX(10000);
+	osDelay(10000);	
+	servo_writeRot(23000);
+	servo_writePosX(20000);
+	osDelay(10000);	
+	servo_writeRot(26000);
+	servo_writePosX(10500);
+	osDelay(10000);	
+<<<<<<< HEAD
+	posicao_inicial();
 =======
->>>>>>> 61c82ac91646b68f719c3b5ae779f75a8ad1d79c
+	pMailGantt = osMailAlloc(id_mail_Gantt,0);
+>>>>>>> 8693b68f4619872680173c8abd01b04f8e2b105a
+	pMailGantt->id = 4;
+	osMailPut(id_mail_Gantt, pMailGantt); 
+}
 void fibonacci_thread(void const *args){
+	osEvent evt;
+
 	uint32_t num1 = 0,num2 = 1,num3;
-	
+	int32_t value;
+	char fibonacciChar[32];
+	struct_Gantt *pMailGantt = 0;
 	while(1){
-		num3 = num1 + num2;
-		
+		osDelay(1000);
+		value = osSemaphoreWait(escalonador,500);
+				if(value > 0){
+		num3 = num1 + num2;		
 			while(num3 < fibonacci)
 				{
 						num1 = num2;
@@ -162,85 +476,67 @@ void fibonacci_thread(void const *args){
 						num3 = num1 + num2;
 				}
 			if(num3 == fibonacci){
-				//pertence
+			osMutexWait(mutex_display_id,osWaitForever);
+			intToString(primo,fibonacciChar,30,10,0);
+			GrFlush(&sContext);
+			GrContextForegroundSet(&sContext, ClrWhite);
+			GrContextBackgroundSet(&sContext, ClrBlack);
+			GrStringDraw(&sContext,(char*)fibonacciChar, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*1, true);
+			osMutexRelease(mutex_display_id);
 			}
 			else{
 				//não pertence	
 			}
 		}
-	}osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
+		fibonacci++;		
+				pMailGantt = osMailAlloc(id_mail_Gantt,0);
+				pMailGantt->id = 5;				
+				//pMailGantt->Buffer = (char*)'Fibonacci';
+				// Send Mail
+				osMailPut(id_mail_Gantt, pMailGantt);  
+			osSemaphoreRelease(escalonador);
+		}
+}osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 
 void primo_thread(void const *args){
+	int32_t value;
+	char primoChar[32];
+	struct_Gantt *pMailGantt = 0;
 	uint32_t aux;
-	int cont = 0;
-	while(1){	
-		cont = 0;
-		for (aux = 3; aux*aux < primo; aux=aux+2){
-			if(primo%aux == 0)
-				cont++;
-			if(cont>0)
-				break;
+	int div;
+	while(1){
+		osDelay(200);
+		value = osSemaphoreWait(escalonador,60);
+		if(value > 0){		
+		div = 0;
+		for (aux = 1; aux <= primo; aux++){
+			if(primo%aux == 0){
+				div++;
+			}
 		}
-		if (cont == 0){	
-			//primo
+		if (div == 2){
+			osMutexWait(mutex_display_id,osWaitForever);
+			intToString(primo,primoChar,32,10,0);
+			GrFlush(&sContext);
+			GrContextForegroundSet(&sContext, ClrWhite);
+			GrContextBackgroundSet(&sContext, ClrBlack);
+			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*8, (sContext.psFont->ui8Height+2)*0, true);
+			osMutexRelease(mutex_display_id);
 		}
 		else{
-			//não primo
+			
 		}
+			
+		}
+		primo =  primo + 1;
+						pMailGantt = osMailAlloc(id_mail_Gantt,0);
+				pMailGantt->id = 1;				
+				//pMailGantt->Buffer = (char*)'Fibonacci';
+				// Send Mail
+				osMailPut(id_mail_Gantt, pMailGantt);  
+		osSemaphoreRelease(escalonador);
 	}
-}osThreadDef(primo_thread, osPriorityNormal, 1, 0);
-
-void Rotacao_thread(void const *args){
-	uint16_t angle = 16000;
-	while(1){
-//		angle = 16000;
-//		servo_writeRot(angle);
-		
-	}
-}osThreadDef(Rotacao_thread, osPriorityNormal, 1, 0);
-
-void UpDown_thread(void const *args){
-	uint16_t angleX=8000, angleY, angleR = 24000;
-	while(1){
-			servo_writeRot(angleR);
-			servo_writePosX(angleX);
-angleX-=140;
-		angleR+=60;
-//		servo_writeRot(21000);
-//		osDelay(10000);
-//		servo_writePosX(16000);
-//		osDelay(10000);
-//		servo_writePosY(8000);
-//		osDelay(10000);
-//		servo_writeRot(27000);
-//		osDelay(10000);
-//		servo_writePosX(1000);
-//		osDelay(10000);
-//		servo_writePosY(8000);
-//		osDelay(10000);
-	}
-}osThreadDef(UpDown_thread, osPriorityNormal, 1, 0);
-
-uint32_t saturate(uint8_t r, uint8_t g, uint8_t b){
-	uint8_t *max = &r, 
-					*mid = &g, 
-					*min = &b,
-					*aux, 
-					div, num;
-	if (*mid > *max){ aux = max; max = mid; mid = aux; }
-	if (*min > *mid){ aux = mid; mid = min; min = aux; }
-	if (*mid > *max){	aux = max; max = mid; mid = aux; }
-	if(*max != *min){
-		div = *max-*min;
-		num = *mid-*min;
-		*max = 0xFF;
-		*min = 0x00;
-		*mid = (uint8_t) num*0xFF/div;
-	}
-	return 	(((uint32_t) r) << 16) | 
-					(((uint32_t) g) <<  8) | 
-					( (uint32_t) b       );
-}
+}osThreadDef(primo_thread, osPriorityRealtime, 1, 0);
 
 
 void init_all(){
@@ -254,14 +550,18 @@ void init_all(){
 *------------------------------------------------------------------------------*/
 void UARTIntHandler(void){
 	char m;
+	struct_Gantt *pMailGantt = 0;
 	UART_read * mailI;
 	while((UART0->FR & (1<<4)) != 0);
 	m = UART0->DR;
 	UART0	->	RIS |= (1<<4);
 	mailI = (UART_read*)osMailAlloc(mid_UART,0);
-	if(mailI){
+	pMailGantt = osMailAlloc(id_mail_Gantt,0);
+	if(mailI){ 
 		mailI	-> msg_UART = m;
 		osMailPut(mid_UART,mailI);
+		pMailGantt->id = 2;
+		osMailPut(id_mail_Gantt, pMailGantt); 
 	}
 	UARTprintstring("Input:");
 	printchar(m);
@@ -270,6 +570,32 @@ void UARTIntHandler(void){
 /*-----------------------------------------------------------------------------
 *      Threads
 *------------------------------------------------------------------------------*/
+void geracao_pontos(const void *args){
+	int32_t value;
+	char numero[32];
+	struct_Gantt *pMailGantt = 0;
+	uint32_t aux = 0;
+	while(1){
+		osDelay(100);
+		value = osSemaphoreWait(escalonador,70);
+		if(value > 0){			
+			osMutexWait(mutex_display_id,osWaitForever);
+			intToString(aux,numero,30,10,10);
+			GrFlush(&sContext);
+			GrContextForegroundSet(&sContext, ClrWhite);
+			GrContextBackgroundSet(&sContext, ClrBlack);
+			GrStringDraw(&sContext,(char*)numero, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*2, true);
+			osMutexRelease(mutex_display_id);
+		}
+		aux++;
+		pMailGantt = osMailAlloc(id_mail_Gantt,0);
+		pMailGantt->id = 3;				
+				//pMailGantt->Buffer = (char*)'Fibonacci';
+				// Send Mail
+		osMailPut(id_mail_Gantt, pMailGantt);
+		osSemaphoreRelease(escalonador);
+	}
+}osThreadDef(geracao_pontos,osPriorityLow,1,0);
 
 void Console(const void *args){
 	bool ini_uart = true;
@@ -283,12 +609,12 @@ void Console(const void *args){
 		evt = osMessageGet(msg_console,osWaitForever);
 		osPoolFree(poolid_c,msg);
 		}
-}osThreadDef(Console,osPriorityNormal,1,0);
+}osThreadDef(Console,osPriorityHigh,1,0);
 
 void UART_t(const void *args){
 static uint16_t count = 0;
 static uint8_t amplitude = 100;
-int teste = 1;
+int teste = 1, i, auxR = 0, auxX = 0;
 UART_read *mail=0;
 osEvent evento;
 char mensagem = NULL;
@@ -301,22 +627,29 @@ while(1){
 			osMailFree(mid_UART,mail);
 				switch(mensagem){
 					case '1':
-						UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r");
-						break;
+					UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r");
+					desenha_quadrado();
+					break;
 					case '2':
-						UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
-						break;
+					UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
+						desenha_losango();					
+					break;
 					case '3':
 						UARTprintstring("3 - CIRCULO SELECIONADO (6 - p/ desenhar)\n\r");
+					desenha_circulo();
 						break;
 					case '4':
 						UARTprintstring("4 - BANDEIRA SELECIONADO (6 - p/ desenhar)\n\r");
+						desenha_quadrado();
+						desenha_losango();
+						desenha_circulo();
 						break;
 					case '5':
 						UARTprintstring("5 - PARANDO ANDAMENTO DO DESENHO...\n\r");
 						break;
 					case '6':
-						UARTprintstring("6 - DESENHANDO...\n\r");					
+						UARTprintstring("6 - DESENHANDO...\n\r");		
+						servo_writePosX(7500);					
 						break;
 					default:
 						UARTprintstring("Entrada invalida\n\r");
@@ -325,10 +658,69 @@ while(1){
 			}
 		}
 	}
-}osThreadDef(UART_t,osPriorityAboveNormal,1,0);
-/*-----------------------------------------------------------------------------
-*      Threads de PWM
-*------------------------------------------------------------------------------*/
+}osThreadDef(UART_t,osPriorityHigh,1,0);
+
+void geracao_Gantt(const void *args){
+	char inteiro[32];
+	osEvent evt;
+	osStatus status;
+	uint32_t stime, ftime;
+	uint8_t i;
+	
+	struct_Gantt *pMail = 0;
+	
+	while(1){
+		// Mail
+		
+		//	INICIA	SECAO	CRITICA
+		evt = osMailGet(id_mail_Gantt, osWaitForever);
+		if(evt.status == osEventMail)
+		{
+			stime = osKernelSysTick();
+			
+			pMail = evt.value.p;
+      if(pMail) 
+			{
+				
+				// Recebe outros tempos para diagrama de Gantt e envia através da serial (4 tempos, 32 bytes)
+				UARTprintstring("Id: ");
+				intToString(pMail->id,inteiro,32,10,0);
+				UARTprintstring(inteiro);
+				UARTprintstring("\n\r");
+//        for(i = 0; i < 24; i++){
+//					intToString(pMail->Buffer[i],inteiro,32,10,0);
+//					UARTprintstring(inteiro);
+//				}
+//				UARTprintstring("\n");
+//				// stime Gantt
+//				intToString(stime,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(stime >> 8,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(stime >> 16,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(stime >> 24,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//					
+//				ftime = osKernelSysTick();
+//					
+//				// ftime Gantt
+//				intToString(ftime,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(ftime >> 8,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(ftime >> 16,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(ftime >> 24,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+					
+				// free memory allocated for mail
+				osMailFree(id_mail_Gantt, pMail);                      	
+			}
+		}
+		//	FIM	DA	SECAO	CRITICA
+	}
+}osThreadDef(geracao_Gantt,osPriorityNormal,1,0);
 
 /*----------------------------------------------------------------------------
  *      Main
@@ -339,7 +731,9 @@ while(1){
 	init_all();
 	osKernelInitialize();
 	mid_UART= osMailCreate(osMailQ(m_UART), NULL);
+	id_mail_Gantt = osMailCreate(osMailQ(mail_Gantt), NULL);
 	msg_console = osMessageCreate(osMessageQ(msg_console),NULL);
+	escalonador = osSemaphoreCreate(osSemaphore(escalonador), 1);
 	GrContextInit(&sContext, &g_sCfaf128x128x16);
 	
 	GrFlush(&sContext);
@@ -349,13 +743,14 @@ while(1){
 	GrContextBackgroundSet(&sContext, ClrBlack);
 	 //Escreve menu lateral:
 	GrStringDraw(&sContext,"Primo:", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-	 	 
-	osThreadCreate(osThread(UART_t),NULL);
+	GrStringDraw(&sContext,"Fibonacci:", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
+	GrStringDraw(&sContext,"G.Pontos:", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
+	//osThreadCreate(osThread(UART_t),NULL);
 	osThreadCreate(osThread(Console),NULL);
-	 osThreadCreate(osThread(primo_thread), NULL);
+	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
-	osThreadCreate(osThread(Rotacao_thread), NULL);
-	osThreadCreate(osThread(UpDown_thread), NULL);
+	osThreadCreate(osThread(geracao_pontos), NULL);
+	//osThreadCreate(osThread(geracao_Gantt), NULL);
 	osKernelStart();
 	osDelay(osWaitForever);
 }

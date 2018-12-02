@@ -59,7 +59,6 @@ typedef struct{
 }UART_read;
 
 typedef struct {                                                
-  //char Buffer[32];
   uint8_t id;
 } struct_Gantt;
 /*----------------------------------------
@@ -140,7 +139,7 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 	} while(value > 0);
 }
 /*----------------------------------------------------------------------------
- *    Initializations
+ *    Desenho
  *---------------------------------------------------------------------------*/
 
 void posicao_inicial()
@@ -334,10 +333,16 @@ void desenha_losango()
 	servo_writeRot(26000);
 	servo_writePosX(10500);
 	osDelay(10000);	
+	posicao_inicial();
 	pMailGantt = osMailAlloc(id_mail_Gantt,0);
 	pMailGantt->id = 4;
 	osMailPut(id_mail_Gantt, pMailGantt); 
 }
+
+/*----------------------------------------------------------------------------
+ *    Fibonacci e primo
+ *---------------------------------------------------------------------------*/
+
 void fibonacci_thread(void const *args){
 	osEvent evt;
 
@@ -448,9 +453,7 @@ void UARTIntHandler(void){
 	printchar(m);
 	UARTprintstring("\n\r");
 }
-/*-----------------------------------------------------------------------------
-*      Threads
-*------------------------------------------------------------------------------*/
+
 void geracao_pontos(const void *args){
 	int32_t value;
 	char numero[32];
@@ -568,33 +571,7 @@ void geracao_Gantt(const void *args){
 				intToString(pMail->id,inteiro,32,10,0);
 				UARTprintstring(inteiro);
 				UARTprintstring("\n\r");
-//        for(i = 0; i < 24; i++){
-//					intToString(pMail->Buffer[i],inteiro,32,10,0);
-//					UARTprintstring(inteiro);
-//				}
-//				UARTprintstring("\n");
-//				// stime Gantt
-//				intToString(stime,inteiro,32,10,0);
-//				UARTprintstring(inteiro);
-//				intToString(stime >> 8,inteiro,32,10,0);
-//				UARTprintstring(inteiro);
-//				intToString(stime >> 16,inteiro,32,10,0);
-//				UARTprintstring(inteiro);
-//				intToString(stime >> 24,inteiro,32,10,0);
-//				UARTprintstring(inteiro);
-//					
-//				ftime = osKernelSysTick();
-//					
-//				// ftime Gantt
-//				intToString(ftime,inteiro,32,10,0);
-//				UARTprintstring(inteiro);
-//				intToString(ftime >> 8,inteiro,32,10,0);
-//				UARTprintstring(inteiro);
-//				intToString(ftime >> 16,inteiro,32,10,0);
-//				UARTprintstring(inteiro);
-//				intToString(ftime >> 24,inteiro,32,10,0);
-//				UARTprintstring(inteiro);
-					
+
 				// free memory allocated for mail
 				osMailFree(id_mail_Gantt, pMail);                      	
 			}
@@ -626,7 +603,7 @@ void geracao_Gantt(const void *args){
 	GrStringDraw(&sContext,"Primo:", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
 	GrStringDraw(&sContext,"Fibonacci:", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
 	GrStringDraw(&sContext,"G.Pontos:", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
-	//osThreadCreate(osThread(UART_t),NULL);
+	osThreadCreate(osThread(UART_t),NULL);
 	osThreadCreate(osThread(Console),NULL);
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
