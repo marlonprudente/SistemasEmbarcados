@@ -341,8 +341,6 @@ void fibonacci_thread(void const *args){
 			GrFlush(&sContext);
 			GrContextForegroundSet(&sContext, ClrWhite);
 			GrContextBackgroundSet(&sContext, ClrBlack);
-			UARTprintstring("Fibonacci encontrado:\r");
-			UARTprintstring(fibonacciChar);
 			GrStringDraw(&sContext,(char*)fibonacciChar, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*1, true);
 			osMutexRelease(mutex_display_id);
 			}
@@ -375,15 +373,12 @@ void primo_thread(void const *args){
 			GrFlush(&sContext);
 			GrContextForegroundSet(&sContext, ClrWhite);
 			GrContextBackgroundSet(&sContext, ClrBlack);
-			//UARTprintstring("Primo encontrado:\r");
-			//UARTprintstring(primoChar);
 			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*8, (sContext.psFont->ui8Height+2)*0, true);
 			osMutexRelease(mutex_display_id);
 		}
 		else{
 			
-		}
-			
+		}			
 		}
 		primo =  primo + 1;
 		osSemaphoreRelease(escalonador);
