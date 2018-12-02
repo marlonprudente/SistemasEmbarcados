@@ -283,6 +283,7 @@ void desenha_circulo(void)
 		auxX-= 280;
 		osDelay(5000);
 	}
+		pMailGantt = osMailAlloc(id_mail_Gantt,0);
 	pMailGantt->id = 4;
 	osMailPut(id_mail_Gantt, pMailGantt); 
 						
@@ -307,6 +308,7 @@ void desenha_quadrado(void)
 	servo_writePosX(20000);
 	servo_writeRot(28000);
 	osDelay(10000);
+	pMailGantt = osMailAlloc(id_mail_Gantt,0);
 	pMailGantt->id = 4;
 	osMailPut(id_mail_Gantt, pMailGantt); 
 }
@@ -332,7 +334,7 @@ void desenha_losango()
 	servo_writeRot(26000);
 	servo_writePosX(10500);
 	osDelay(10000);	
-	posicao_inicial();
+	pMailGantt = osMailAlloc(id_mail_Gantt,0);
 	pMailGantt->id = 4;
 	osMailPut(id_mail_Gantt, pMailGantt); 
 }
