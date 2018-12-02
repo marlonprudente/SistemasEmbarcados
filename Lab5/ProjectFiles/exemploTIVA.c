@@ -39,7 +39,7 @@
 #include "UART_CONSOLE_F.h"
 #include "ondas.h"
 
-#define mail_Gantt   16  
+#define TAM_MAILQUEUE 16  
 #define m_quantidade 1
 
 osMailQId id_mail_Gantt; 
@@ -59,12 +59,13 @@ typedef struct{
 }UART_read;
 
 typedef struct {                                                
-  uint8_t aux[32];
+  //char Buffer[32];
   uint8_t id;
 } struct_Gantt;
 /*----------------------------------------
 *		Mail
 *----------------------------------------*/
+osMailQDef(mail_Gantt, TAM_MAILQUEUE, struct_Gantt);
 osMailQId mid_UART;
 osMailQDef(m_UART,m_quantidade,UART_read);
 /*================================
@@ -194,10 +195,12 @@ void desenha_losango()
 	servo_writePosX(10000);
 }
 void fibonacci_thread(void const *args){
+	osEvent evt;
+
 	uint32_t num1 = 0,num2 = 1,num3;
 	int32_t value;
 	char fibonacciChar[32];
-	
+	struct_Gantt *pMailGantt = 0;
 	while(1){
 		osDelay(1000);
 		value = osSemaphoreWait(escalonador,500);
@@ -211,12 +214,10 @@ void fibonacci_thread(void const *args){
 				}
 			if(num3 == fibonacci){
 			osMutexWait(mutex_display_id,osWaitForever);
-			intToString(primo,fibonacciChar,30,10,10);
+			intToString(primo,fibonacciChar,30,10,0);
 			GrFlush(&sContext);
 			GrContextForegroundSet(&sContext, ClrWhite);
 			GrContextBackgroundSet(&sContext, ClrBlack);
-			UARTprintstring("Fibonacci encontrado:\r");
-			UARTprintstring(fibonacciChar);
 			GrStringDraw(&sContext,(char*)fibonacciChar, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*1, true);
 			osMutexRelease(mutex_display_id);
 			}
@@ -224,13 +225,20 @@ void fibonacci_thread(void const *args){
 				//não pertence	
 			}
 		}
-				fibonacci++;
+		fibonacci++;		
+				pMailGantt = osMailAlloc(id_mail_Gantt,0);
+				pMailGantt->id = 5;				
+				//pMailGantt->Buffer = (char*)'Fibonacci';
+				// Send Mail
+				osMailPut(id_mail_Gantt, pMailGantt);  
+			osSemaphoreRelease(escalonador);
 		}
 }osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 
 void primo_thread(void const *args){
 	int32_t value;
 	char primoChar[32];
+	struct_Gantt *pMailGantt = 0;
 	uint32_t aux;
 	int div;
 	while(1){
@@ -245,12 +253,10 @@ void primo_thread(void const *args){
 		}
 		if (div == 2){
 			osMutexWait(mutex_display_id,osWaitForever);
-			intToString(primo,primoChar,30,10,10);
+			intToString(primo,primoChar,32,10,0);
 			GrFlush(&sContext);
 			GrContextForegroundSet(&sContext, ClrWhite);
 			GrContextBackgroundSet(&sContext, ClrBlack);
-			//UARTprintstring("Primo encontrado:\r");
-			//UARTprintstring(primoChar);
 			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*8, (sContext.psFont->ui8Height+2)*0, true);
 			osMutexRelease(mutex_display_id);
 		}
@@ -260,6 +266,11 @@ void primo_thread(void const *args){
 			
 		}
 		primo =  primo + 1;
+						pMailGantt = osMailAlloc(id_mail_Gantt,0);
+				pMailGantt->id = 1;				
+				//pMailGantt->Buffer = (char*)'Fibonacci';
+				// Send Mail
+				osMailPut(id_mail_Gantt, pMailGantt);  
 		osSemaphoreRelease(escalonador);
 	}
 }osThreadDef(primo_thread, osPriorityRealtime, 1, 0);
@@ -276,14 +287,18 @@ void init_all(){
 *------------------------------------------------------------------------------*/
 void UARTIntHandler(void){
 	char m;
+	struct_Gantt *pMailGantt = 0;
 	UART_read * mailI;
 	while((UART0->FR & (1<<4)) != 0);
 	m = UART0->DR;
 	UART0	->	RIS |= (1<<4);
 	mailI = (UART_read*)osMailAlloc(mid_UART,0);
-	if(mailI){
+	pMailGantt = osMailAlloc(id_mail_Gantt,0);
+	if(mailI){ 
 		mailI	-> msg_UART = m;
 		osMailPut(mid_UART,mailI);
+		pMailGantt->id = 2;
+		osMailPut(id_mail_Gantt, pMailGantt); 
 	}
 	UARTprintstring("Input:");
 	printchar(m);
@@ -295,6 +310,7 @@ void UARTIntHandler(void){
 void geracao_pontos(const void *args){
 	int32_t value;
 	char numero[32];
+	struct_Gantt *pMailGantt = 0;
 	uint32_t aux = 0;
 	while(1){
 		osDelay(100);
@@ -309,6 +325,11 @@ void geracao_pontos(const void *args){
 			osMutexRelease(mutex_display_id);
 		}
 		aux++;
+		pMailGantt = osMailAlloc(id_mail_Gantt,0);
+		pMailGantt->id = 3;				
+				//pMailGantt->Buffer = (char*)'Fibonacci';
+				// Send Mail
+		osMailPut(id_mail_Gantt, pMailGantt);
 		osSemaphoreRelease(escalonador);
 	}
 }osThreadDef(geracao_pontos,osPriorityLow,1,0);
@@ -392,12 +413,67 @@ while(1){
 	}
 }osThreadDef(UART_t,osPriorityHigh,1,0);
 
-
-
-
-void mail_Gant()
-{
-}osMailQDef(mail_Gantt, mail_Gantt, struct_Gantt);
+void geracao_Gantt(const void *args){
+	char inteiro[32];
+	osEvent evt;
+	osStatus status;
+	uint32_t stime, ftime;
+	uint8_t i;
+	
+	struct_Gantt *pMail = 0;
+	
+	while(1){
+		// Mail
+		
+		//	INICIA	SECAO	CRITICA
+		evt = osMailGet(id_mail_Gantt, osWaitForever);
+		if(evt.status == osEventMail)
+		{
+			stime = osKernelSysTick();
+			
+			pMail = evt.value.p;
+      if(pMail) 
+			{
+				
+				// Recebe outros tempos para diagrama de Gantt e envia através da serial (4 tempos, 32 bytes)
+				UARTprintstring("Id: ");
+				intToString(pMail->id,inteiro,32,10,0);
+				UARTprintstring(inteiro);
+				UARTprintstring("\n\r");
+//        for(i = 0; i < 24; i++){
+//					intToString(pMail->Buffer[i],inteiro,32,10,0);
+//					UARTprintstring(inteiro);
+//				}
+//				UARTprintstring("\n");
+//				// stime Gantt
+//				intToString(stime,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(stime >> 8,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(stime >> 16,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(stime >> 24,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//					
+//				ftime = osKernelSysTick();
+//					
+//				// ftime Gantt
+//				intToString(ftime,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(ftime >> 8,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(ftime >> 16,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+//				intToString(ftime >> 24,inteiro,32,10,0);
+//				UARTprintstring(inteiro);
+					
+				// free memory allocated for mail
+				osMailFree(id_mail_Gantt, pMail);                      	
+			}
+		}
+		//	FIM	DA	SECAO	CRITICA
+	}
+}osThreadDef(geracao_Gantt,osPriorityNormal,1,0);
 
 /*----------------------------------------------------------------------------
  *      Main
@@ -422,11 +498,12 @@ void mail_Gant()
 	GrStringDraw(&sContext,"Primo:", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
 	GrStringDraw(&sContext,"Fibonacci:", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
 	GrStringDraw(&sContext,"G.Pontos:", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
-	osThreadCreate(osThread(UART_t),NULL);
+	//osThreadCreate(osThread(UART_t),NULL);
 	osThreadCreate(osThread(Console),NULL);
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
 	osThreadCreate(osThread(geracao_pontos), NULL);
+	osThreadCreate(osThread(geracao_Gantt), NULL);
 	osKernelStart();
 	osDelay(osWaitForever);
 }
