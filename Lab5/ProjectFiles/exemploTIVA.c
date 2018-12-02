@@ -39,8 +39,10 @@
 #include "UART_CONSOLE_F.h"
 #include "ondas.h"
 
-
+#define mail_Gantt   16  
 #define m_quantidade 1
+
+osMailQId id_mail_Gantt; 
 
 //To print on the screen
 tContext sContext;
@@ -55,6 +57,11 @@ osSemaphoreDef(escalonador);                       // Semaphore definition
 typedef struct{
 	uint8_t msg_UART;
 }UART_read;
+
+typedef struct {                                                
+  uint8_t aux[32];
+  uint8_t id;
+} struct_Gantt;
 /*----------------------------------------
 *		Mail
 *----------------------------------------*/
@@ -156,10 +163,10 @@ void desenha_quadrado(void)
 	osDelay(10000);
 	servo_writePosX(7000);
 	servo_writePosY(7000);
-	servo_writeRot(19000);
-	osDelay(10000);	
-	servo_writePosX(15000);
 	servo_writeRot(20000);
+	osDelay(1000);	
+	servo_writePosX(21000);
+	servo_writeRot(18000);
 	osDelay(10000);
 	servo_writePosX(20000);
 	servo_writeRot(28000);
@@ -169,7 +176,7 @@ void desenha_quadrado(void)
 void desenha_losango()
 {
 	servo_writeRot(25000);
-	servo_writePosX(11800);
+	servo_writePosX(10800);
 	//servo_writePosY(7000);
 	osDelay(10000);	
 	servo_writePosY(9000);
@@ -183,7 +190,7 @@ void desenha_losango()
 	servo_writePosX(17500);
 	osDelay(10000);	
 	servo_writePosY(7000);
-	servo_writeRot(27000);
+	servo_writeRot(26000);
 	servo_writePosX(10000);
 }
 void fibonacci_thread(void const *args){
@@ -257,14 +264,6 @@ void primo_thread(void const *args){
 	}
 }osThreadDef(primo_thread, osPriorityRealtime, 1, 0);
 
-void Rotacao_thread(void const *args){
-	uint16_t angle = 16000;
-	while(1){
-//		angle = 16000;
-//		servo_writeRot(angle);
-		
-	}
-}osThreadDef(Rotacao_thread, osPriorityNormal, 1, 0);
 
 void init_all(){
 	init_UART();
@@ -375,11 +374,10 @@ while(1){
 					case '4':
 						UARTprintstring("4 - BANDEIRA SELECIONADO (6 - p/ desenhar)\n\r");
 						desenha_quadrado();
-					desenha_losango();
+						desenha_losango();
 						break;
 					case '5':
 						UARTprintstring("5 - PARANDO ANDAMENTO DO DESENHO...\n\r");
-					
 						break;
 					case '6':
 						UARTprintstring("6 - DESENHANDO...\n\r");		
@@ -396,6 +394,11 @@ while(1){
 
 
 
+
+void mail_Gant()
+{
+}osMailQDef(mail_Gantt, mail_Gantt, struct_Gantt);
+
 /*----------------------------------------------------------------------------
  *      Main
 *---------------------------------------------------------------------------*/
@@ -405,6 +408,7 @@ while(1){
 	init_all();
 	osKernelInitialize();
 	mid_UART= osMailCreate(osMailQ(m_UART), NULL);
+	id_mail_Gantt = osMailCreate(osMailQ(mail_Gantt), NULL);
 	msg_console = osMessageCreate(osMessageQ(msg_console),NULL);
 	escalonador = osSemaphoreCreate(osSemaphore(escalonador), 1);
 	GrContextInit(&sContext, &g_sCfaf128x128x16);
@@ -422,7 +426,6 @@ while(1){
 	osThreadCreate(osThread(Console),NULL);
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
-	osThreadCreate(osThread(Rotacao_thread), NULL);
 	osThreadCreate(osThread(geracao_pontos), NULL);
 	osKernelStart();
 	osDelay(osWaitForever);
