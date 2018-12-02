@@ -145,140 +145,146 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 
 void posicao_inicial()
 {
-	servo_writePosY(5000);
+	servo_writePosY(1500);
+	osDelay(5000);
+	servo_writePosX(5000);
+	osDelay(5000);
+	servo_writeRot(28000);
 	osDelay(10000);
-	servo_writePosX(1000);
-	osDelay(10000);
-	servo_writeRot(24000);
-	osDelay(10000);
+	servo_writeRot(28000);
+	osDelay(5000);
+	servo_writePosX(20000);
+	osDelay(5000);
+	servo_writePosY(7000);
+	osDelay(5000);
 }
 void desenha_circulo(void)
 {
 	struct_Gantt *pMailGantt = 0;
 	int i, auxR, auxX;
-		servo_writePosY(1500);
+	servo_writePosY(1500);
+	osDelay(5000);
+	servo_writePosX(5000);
+	osDelay(5000);
+	servo_writeRot(28000);
+	osDelay(10000);
+
+	servo_writePosX(9000);
+	osDelay(5000);
+	servo_writeRot(23000);
+	osDelay(5000);
+	servo_writePosY(6000);
+	osDelay(10000);
+	auxR = 23000;
+	auxX = 9000;
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 200;
+		auxX+= 150;
 		osDelay(5000);
-		servo_writePosX(5000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX+= 150;
 		osDelay(5000);
-		servo_writeRot(28000);
-		osDelay(10000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX+= 280;
+		osDelay(5000);
+	}
 	
-		servo_writePosX(9000);
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 200;
+		auxX+= 160;
 		osDelay(5000);
-		servo_writeRot(23000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 150;
+		auxX+= 200;
 		osDelay(5000);
-		servo_writePosY(6000);
-		osDelay(10000);
-		auxR = 23000;
-		auxX = 9000;
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR-= 200;
-			auxX+= 150;
-			osDelay(5000);
-		}
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR-= 150;
-			auxX+= 150;
-			osDelay(5000);
-		}
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR-= 150;
-			auxX+= 280;
-			osDelay(5000);
-		}
-		
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR+= 200;
-			auxX+= 160;
-			osDelay(5000);
-		}
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR+= 150;
-			auxX+= 200;
-			osDelay(5000);
-		}
-		servo_writePosY(5500);
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR+= 150;
-			auxX+= 350;
-			osDelay(5000);
-		}
-		auxX += 500;
-		servo_writePosX(auxX);
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR+= 150;
-			auxX+= 350;
-			osDelay(5000);
-		}
-		auxX += 500;
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR+= 200;
-			auxX-= 160;
-			osDelay(5000);
-		}
-		auxX += 500;
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR+= 150;
-			auxX-= 160;
-			osDelay(5000);
-		}
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR+= 150;
-			auxX-= 290;
-			osDelay(5000);
-		}
-		servo_writePosY(6500);
-		auxX-= 550;
-		servo_writePosX(auxX);
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR-= 200;
-			auxX-= 150;
-			osDelay(5000);
-		}
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR-= 150;
-			auxX-= 150;
-			osDelay(5000);
-		}
-		for(i = 0; i < 3; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR-= 150;
-			auxX-= 280;
-			osDelay(5000);
-		}
-								
-		for(i = 0; i < 4; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR-= 200;
-			auxX-= 150;
-			osDelay(5000);
-		}
-		for(i = 0; i < 4; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR-= 150;
-			auxX-= 150;
-			osDelay(5000);
-		}
-		for(i = 0; i < 4; i++){
-			servo_writeRot(auxR);servo_writePosX(auxX);
-			auxR-= 150;
-			auxX-= 280;
-			osDelay(5000);
-		}
-		pMailGantt->id = 4;
-		osMailPut(id_mail_Gantt, pMailGantt); 
+	}
+	servo_writePosY(5500);
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 150;
+		auxX+= 350;
+		osDelay(5000);
+	}
+	auxX += 500;
+	servo_writePosX(auxX);
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 150;
+		auxX+= 350;
+		osDelay(5000);
+	}
+	auxX += 500;
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 200;
+		auxX-= 160;
+		osDelay(5000);
+	}
+	auxX += 500;
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 150;
+		auxX-= 160;
+		osDelay(5000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR+= 150;
+		auxX-= 290;
+		osDelay(5000);
+	}
+	servo_writePosY(6500);
+	auxX-= 550;
+	servo_writePosX(auxX);
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 200;
+		auxX-= 150;
+		osDelay(5000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX-= 150;
+		osDelay(5000);
+	}
+	for(i = 0; i < 3; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX-= 280;
+		osDelay(5000);
+	}
+							
+	for(i = 0; i < 4; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 200;
+		auxX-= 150;
+		osDelay(5000);
+	}
+	for(i = 0; i < 4; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX-= 150;
+		osDelay(5000);
+	}
+	for(i = 0; i < 4; i++){
+		servo_writeRot(auxR);servo_writePosX(auxX);
+		auxR-= 150;
+		auxX-= 280;
+		osDelay(5000);
+	}
+	pMailGantt->id = 4;
+	osMailPut(id_mail_Gantt, pMailGantt); 
 						
 }
 void desenha_quadrado(void)
@@ -326,6 +332,7 @@ void desenha_losango()
 	servo_writeRot(26000);
 	servo_writePosX(10500);
 	osDelay(10000);	
+	posicao_inicial();
 	pMailGantt->id = 4;
 	osMailPut(id_mail_Gantt, pMailGantt); 
 }
@@ -622,7 +629,7 @@ void geracao_Gantt(const void *args){
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
 	osThreadCreate(osThread(geracao_pontos), NULL);
-	osThreadCreate(osThread(geracao_Gantt), NULL);
+	//osThreadCreate(osThread(geracao_Gantt), NULL);
 	osKernelStart();
 	osDelay(osWaitForever);
 }
