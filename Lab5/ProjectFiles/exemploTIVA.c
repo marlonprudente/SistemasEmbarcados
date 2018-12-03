@@ -44,6 +44,8 @@
 
 osMailQId id_mail_Gantt; 
 
+osThreadId manipulacao_id;
+int flag_desenho;
 //To print on the screen
 tContext sContext;
 uint32_t primo = 0;
@@ -54,13 +56,15 @@ osSemaphoreDef(escalonador);                       // Semaphore definition
 /*================================
 =========Mail Handler============
 =================================*/
+
 typedef struct{
 	uint8_t msg_UART;
 }UART_read;
 
+//estrutura do gantt
 typedef struct {                                                
   uint8_t id;
-} struct_Gantt;
+}struct_Gantt;
 /*----------------------------------------
 *		Mail
 *----------------------------------------*/
@@ -141,7 +145,7 @@ static void intToString(int64_t value, char * pBuf, uint32_t len, uint32_t base,
 /*----------------------------------------------------------------------------
  *    Desenho
  *---------------------------------------------------------------------------*/
-
+//posição inicial do robo 
 void posicao_inicial()
 {
 	servo_writePosY(1500);
@@ -157,6 +161,8 @@ void posicao_inicial()
 	servo_writePosY(7000);
 	osDelay(5000);
 }
+
+//desenha circulo
 void desenha_circulo(void)
 {
 	struct_Gantt *pMailGantt = 0;
@@ -287,6 +293,7 @@ void desenha_circulo(void)
 	osMailPut(id_mail_Gantt, pMailGantt); 
 						
 }
+//desenha quadrado
 void desenha_quadrado(void)
 {
 	struct_Gantt *pMailGantt = 0;
@@ -312,6 +319,7 @@ void desenha_quadrado(void)
 	osMailPut(id_mail_Gantt, pMailGantt); 
 }
 
+//desenha losango
 void desenha_losango()
 {
 	struct_Gantt *pMailGantt = 0;
@@ -340,7 +348,7 @@ void desenha_losango()
 }
 
 /*----------------------------------------------------------------------------
- *    Fibonacci e primo
+ *    Threads de Fibonacci e primo
  *---------------------------------------------------------------------------*/
 
 void fibonacci_thread(void const *args){
@@ -406,7 +414,7 @@ void primo_thread(void const *args){
 			GrFlush(&sContext);
 			GrContextForegroundSet(&sContext, ClrWhite);
 			GrContextBackgroundSet(&sContext, ClrBlack);
-			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*8, (sContext.psFont->ui8Height+2)*0, true);
+			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*0, true);
 			osMutexRelease(mutex_display_id);
 		}
 		else{
@@ -425,6 +433,8 @@ void primo_thread(void const *args){
 }osThreadDef(primo_thread, osPriorityRealtime, 1, 0);
 
 
+
+//inicializações
 void init_all(){
 	init_UART();
 	servo_init();
@@ -432,7 +442,7 @@ void init_all(){
 }	
 
 /*-----------------------------------------------------------------------------
-*      Funcoes de uso exclusivo do programa
+*      UART Handler
 *------------------------------------------------------------------------------*/
 void UARTIntHandler(void){
 	char m;
@@ -454,6 +464,8 @@ void UARTIntHandler(void){
 	UARTprintstring("\n\r");
 }
 
+
+//geração de pontos
 void geracao_pontos(const void *args){
 	int32_t value;
 	char numero[32];
@@ -465,10 +477,6 @@ void geracao_pontos(const void *args){
 		if(value > 0){			
 			osMutexWait(mutex_display_id,osWaitForever);
 			intToString(aux,numero,30,10,10);
-			GrFlush(&sContext);
-			GrContextForegroundSet(&sContext, ClrWhite);
-			GrContextBackgroundSet(&sContext, ClrBlack);
-			GrStringDraw(&sContext,(char*)numero, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*2, true);
 			osMutexRelease(mutex_display_id);
 		}
 		aux++;
@@ -481,6 +489,8 @@ void geracao_pontos(const void *args){
 	}
 }osThreadDef(geracao_pontos,osPriorityLow,1,0);
 
+
+//apresentação no console (putty)
 void Console(const void *args){
 	bool ini_uart = true;
 	osEvent evt;
@@ -495,6 +505,41 @@ void Console(const void *args){
 		}
 }osThreadDef(Console,osPriorityHigh,1,0);
 
+void manipulacao()
+{		
+	osStatus status;
+	while(1){
+		osSignalWait(0x0005, osWaitForever);		
+		if(flag_desenho == 1)
+		{
+			desenha_quadrado(); //desenha o quadrado
+		}
+		else if(flag_desenho == 2)
+		{
+			desenha_losango();	//desenha o losango e retorna a posição inicial
+			posicao_inicial();
+		}
+		else if(flag_desenho == 3)
+		{
+			desenha_circulo();	//desenha o circulo e retorna a posição inicial
+			posicao_inicial();
+		}
+		else if(flag_desenho == 4)
+		{
+			desenha_quadrado();	//desenha a bandeira completa e retorna a posição inicial
+			desenha_losango();
+			desenha_circulo();
+			posicao_inicial();
+		}
+		else if (flag_desenho == 5)
+		{
+			posicao_inicial();	//para o andamento do desenho
+		}
+	}
+}osThreadDef(manipulacao,osPriorityNormal,1,0);
+
+
+//Thread da UART
 void UART_t(const void *args){
 static uint16_t count = 0;
 static uint8_t amplitude = 100;
@@ -511,30 +556,30 @@ while(1){
 			osMailFree(mid_UART,mail);
 				switch(mensagem){
 					case '1':
-					UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r");
-					desenha_quadrado();
+					UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r"); 
+					flag_desenho = 1;
+					osSignalSet(manipulacao_id, 0x0005);
 					break;
 					case '2':
 					UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
-						desenha_losango();					
+					flag_desenho = 2;
+					osSignalSet(manipulacao_id, 0x0005);
 					break;
 					case '3':
-						UARTprintstring("3 - CIRCULO SELECIONADO (6 - p/ desenhar)\n\r");
-					desenha_circulo();
+					UARTprintstring("3 - CIRCULO SELECIONADO (6 - p/ desenhar)\n\r");
+					flag_desenho = 3;
+					osSignalSet(manipulacao_id, 0x0005);
 						break;
 					case '4':
 						UARTprintstring("4 - BANDEIRA SELECIONADO (6 - p/ desenhar)\n\r");
-						desenha_quadrado();
-						desenha_losango();
-						desenha_circulo();
+					flag_desenho = 4;
+					osSignalSet(manipulacao_id, 0x0005);
 						break;
 					case '5':
 						UARTprintstring("5 - PARANDO ANDAMENTO DO DESENHO...\n\r");
-						break;
-					case '6':
-						UARTprintstring("6 - DESENHANDO...\n\r");		
-						servo_writePosX(7500);					
-						break;
+					flag_desenho = 5;
+					osSignalSet(manipulacao_id, 0x0005);
+						break;	
 					default:
 						UARTprintstring("Entrada invalida\n\r");
 						break;
@@ -548,9 +593,8 @@ void geracao_Gantt(const void *args){
 	char inteiro[32];
 	osEvent evt;
 	osStatus status;
-	uint32_t stime, ftime;
-	uint8_t i;
-	
+	uint32_t stime;
+
 	struct_Gantt *pMail = 0;
 	
 	while(1){
@@ -593,22 +637,28 @@ void geracao_Gantt(const void *args){
 	msg_console = osMessageCreate(osMessageQ(msg_console),NULL);
 	escalonador = osSemaphoreCreate(osSemaphore(escalonador), 1);
 	GrContextInit(&sContext, &g_sCfaf128x128x16);
-	
 	GrFlush(&sContext);
 	GrContextFontSet(&sContext, g_psFontFixed6x8);
-	
 	GrContextForegroundSet(&sContext, ClrWhite);
 	GrContextBackgroundSet(&sContext, ClrBlack);
+	
 	 //Escreve menu lateral:
-	GrStringDraw(&sContext,"Primo:", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-	GrStringDraw(&sContext,"Fibonacci:", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
-	GrStringDraw(&sContext,"G.Pontos:", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
+	GrStringDraw(&sContext,"Primo:"			, -1, 0, (sContext.psFont->ui8Height+2)*0, true);
+	GrStringDraw(&sContext,"Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*1, true);
+	 
+	GrStringDraw(&sContext,"Prioridades Threads"			, -1, 0, (sContext.psFont->ui8Height+2)*2, true);
+	GrStringDraw(&sContext,"Primo:"			, -1, 0, (sContext.psFont->ui8Height+2)*3, true);
+	GrStringDraw(&sContext,"UART:"			, -1, 0, (sContext.psFont->ui8Height+2)*4, true);
+	GrStringDraw(&sContext,"Pontos:"		, -1, 0, (sContext.psFont->ui8Height+2)*5, true);
+	GrStringDraw(&sContext,"Controle:"	, -1, 0, (sContext.psFont->ui8Height+2)*6, true); 
+	GrStringDraw(&sContext,"Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*7, true);
 	osThreadCreate(osThread(UART_t),NULL);
 	osThreadCreate(osThread(Console),NULL);
 	osThreadCreate(osThread(primo_thread), NULL);
 	osThreadCreate(osThread(fibonacci_thread), NULL);
 	osThreadCreate(osThread(geracao_pontos), NULL);
-	//osThreadCreate(osThread(geracao_Gantt), NULL);
+	osThreadCreate(osThread(geracao_Gantt), NULL);
+	manipulacao_id = osThreadCreate(osThread(manipulacao), NULL);
 	osKernelStart();
 	osDelay(osWaitForever);
 }
