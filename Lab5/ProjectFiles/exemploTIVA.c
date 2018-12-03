@@ -44,7 +44,7 @@
 
 osMailQId id_mail_Gantt; 
 
-osThreadId manipulacao_id;
+
 int flag_desenho;
 //To print on the screen
 tContext sContext;
@@ -53,6 +53,18 @@ uint32_t fibonacci = 1;
 osMutexId mutex_display_id;
 osSemaphoreId escalonador;                         // Semaphore ID
 osSemaphoreDef(escalonador);                       // Semaphore definition
+
+osPriority Ppontos;
+osPriority Puart;
+osPriority Pmanipulador;
+osPriority Pfibonacci;
+
+osThreadId manipulacao_id;
+osThreadId uart_id;
+osThreadId fibonacci_id;
+osThreadId pontos_id;
+
+uint8_t threads[4];
 /*================================
 =========Mail Handler============
 =================================*/
@@ -414,7 +426,7 @@ void primo_thread(void const *args){
 			GrFlush(&sContext);
 			GrContextForegroundSet(&sContext, ClrWhite);
 			GrContextBackgroundSet(&sContext, ClrBlack);
-			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*0, true);
+			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*6, (sContext.psFont->ui8Height+2)*0, true);
 			osMutexRelease(mutex_display_id);
 		}
 		else{
@@ -478,14 +490,18 @@ void geracao_pontos(const void *args){
 			osMutexWait(mutex_display_id,osWaitForever);
 			intToString(aux,numero,30,10,10);
 			osMutexRelease(mutex_display_id);
-		}
-		aux++;
+		threads[2] = 1;
+				aux++;
 		pMailGantt = osMailAlloc(id_mail_Gantt,0);
 		pMailGantt->id = 3;				
 				//pMailGantt->Buffer = (char*)'Fibonacci';
 				// Send Mail
 		osMailPut(id_mail_Gantt, pMailGantt);
 		osSemaphoreRelease(escalonador);
+		}else{
+		threads[2] = 0;
+		}
+
 	}
 }osThreadDef(geracao_pontos,osPriorityLow,1,0);
 
@@ -624,6 +640,34 @@ void geracao_Gantt(const void *args){
 	}
 }osThreadDef(geracao_Gantt,osPriorityNormal,1,0);
 
+
+void escalonador_t(const void *args){
+	uint32_t value;
+	while(1){
+	value = osSemaphoreWait(escalonador,2);
+		if(value > 0 ){
+			
+			
+			if(threads[2]==0){
+			Ppontos++;
+			osThreadSetPriority(pontos_id,Ppontos);
+			}else{
+				Ppontos = osPriorityLow;
+				osThreadSetPriority(pontos_id,Ppontos);
+			}
+			osMutexWait(mutex_display_id,osWaitForever);
+			GrFlush(&sContext);
+			GrContextForegroundSet(&sContext, ClrWhite);
+			GrContextBackgroundSet(&sContext, ClrBlack);
+			GrStringDraw(&sContext,"Escalonador", -1, (sContext.psFont->ui8MaxWidth)*7, (sContext.psFont->ui8Height+2)*5, true);
+			osMutexRelease(mutex_display_id);
+		
+		}
+	
+	}
+
+}osThreadDef(escalonador_t,osPriorityNormal,1,0);
+
 /*----------------------------------------------------------------------------
  *      Main
 *---------------------------------------------------------------------------*/
@@ -641,6 +685,11 @@ void geracao_Gantt(const void *args){
 	GrContextFontSet(&sContext, g_psFontFixed6x8);
 	GrContextForegroundSet(&sContext, ClrWhite);
 	GrContextBackgroundSet(&sContext, ClrBlack);
+	 
+ Ppontos = osPriorityLow;
+ Pfibonacci = osPriorityNormal;
+ Puart = osPriorityHigh;
+ Pmanipulador = osPriorityNormal;
 	
 	 //Escreve menu lateral:
 	GrStringDraw(&sContext,"Primo:"			, -1, 0, (sContext.psFont->ui8Height+2)*0, true);
@@ -653,10 +702,11 @@ void geracao_Gantt(const void *args){
 	GrStringDraw(&sContext,"Controle:"	, -1, 0, (sContext.psFont->ui8Height+2)*6, true); 
 	GrStringDraw(&sContext,"Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*7, true);
 	osThreadCreate(osThread(UART_t),NULL);
-	osThreadCreate(osThread(Console),NULL);
+	osThreadCreate(osThread(escalonador_t),NULL);
+	uart_id = osThreadCreate(osThread(Console),NULL);
 	osThreadCreate(osThread(primo_thread), NULL);
-	osThreadCreate(osThread(fibonacci_thread), NULL);
-	osThreadCreate(osThread(geracao_pontos), NULL);
+	fibonacci_id = osThreadCreate(osThread(fibonacci_thread), NULL);
+	pontos_id = osThreadCreate(osThread(geracao_pontos), NULL);
 	osThreadCreate(osThread(geracao_Gantt), NULL);
 	manipulacao_id = osThreadCreate(osThread(manipulacao), NULL);
 	osKernelStart();
