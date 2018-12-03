@@ -49,7 +49,7 @@ int flag_desenho;
 //To print on the screen
 tContext sContext;
 uint32_t primo = 0;
-uint32_t fibonacci = 1;
+uint32_t fibonacci = 3;
 osMutexId mutex_display_id;
 osSemaphoreId escalonador;                         // Semaphore ID
 osSemaphoreDef(escalonador);                       // Semaphore definition
@@ -373,7 +373,8 @@ void fibonacci_thread(void const *args){
 	while(1){
 		osDelay(1000);
 		value = osSemaphoreWait(escalonador,500);
-				if(value > 0){
+		if(value > 0){
+		threads[3] = 1;
 		num3 = num1 + num2;		
 			while(num3 < fibonacci)
 				{
@@ -383,24 +384,18 @@ void fibonacci_thread(void const *args){
 				}
 			if(num3 == fibonacci){
 			osMutexWait(mutex_display_id,osWaitForever);
-			intToString(primo,fibonacciChar,30,10,0);
+			intToString(fibonacci,fibonacciChar,30,10,0);
 			GrFlush(&sContext);
 			GrContextForegroundSet(&sContext, ClrWhite);
 			GrContextBackgroundSet(&sContext, ClrBlack);
 			GrStringDraw(&sContext,(char*)fibonacciChar, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*1, true);
 			osMutexRelease(mutex_display_id);
-			}
-			else{
-				//não pertence	
-			}
-		}
-		fibonacci++;		
-				pMailGantt = osMailAlloc(id_mail_Gantt,0);
-				pMailGantt->id = 5;				
-				//pMailGantt->Buffer = (char*)'Fibonacci';
-				// Send Mail
-				osMailPut(id_mail_Gantt, pMailGantt);  
+			}			
+			fibonacci++;
 			osSemaphoreRelease(escalonador);
+		}else{
+			threads[3] = 0;
+		}			
 		}
 }osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 
@@ -413,8 +408,9 @@ void primo_thread(void const *args){
 	while(1){
 		osDelay(200);
 		value = osSemaphoreWait(escalonador,60);
-		if(value > 0){		
+		if(value > 0){
 		div = 0;
+		threads[3] = 1;
 		for (aux = 1; aux <= primo; aux++){
 			if(primo%aux == 0){
 				div++;
@@ -429,18 +425,12 @@ void primo_thread(void const *args){
 			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*6, (sContext.psFont->ui8Height+2)*0, true);
 			osMutexRelease(mutex_display_id);
 		}
-		else{
-			
-		}
-			
-		}
-		primo =  primo + 1;
-						pMailGantt = osMailAlloc(id_mail_Gantt,0);
-				pMailGantt->id = 1;				
-				//pMailGantt->Buffer = (char*)'Fibonacci';
-				// Send Mail
-				osMailPut(id_mail_Gantt, pMailGantt);  
+		primo =  primo + 1; 
 		osSemaphoreRelease(escalonador);
+		}else{
+			threads[3] = 0;
+		}
+		
 	}
 }osThreadDef(primo_thread, osPriorityRealtime, 1, 0);
 
@@ -469,7 +459,7 @@ void UARTIntHandler(void){
 		mailI	-> msg_UART = m;
 		osMailPut(mid_UART,mailI);
 		pMailGantt->id = 2;
-		osMailPut(id_mail_Gantt, pMailGantt); 
+		osMailPut(id_mail_Gantt, pMailGantt);
 	}
 	UARTprintstring("Input:");
 	printchar(m);
@@ -486,7 +476,7 @@ void geracao_pontos(const void *args){
 	while(1){
 		osDelay(100);
 		value = osSemaphoreWait(escalonador,70);
-		if(value > 0){			
+		if(value > 0){
 			osMutexWait(mutex_display_id,osWaitForever);
 			intToString(aux,numero,30,10,10);
 			osMutexRelease(mutex_display_id);
@@ -509,23 +499,34 @@ void geracao_pontos(const void *args){
 //apresentação no console (putty)
 void Console(const void *args){
 	bool ini_uart = true;
+	uint32_t value;
 	osEvent evt;
 	msg_generic *msg = 0;
 	while(1){
+		value = osSemaphoreWait(escalonador,1);
+		if(value > 0){
+			threads[0] = 1;
 		if(ini_uart){
 			pag_ini_uart();
 			ini_uart=false;
 		}
 		evt = osMessageGet(msg_console,osWaitForever);
 		osPoolFree(poolid_c,msg);
+		}else{
+		threads[0] = 0;
+		}
 		}
 }osThreadDef(Console,osPriorityHigh,1,0);
 
 void manipulacao()
-{		
+{
+	uint32_t value;
 	osStatus status;
 	while(1){
-		osSignalWait(0x0005, osWaitForever);		
+		osSignalWait(0x0005, osWaitForever);
+		value = osSemaphoreWait(escalonador,40);
+		if(value > 0){
+		threads[1] = 1;
 		if(flag_desenho == 1)
 		{
 			desenha_quadrado(); //desenha o quadrado
@@ -551,6 +552,9 @@ void manipulacao()
 		{
 			posicao_inicial();	//para o andamento do desenho
 		}
+	}else{
+	threads[1] = 0;
+	}
 	}
 }osThreadDef(manipulacao,osPriorityNormal,1,0);
 
@@ -643,27 +647,69 @@ void geracao_Gantt(const void *args){
 
 void escalonador_t(const void *args){
 	uint32_t value;
+	char valor[32];
 	while(1){
 	value = osSemaphoreWait(escalonador,2);
 		if(value > 0 ){
-			
-			
-			if(threads[2]==0){
+			//UART Priority
+			if(threads[0]==0){			
+			Puart++;
+			if(Puart > +3)
+				Puart = +3;
+			osThreadSetPriority(uart_id,Puart);
+			}
+			if(threads[0]==1){				
+				Puart = osPriorityHigh;
+				osThreadSetPriority(uart_id,Puart);
+			}
+			//Manipulador Priority
+			if(threads[1]==0){			
+			Pmanipulador++;
+			if(Pmanipulador > +2)
+				Pmanipulador = +2;
+			osThreadSetPriority(manipulacao_id,Pmanipulador);
+			}
+			if(threads[1]==1){				
+				Pmanipulador = osPriorityNormal;
+				osThreadSetPriority(manipulacao_id,Pmanipulador);
+			}
+			//Gerador Pontos Priority
+			if(threads[2]==0){				
 			Ppontos++;
+			if(Ppontos> +2)
+				Ppontos = +2;
 			osThreadSetPriority(pontos_id,Ppontos);
-			}else{
+			}
+			if(threads[2]==1){				
 				Ppontos = osPriorityLow;
 				osThreadSetPriority(pontos_id,Ppontos);
 			}
-			osMutexWait(mutex_display_id,osWaitForever);
-			GrFlush(&sContext);
-			GrContextForegroundSet(&sContext, ClrWhite);
-			GrContextBackgroundSet(&sContext, ClrBlack);
-			GrStringDraw(&sContext,"Escalonador", -1, (sContext.psFont->ui8MaxWidth)*7, (sContext.psFont->ui8Height+2)*5, true);
-			osMutexRelease(mutex_display_id);
+			//Fibonacci Priority
+			if(threads[3]==0){			
+			Pfibonacci++;
+			if(Pfibonacci > +2)
+				Pfibonacci = +2;
+			osThreadSetPriority(fibonacci_id,Pfibonacci);
+			}
+			if(threads[3]==1){				
+				Pfibonacci = osPriorityNormal;
+				osThreadSetPriority(fibonacci_id,Pfibonacci);
+			}
+			//======================================
+//			osMutexWait(mutex_display_id,osWaitForever);
+//			GrFlush(&sContext);
+//			GrContextForegroundSet(&sContext, ClrWhite);
+//			GrContextBackgroundSet(&sContext, ClrBlack);
+//			intToString(Ppontos,valor,32,10,0);
+//			GrStringDraw(&sContext,(char*)valor, -1, (sContext.psFont->ui8MaxWidth)*7, (sContext.psFont->ui8Height+2)*5, true);
+//			intToString(Pfibonacci,valor,32,10,0);
+//			GrStringDraw(&sContext,(char*)valor, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*6, true);
+//			GrStringDraw(&sContext,"3", -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*7, true);
+//			GrStringDraw(&sContext,"4", -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*8, true);
+//			osMutexRelease(mutex_display_id);
 		
 		}
-	
+	osSemaphoreRelease(escalonador);
 	}
 
 }osThreadDef(escalonador_t,osPriorityNormal,1,0);
