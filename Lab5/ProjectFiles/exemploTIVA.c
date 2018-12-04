@@ -366,11 +366,12 @@ void desenha_losango()
 void fibonacci_thread(void const *args){
 	osEvent evt;
 
-	uint32_t num1 = 0,num2 = 1,num3;
+	uint32_t num1 = 0,num2 = 1,num3, start, end, total;
 	int32_t value;
-	char fibonacciChar[32];
+	char fibonacciChar[32], tick[32];
 	struct_Gantt *pMailGantt = 0;
 	while(1){
+		start = osKernelSysTick();
 		osDelay(1000);
 		value = osSemaphoreWait(escalonador,500);
 		if(value > 0){
@@ -395,7 +396,12 @@ void fibonacci_thread(void const *args){
 			osSemaphoreRelease(escalonador);
 		}else{
 			threads[3] = 0;
-		}			
+		}	
+		end = osKernelSysTick();
+		total = end - start;
+		intToString(total,tick,32,10,0);
+		UARTprintstring(tick);
+		UARTprintstring("\n\r");
 		}
 }osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 
@@ -430,7 +436,6 @@ void primo_thread(void const *args){
 		}else{
 			threads[3] = 0;
 		}
-		
 	}
 }osThreadDef(primo_thread, osPriorityRealtime, 1, 0);
 
@@ -520,10 +525,12 @@ void Console(const void *args){
 
 void manipulacao()
 {
-	uint32_t value;
+	uint32_t value, start, end, total;
 	osStatus status;
+	char tick[32];
 	while(1){
 		osSignalWait(0x0005, osWaitForever);
+		start = osKernelSysTick();
 		value = osSemaphoreWait(escalonador,40);
 		if(value > 0){
 		threads[1] = 1;
@@ -555,6 +562,11 @@ void manipulacao()
 	}else{
 	threads[1] = 0;
 	}
+	end = osKernelSysTick();
+	total = end - start;
+	intToString(total,tick,32,10,0);
+	UARTprintstring(tick);
+	UARTprintstring("\n\r");
 	}
 }osThreadDef(manipulacao,osPriorityNormal,1,0);
 
@@ -610,7 +622,8 @@ while(1){
 }osThreadDef(UART_t,osPriorityHigh,1,0);
 
 void geracao_Gantt(const void *args){
-	char inteiro[32];
+	char inteiro[32], tick[32];
+	uint32_t start, end, total;
 	osEvent evt;
 	osStatus status;
 	uint32_t stime;
@@ -619,6 +632,8 @@ void geracao_Gantt(const void *args){
 	
 	while(1){
 		// Mail
+		
+		start = osKernelSysTick();
 		
 		//	INICIA	SECAO	CRITICA
 		evt = osMailGet(id_mail_Gantt, osWaitForever);
@@ -641,6 +656,10 @@ void geracao_Gantt(const void *args){
 			}
 		}
 		//	FIM	DA	SECAO	CRITICA
+		end = osKernelSysTick();
+		total = end - start;
+		intToString(total,tick,32,10,0);
+		UARTprintstring(tick);
 	}
 }osThreadDef(geracao_Gantt,osPriorityNormal,1,0);
 
