@@ -527,7 +527,7 @@ void manipulacao()
 		{
 			posicao_inicial();	//para o andamento do desenho
 		}
-		threads[3].status = READY;
+		threads[3].status = WAITING;
 	}
 }osThreadDef(manipulacao,osPriorityNormal,1,0);
 
