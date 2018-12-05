@@ -654,6 +654,8 @@ void geracao_Gantt(const void *args){
 	GrStringDraw(&sContext,"T-Pontos:"		, -1, 0, (sContext.psFont->ui8Height+2)*5, true);
 	GrStringDraw(&sContext,"T-Controle:"	, -1, 0, (sContext.psFont->ui8Height+2)*6, true); 
 	GrStringDraw(&sContext,"T-Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*7, true);
+	GrStringDraw(&sContext,"Master Fault:"	, -1, 0, (sContext.psFont->ui8Height+2)*8, true);
+	GrStringDraw(&sContext,"Secundary Fault:"	, -1, 0, (sContext.psFont->ui8Height+2)*9, true);
 	
 	osThreadCreate(osThread(Console),NULL);
 	
@@ -710,22 +712,17 @@ void geracao_Gantt(const void *args){
 					}
 				}
 			}
-			intToString(threads[0].prioridadeTemp,buffer,32,10,0);
-			UARTprintstring((char*)buffer);
-			UARTprintstring("\n\r");
-			intToString(threads[1].prioridadeTemp,buffer,32,10,0);
-			UARTprintstring((char*)buffer);
-			UARTprintstring("\n\r");
-			intToString(threads[2].prioridadeTemp,buffer,32,10,0);
-			UARTprintstring((char*)buffer);
-			UARTprintstring("\n\r");
-			intToString(threads[3].prioridadeTemp,buffer,32,10,0);
-			UARTprintstring((char*)buffer);
-			UARTprintstring("\n\r");
-			intToString(threads[4].prioridadeTemp,buffer,32,10,0);
-			UARTprintstring((char*)buffer);
-			UARTprintstring("\n\r");
-			UARTprintstring("=====================================\n\r");
+			intToString(threads[0].status,buffer,32,10,0);
+			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*7, (sContext.psFont->ui8Height+2)*3, true);
+			intToString(threads[1].status,buffer,32,10,0);
+			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*7, (sContext.psFont->ui8Height+2)*4, true);
+			intToString(threads[2].status,buffer,32,10,0);
+			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*9, (sContext.psFont->ui8Height+2)*5, true);
+			intToString(threads[3].status,buffer,32,10,0);
+			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*6, true);
+			intToString(threads[4].status,buffer,32,10,0);
+			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*13, (sContext.psFont->ui8Height+2)*7, true);
+	
 			osSignalSet(prioridadeMaxima.id,prioridadeMaxima.signal);
 			osSemaphoreRelease(escalonador);
 		}
