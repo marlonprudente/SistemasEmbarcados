@@ -78,47 +78,51 @@ C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5
   #endif  //__UART_CONSOLE_F_H__
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\ondas.h(9): warning:  #1-D: last line of file ends without a newline
   #endif
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(367): warning:  #177-D: variable "evt"  was declared but never referenced
-        osEvent evt;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(372): warning:  #177-D: variable "pMailGantt"  was declared but never referenced
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(381): warning:  #175-D: subscript out of range
+                osSignalWait(threads[4].signal,osWaitForever);
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(382): warning:  #175-D: subscript out of range
+                threads[4].status = RUNNING;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(383): warning:  #175-D: subscript out of range
+                threads[4].prioridadeTemp = threads[4].prioridadeOrig;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(383): warning:  #175-D: subscript out of range
+                threads[4].prioridadeTemp = threads[4].prioridadeOrig;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(401): warning:  #175-D: subscript out of range
+                        threads[4].status = READY;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(407): warning:  #177-D: variable "pMailGantt"  was declared but never referenced
         struct_Gantt *pMailGantt = 0;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(405): warning:  #177-D: variable "pMailGantt"  was declared but never referenced
-        struct_Gantt *pMailGantt = 0;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(503): warning:  #550-D: variable "evt"  was set but never used
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(488): warning:  #550-D: variable "evt"  was set but never used
         osEvent evt;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(524): warning:  #177-D: variable "status"  was declared but never referenced
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(502): warning:  #177-D: variable "value"  was declared but never referenced
+        uint32_t value;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(503): warning:  #177-D: variable "status"  was declared but never referenced
         osStatus status;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(559): warning:  #144-D: a value of type "void (*)()" cannot be used to initialize an entity of type "os_pthread"
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(535): warning:  #144-D: a value of type "void (*)()" cannot be used to initialize an entity of type "os_pthread"
   }osThreadDef(manipulacao,osPriorityNormal,1,0);
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(564): warning:  #177-D: variable "count"  was declared but never referenced
-  static uint16_t count = 0;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(565): warning:  #177-D: variable "amplitude"  was declared but never referenced
-  static uint8_t amplitude = 100;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(566): warning:  #177-D: variable "teste"  was declared but never referenced
-  int teste = 1, i, auxR = 0, auxX = 0;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(566): warning:  #177-D: variable "i"  was declared but never referenced
-  int teste = 1, i, auxR = 0, auxX = 0;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(566): warning:  #177-D: variable "auxR"  was declared but never referenced
-  int teste = 1, i, auxR = 0, auxX = 0;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(566): warning:  #177-D: variable "auxX"  was declared but never referenced
-  int teste = 1, i, auxR = 0, auxX = 0;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(615): warning:  #177-D: variable "status"  was declared but never referenced
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(588): warning:  #177-D: variable "status"  was declared but never referenced
         osStatus status;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(616): warning:  #550-D: variable "stime"  was set but never used
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(589): warning:  #550-D: variable "stime"  was set but never used
         uint32_t stime;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(658): warning:  #188-D: enumerated type mixed with another type
-                                Puart = +3;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(669): warning:  #188-D: enumerated type mixed with another type
-                                Pmanipulador = +2;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(680): warning:  #188-D: enumerated type mixed with another type
-                                Ppontos = +2;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(691): warning:  #188-D: enumerated type mixed with another type
-                                Pfibonacci = +2;
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(650): warning:  #177-D: variable "valor"  was declared but never referenced
-        char valor[32];
-C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(760): warning:  #1-D: last line of file ends without a newline
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(680): warning:  #175-D: subscript out of range
+        threads[4].id = osThreadCreate(osThread(fibonacci_thread), NULL);
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(681): warning:  #175-D: subscript out of range
+        threads[4].prioridadeOrig = threads[4].prioridadeTemp = 0;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(681): warning:  #175-D: subscript out of range
+        threads[4].prioridadeOrig = threads[4].prioridadeTemp = 0;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(682): warning:  #175-D: subscript out of range
+        threads[4].deadline = 30;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(683): warning:  #175-D: subscript out of range
+        threads[4].ticks = 30;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(684): warning:  #175-D: subscript out of range
+        threads[4].signal = 0x04;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(685): warning:  #175-D: subscript out of range
+        threads[4].status = READY;
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(721): warning:  #175-D: subscript out of range
+                        intToString(threads[4].prioridadeTemp,buffer,32,10,0);
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(730): warning:  #1-D: last line of file ends without a newline
   }
-exemploTIVA.c: 45 warnings, 0 errors
+C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\ProjectFiles\exemploTIVA.c(629): warning:  #550-D: variable "aux"  was set but never used
+        uint8_t aux;
+exemploTIVA.c: 47 warnings, 0 errors
 compiling UART_CONSOLE_F.c...
 C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5\driverlib\uart.h(4): warning:  #1295-D: Deprecated declaration init_UART - give arg types
   extern void init_UART();
@@ -269,8 +273,8 @@ C:\Users\Marlon\Documents\Sistemas_Embarcados\SE_TM4C1294XL_BoosterPackMKII\Lab5
   #pragma call_graph_root ="interrupt"
 RTE\Device\TM4C1294NCPDT\system_TM4C129.c: 1 warning, 0 errors
 linking...
-Program Size: Code=16944 RO-data=2964 RW-data=212 ZI-data=10092  
-".\Flash\base_project.axf" - 0 Error(s), 103 Warning(s).
+Program Size: Code=17204 RO-data=2948 RW-data=176 ZI-data=10184  
+".\Flash\base_project.axf" - 0 Error(s), 105 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -301,24 +305,24 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.1.1
 
    * Component: ARM::CMSIS:RTOS:Keil RTX:4.81.1
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
-      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
       Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
-      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
       Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
       Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM4.lib
 
    * Component: Keil::Device:Startup:1.0.0
-      Include file:  Device\Include\TM4C129\TM4C129.h
       Source file:   Device\Source\ARM\startup_TM4C129.s
       Source file:   Device\Source\system_TM4C129.c
+      Include file:  Device\Include\TM4C129\TM4C129.h
 Build Time Elapsed:  00:00:06
 </pre>
 </body>

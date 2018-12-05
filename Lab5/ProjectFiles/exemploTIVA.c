@@ -51,20 +51,31 @@ tContext sContext;
 uint32_t primo = 0;
 uint32_t fibonacci = 3;
 osMutexId mutex_display_id;
+
+/*========Scheduler===============*/
 osSemaphoreId escalonador;                         // Semaphore ID
 osSemaphoreDef(escalonador);                       // Semaphore definition
 
-osPriority Ppontos;
-osPriority Puart;
-osPriority Pmanipulador;
-osPriority Pfibonacci;
+typedef enum {
+	RUNNING = 2,
+	READY = 1,
+	WAITING = 0,
+}StatusThread;
 
-osThreadId manipulacao_id;
-osThreadId uart_id;
-osThreadId fibonacci_id;
-osThreadId pontos_id;
+typedef struct{
+	osThreadId id;
+	int prioridadeOrig;
+	int prioridadeTemp;
+	uint8_t deadline;
+	uint16_t ticks;
+	uint32_t signal;
+	StatusThread status;
+	
+}threads_struct;
 
-uint8_t threads[4];
+
+threads_struct threads[4]; //0 - Primo / 1 - UART / 2 - Pontos / 3 - Fibonacci
+
 /*================================
 =========Mail Handler============
 =================================*/
@@ -364,17 +375,12 @@ void desenha_losango()
  *---------------------------------------------------------------------------*/
 
 void fibonacci_thread(void const *args){
-	osEvent evt;
-
 	uint32_t num1 = 0,num2 = 1,num3;
-	int32_t value;
-	char fibonacciChar[32];
-	struct_Gantt *pMailGantt = 0;
+	char fibonacciChar[32];	
 	while(1){
-		osDelay(1000);
-		value = osSemaphoreWait(escalonador,500);
-		if(value > 0){
-		threads[3] = 1;
+		osSignalWait(threads[4].signal,osWaitForever);
+		threads[4].status = RUNNING;
+		threads[4].prioridadeTemp = threads[4].prioridadeOrig;
 		num3 = num1 + num2;		
 			while(num3 < fibonacci)
 				{
@@ -392,25 +398,21 @@ void fibonacci_thread(void const *args){
 			osMutexRelease(mutex_display_id);
 			}			
 			fibonacci++;
-			osSemaphoreRelease(escalonador);
-		}else{
-			threads[3] = 0;
-		}			
+			threads[4].status = READY;
 		}
 }osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 
 void primo_thread(void const *args){
-	int32_t value;
 	char primoChar[32];
 	struct_Gantt *pMailGantt = 0;
 	uint32_t aux;
 	int div;
 	while(1){
-		osDelay(200);
-		value = osSemaphoreWait(escalonador,60);
-		if(value > 0){
-		div = 0;
-		threads[3] = 1;
+		osDelay(100);
+		osSignalWait(threads[0].signal, osWaitForever);
+		threads[0].status = RUNNING;
+		threads[0].prioridadeTemp = threads[0].prioridadeOrig;
+		div = 0;		
 		for (aux = 1; aux <= primo; aux++){
 			if(primo%aux == 0){
 				div++;
@@ -425,16 +427,10 @@ void primo_thread(void const *args){
 			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*6, (sContext.psFont->ui8Height+2)*0, true);
 			osMutexRelease(mutex_display_id);
 		}
-		primo =  primo + 1; 
-		osSemaphoreRelease(escalonador);
-		}else{
-			threads[3] = 0;
-		}
-		
+		primo =  primo + 1;
+		threads[0].status = READY;
 	}
-}osThreadDef(primo_thread, osPriorityRealtime, 1, 0);
-
-
+}osThreadDef(primo_thread, osPriorityNormal, 1, 0);
 
 //inicializações
 void init_all(){
@@ -466,67 +462,49 @@ void UARTIntHandler(void){
 	UARTprintstring("\n\r");
 }
 
-
 //geração de pontos
 void geracao_pontos(const void *args){
-	int32_t value;
 	char numero[32];
-	struct_Gantt *pMailGantt = 0;
 	uint32_t aux = 0;
 	while(1){
-		osDelay(100);
-		value = osSemaphoreWait(escalonador,70);
-		if(value > 0){
+			osSignalWait(threads[2].signal,osWaitForever);
+			threads[2].status = RUNNING;
+			threads[2].prioridadeTemp = threads[2].prioridadeOrig;
 			osMutexWait(mutex_display_id,osWaitForever);
 			intToString(aux,numero,30,10,10);
-			osMutexRelease(mutex_display_id);
-		threads[2] = 1;
-				aux++;
-		pMailGantt = osMailAlloc(id_mail_Gantt,0);
-		pMailGantt->id = 3;				
-				//pMailGantt->Buffer = (char*)'Fibonacci';
-				// Send Mail
-		osMailPut(id_mail_Gantt, pMailGantt);
-		osSemaphoreRelease(escalonador);
-		}else{
-		threads[2] = 0;
-		}
-
+			GrFlush(&sContext);
+			GrContextForegroundSet(&sContext, ClrWhite);
+			GrContextBackgroundSet(&sContext, ClrBlack);
+			GrStringDraw(&sContext,(char*)numero, -1, (sContext.psFont->ui8MaxWidth)*6, (sContext.psFont->ui8Height+2)*2, true);
+			osMutexRelease(mutex_display_id);		
+			aux++;
+			threads[2].status = READY;
 	}
-}osThreadDef(geracao_pontos,osPriorityLow,1,0);
-
+}osThreadDef(geracao_pontos,osPriorityNormal,1,0);
 
 //apresentação no console (putty)
 void Console(const void *args){
 	bool ini_uart = true;
-	uint32_t value;
 	osEvent evt;
 	msg_generic *msg = 0;
-	while(1){
-		value = osSemaphoreWait(escalonador,1);
-		if(value > 0){
-			threads[0] = 1;
+	while(1){			
 		if(ini_uart){
 			pag_ini_uart();
 			ini_uart=false;
 		}
 		evt = osMessageGet(msg_console,osWaitForever);
-		osPoolFree(poolid_c,msg);
-		}else{
-		threads[0] = 0;
+		osPoolFree(poolid_c,msg);		
 		}
-		}
-}osThreadDef(Console,osPriorityHigh,1,0);
+}osThreadDef(Console,osPriorityNormal,1,0);
 
 void manipulacao()
 {
 	uint32_t value;
 	osStatus status;
 	while(1){
-		osSignalWait(0x0005, osWaitForever);
-		value = osSemaphoreWait(escalonador,40);
-		if(value > 0){
-		threads[1] = 1;
+		osSignalWait(threads[3].signal, osWaitForever);
+		threads[3].status = RUNNING;
+		threads[3].prioridadeTemp = threads[3].prioridadeOrig;
 		if(flag_desenho == 1)
 		{
 			desenha_quadrado(); //desenha o quadrado
@@ -552,18 +530,13 @@ void manipulacao()
 		{
 			posicao_inicial();	//para o andamento do desenho
 		}
-	}else{
-	threads[1] = 0;
-	}
+		threads[3].status = READY;
 	}
 }osThreadDef(manipulacao,osPriorityNormal,1,0);
 
 
 //Thread da UART
 void UART_t(const void *args){
-static uint16_t count = 0;
-static uint8_t amplitude = 100;
-int teste = 1, i, auxR = 0, auxX = 0;
 UART_read *mail=0;
 osEvent evento;
 char mensagem = NULL;
@@ -578,27 +551,27 @@ while(1){
 					case '1':
 					UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r"); 
 					flag_desenho = 1;
-					osSignalSet(manipulacao_id, 0x0005);
+					threads[3].status = READY;
 					break;
 					case '2':
 					UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
 					flag_desenho = 2;
-					osSignalSet(manipulacao_id, 0x0005);
+					threads[3].status = READY;
 					break;
 					case '3':
 					UARTprintstring("3 - CIRCULO SELECIONADO (6 - p/ desenhar)\n\r");
 					flag_desenho = 3;
-					osSignalSet(manipulacao_id, 0x0005);
+					threads[3].status = READY;
 						break;
 					case '4':
 						UARTprintstring("4 - BANDEIRA SELECIONADO (6 - p/ desenhar)\n\r");
 					flag_desenho = 4;
-					osSignalSet(manipulacao_id, 0x0005);
+					threads[3].status = READY;
 						break;
 					case '5':
 						UARTprintstring("5 - PARANDO ANDAMENTO DO DESENHO...\n\r");
 					flag_desenho = 5;
-					osSignalSet(manipulacao_id, 0x0005);
+					threads[3].status = READY;
 						break;	
 					default:
 						UARTprintstring("Entrada invalida\n\r");
@@ -607,7 +580,7 @@ while(1){
 			}
 		}
 	}
-}osThreadDef(UART_t,osPriorityHigh,1,0);
+}osThreadDef(UART_t,osPriorityNormal,1,0);
 
 void geracao_Gantt(const void *args){
 	char inteiro[32];
@@ -644,82 +617,18 @@ void geracao_Gantt(const void *args){
 	}
 }osThreadDef(geracao_Gantt,osPriorityNormal,1,0);
 
-
-void escalonador_t(const void *args){
-	uint32_t value;
-	char valor[32];
-	while(1){
-	value = osSemaphoreWait(escalonador,2);
-		if(value > 0 ){
-			//UART Priority
-			if(threads[0]==0){			
-			Puart++;
-			if(Puart > +3)
-				Puart = +3;
-			osThreadSetPriority(uart_id,Puart);
-			}
-			if(threads[0]==1){				
-				Puart = osPriorityHigh;
-				osThreadSetPriority(uart_id,Puart);
-			}
-			//Manipulador Priority
-			if(threads[1]==0){			
-			Pmanipulador++;
-			if(Pmanipulador > +2)
-				Pmanipulador = +2;
-			osThreadSetPriority(manipulacao_id,Pmanipulador);
-			}
-			if(threads[1]==1){				
-				Pmanipulador = osPriorityNormal;
-				osThreadSetPriority(manipulacao_id,Pmanipulador);
-			}
-			//Gerador Pontos Priority
-			if(threads[2]==0){				
-			Ppontos++;
-			if(Ppontos> +2)
-				Ppontos = +2;
-			osThreadSetPriority(pontos_id,Ppontos);
-			}
-			if(threads[2]==1){				
-				Ppontos = osPriorityLow;
-				osThreadSetPriority(pontos_id,Ppontos);
-			}
-			//Fibonacci Priority
-			if(threads[3]==0){			
-			Pfibonacci++;
-			if(Pfibonacci > +2)
-				Pfibonacci = +2;
-			osThreadSetPriority(fibonacci_id,Pfibonacci);
-			}
-			if(threads[3]==1){				
-				Pfibonacci = osPriorityNormal;
-				osThreadSetPriority(fibonacci_id,Pfibonacci);
-			}
-			//======================================
-//			osMutexWait(mutex_display_id,osWaitForever);
-//			GrFlush(&sContext);
-//			GrContextForegroundSet(&sContext, ClrWhite);
-//			GrContextBackgroundSet(&sContext, ClrBlack);
-//			intToString(Ppontos,valor,32,10,0);
-//			GrStringDraw(&sContext,(char*)valor, -1, (sContext.psFont->ui8MaxWidth)*7, (sContext.psFont->ui8Height+2)*5, true);
-//			intToString(Pfibonacci,valor,32,10,0);
-//			GrStringDraw(&sContext,(char*)valor, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*6, true);
-//			GrStringDraw(&sContext,"3", -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*7, true);
-//			GrStringDraw(&sContext,"4", -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*8, true);
-//			osMutexRelease(mutex_display_id);
-		
-		}
-	osSemaphoreRelease(escalonador);
-	}
-
-}osThreadDef(escalonador_t,osPriorityNormal,1,0);
-
 /*----------------------------------------------------------------------------
  *      Main
 *---------------------------------------------------------------------------*/
 
 
  int main (void) {	 
+	int32_t value;
+	char buffer[32];
+	uint8_t i;
+	uint8_t aux;
+	threads_struct prioridadeMaxima;
+	int prio = 10;
 	init_all();
 	osKernelInitialize();
 	mid_UART= osMailCreate(osMailQ(m_UART), NULL);
@@ -731,30 +640,91 @@ void escalonador_t(const void *args){
 	GrContextFontSet(&sContext, g_psFontFixed6x8);
 	GrContextForegroundSet(&sContext, ClrWhite);
 	GrContextBackgroundSet(&sContext, ClrBlack);
-	 
- Ppontos = osPriorityLow;
- Pfibonacci = osPriorityNormal;
- Puart = osPriorityHigh;
- Pmanipulador = osPriorityNormal;
-	
+	 	
 	 //Escreve menu lateral:
 	GrStringDraw(&sContext,"Primo:"			, -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-	GrStringDraw(&sContext,"Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*1, true);
+	GrStringDraw(&sContext,"Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*1, true);	 
+	GrStringDraw(&sContext,"Gerador: "	, -1, 0, (sContext.psFont->ui8Height+2)*2, true);
 	 
-	GrStringDraw(&sContext,"Prioridades Threads"			, -1, 0, (sContext.psFont->ui8Height+2)*2, true);
-	GrStringDraw(&sContext,"Primo:"			, -1, 0, (sContext.psFont->ui8Height+2)*3, true);
-	GrStringDraw(&sContext,"UART:"			, -1, 0, (sContext.psFont->ui8Height+2)*4, true);
-	GrStringDraw(&sContext,"Pontos:"		, -1, 0, (sContext.psFont->ui8Height+2)*5, true);
-	GrStringDraw(&sContext,"Controle:"	, -1, 0, (sContext.psFont->ui8Height+2)*6, true); 
-	GrStringDraw(&sContext,"Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*7, true);
+	GrStringDraw(&sContext,"T-Primo:"			, -1, 0, (sContext.psFont->ui8Height+2)*3, true);
+	GrStringDraw(&sContext,"T-UART:"			, -1, 0, (sContext.psFont->ui8Height+2)*4, true);
+	GrStringDraw(&sContext,"T-Pontos:"		, -1, 0, (sContext.psFont->ui8Height+2)*5, true);
+	GrStringDraw(&sContext,"T-Controle:"	, -1, 0, (sContext.psFont->ui8Height+2)*6, true); 
+	GrStringDraw(&sContext,"T-Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*7, true);
 	osThreadCreate(osThread(UART_t),NULL);
-	osThreadCreate(osThread(escalonador_t),NULL);
-	uart_id = osThreadCreate(osThread(Console),NULL);
-	osThreadCreate(osThread(primo_thread), NULL);
-	fibonacci_id = osThreadCreate(osThread(fibonacci_thread), NULL);
-	pontos_id = osThreadCreate(osThread(geracao_pontos), NULL);
-	osThreadCreate(osThread(geracao_Gantt), NULL);
-	manipulacao_id = osThreadCreate(osThread(manipulacao), NULL);
+	
+	threads[0].id = osThreadCreate(osThread(primo_thread), NULL);
+	threads[0].prioridadeOrig = threads[0].prioridadeTemp = -100;
+	threads[0].deadline = 30;
+	threads[0].ticks = 30;
+	threads[0].signal = 0x001;
+	threads[0].status = READY;
+	threads[1].id = osThreadCreate(osThread(Console),NULL);
+	threads[1].prioridadeOrig = threads[1].prioridadeTemp = -30;
+	threads[1].deadline = 30;
+	threads[1].ticks = 30;
+	threads[1].signal = 0x01;
+	threads[1].status = WAITING;
+	threads[2].id = osThreadCreate(osThread(geracao_pontos), NULL);
+	threads[2].prioridadeOrig = threads[2].prioridadeTemp = 10;
+	threads[2].deadline = 30;
+	threads[2].ticks = 30;
+	threads[2].signal = 0x02;
+	threads[2].status = READY;
+	threads[3].id = osThreadCreate(osThread(manipulacao), NULL);
+	threads[3].prioridadeOrig = threads[3].prioridadeTemp = 0;
+	threads[3].deadline = 30;
+	threads[3].ticks = 30;
+	threads[3].signal = 0x03;
+	threads[3].status = WAITING;
+	threads[4].id = osThreadCreate(osThread(fibonacci_thread), NULL);
+	threads[4].prioridadeOrig = threads[4].prioridadeTemp = 0;
+	threads[4].deadline = 30;
+	threads[4].ticks = 30;
+	threads[4].signal = 0x04;
+	threads[4].status = READY;
+	osThreadCreate(osThread(geracao_Gantt), NULL);	
 	osKernelStart();
-	osDelay(osWaitForever);
+	
+	while(1){
+	osDelay(10000);
+	value = osSemaphoreWait(escalonador,2000);
+		//osSignalWait(0x10,1);
+		if(value > 0){
+			for(i = 0;i<5;i++){				
+				if(prio >= threads[i].prioridadeTemp){
+						if(threads[i].status == READY){								
+								prioridadeMaxima = threads[i];
+								prio = threads[i].prioridadeTemp;
+								aux = i;
+						}else if(threads[i].status == WAITING){
+							threads[i].status = READY;
+						}
+				}else{
+					if(threads[i].status == READY){
+					threads[i].prioridadeTemp = threads[i].prioridadeTemp + (-10);
+					}
+				}
+			}
+			intToString(threads[0].prioridadeTemp,buffer,32,10,0);
+			UARTprintstring((char*)buffer);
+			UARTprintstring("\n\r");
+			intToString(threads[1].prioridadeTemp,buffer,32,10,0);
+			UARTprintstring((char*)buffer);
+			UARTprintstring("\n\r");
+			intToString(threads[2].prioridadeTemp,buffer,32,10,0);
+			UARTprintstring((char*)buffer);
+			UARTprintstring("\n\r");
+			intToString(threads[3].prioridadeTemp,buffer,32,10,0);
+			UARTprintstring((char*)buffer);
+			UARTprintstring("\n\r");
+			intToString(threads[4].prioridadeTemp,buffer,32,10,0);
+			UARTprintstring((char*)buffer);
+			UARTprintstring("\n\r");
+			UARTprintstring("=====================================\n\r");
+			osSignalSet(prioridadeMaxima.id,prioridadeMaxima.signal);
+			osSemaphoreRelease(escalonador);
+		}
+	}
+	//osDelay(osWaitForever);
 }
