@@ -444,19 +444,16 @@ void init_all(){
 *------------------------------------------------------------------------------*/
 void UARTIntHandler(void){
 	char m;
-	struct_Gantt *pMailGantt = 0;
 	UART_read * mailI;
 	while((UART0->FR & (1<<4)) != 0);
 	m = UART0->DR;
 	UART0	->	RIS |= (1<<4);
 	mailI = (UART_read*)osMailAlloc(mid_UART,0);
-	pMailGantt = osMailAlloc(id_mail_Gantt,0);
 	if(mailI){ 
 		mailI	-> msg_UART = m;
 		osMailPut(mid_UART,mailI);
-		pMailGantt->id = 2;
-		osMailPut(id_mail_Gantt, pMailGantt);
 	}
+	threads[1].status = READY;
 	UARTprintstring("Input:");
 	printchar(m);
 	UARTprintstring("\n\r");
@@ -492,7 +489,7 @@ void Console(const void *args){
 			pag_ini_uart();
 			ini_uart=false;
 		}
-		evt = osMessageGet(msg_console,osWaitForever);
+		evt = osMessageGet(msg_console,osWaitForever);		
 		osPoolFree(poolid_c,msg);		
 		}
 }osThreadDef(Console,osPriorityNormal,1,0);
@@ -541,7 +538,12 @@ UART_read *mail=0;
 osEvent evento;
 char mensagem = NULL;
 while(1){
+	osSignalWait(threads[1].signal,osWaitForever);
+	threads[1].status = RUNNING;
+	threads[1].prioridadeTemp = threads[1].prioridadeOrig;
+	//UARTprintstring("entrei - 1");
 	evento=osMailGet(mid_UART,osWaitForever);
+	//UARTprintstring("entrei - 2");
 	if(evento.status==osEventMail){
 		mail=evento.value.p;
 		if(mail){
@@ -579,6 +581,7 @@ while(1){
 				}
 			}
 		}
+	threads[1].status = WAITING;
 	}
 }osThreadDef(UART_t,osPriorityNormal,1,0);
 
@@ -651,7 +654,8 @@ void geracao_Gantt(const void *args){
 	GrStringDraw(&sContext,"T-Pontos:"		, -1, 0, (sContext.psFont->ui8Height+2)*5, true);
 	GrStringDraw(&sContext,"T-Controle:"	, -1, 0, (sContext.psFont->ui8Height+2)*6, true); 
 	GrStringDraw(&sContext,"T-Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*7, true);
-	osThreadCreate(osThread(UART_t),NULL);
+	
+	osThreadCreate(osThread(Console),NULL);
 	
 	threads[0].id = osThreadCreate(osThread(primo_thread), NULL);
 	threads[0].prioridadeOrig = threads[0].prioridadeTemp = -100;
@@ -659,7 +663,7 @@ void geracao_Gantt(const void *args){
 	threads[0].ticks = 30;
 	threads[0].signal = 0x001;
 	threads[0].status = READY;
-	threads[1].id = osThreadCreate(osThread(Console),NULL);
+	threads[1].id = osThreadCreate(osThread(UART_t),NULL);
 	threads[1].prioridadeOrig = threads[1].prioridadeTemp = -30;
 	threads[1].deadline = 30;
 	threads[1].ticks = 30;
@@ -688,7 +692,7 @@ void geracao_Gantt(const void *args){
 	
 	while(1){
 	osDelay(10000);
-	value = osSemaphoreWait(escalonador,2000);
+	value = osSemaphoreWait(escalonador,10);
 		//osSignalWait(0x10,1);
 		if(value > 0){
 			for(i = 0;i<5;i++){				

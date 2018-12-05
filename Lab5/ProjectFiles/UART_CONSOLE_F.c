@@ -12,6 +12,5 @@ void pag_ini_uart(){
 	UARTprintstring("2 - LOSANGO\n\r");
 	UARTprintstring("3 - CIRCULO\n\r");
 	UARTprintstring("4 - BANDEIRA\n\r");
-	UARTprintstring("5 - PARAR DESENHO EM ANDAMENTO\n\r");
-	UARTprintstring("6 - DESENHAR\n\r");
+	UARTprintstring("5 - PARAR DESENHO EM ANDAMENTO\n\r");	
 }
