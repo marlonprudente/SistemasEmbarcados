@@ -398,6 +398,7 @@ void fibonacci_thread(void const *args){
 			osMutexRelease(mutex_display_id);
 			}			
 			fibonacci++;
+			osDelay(1000);
 			threads[4].status = READY;
 		}
 }osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
@@ -428,6 +429,7 @@ void primo_thread(void const *args){
 			osMutexRelease(mutex_display_id);
 		}
 		primo =  primo + 1;
+		osDelay(200);
 		threads[0].status = READY;
 	}
 }osThreadDef(primo_thread, osPriorityNormal, 1, 0);
@@ -475,6 +477,7 @@ void geracao_pontos(const void *args){
 			GrStringDraw(&sContext,(char*)numero, -1, (sContext.psFont->ui8MaxWidth)*6, (sContext.psFont->ui8Height+2)*2, true);
 			osMutexRelease(mutex_display_id);		
 			aux++;
+			osDelay(100);
 			threads[2].status = READY;
 	}
 }osThreadDef(geracao_pontos,osPriorityNormal,1,0);
@@ -579,9 +582,11 @@ while(1){
 						UARTprintstring("Entrada invalida\n\r");
 						break;
 				}
+
 			}
 		}
-	threads[1].status = WAITING;
+		osDelay(1);
+		threads[1].status = WAITING;
 	}
 }osThreadDef(UART_t,osPriorityNormal,1,0);
 
@@ -693,7 +698,7 @@ void geracao_Gantt(const void *args){
 	osKernelStart();
 	
 	while(1){
-	osDelay(10000);
+	osDelay(1);
 	value = osSemaphoreWait(escalonador,10);
 		//osSignalWait(0x10,1);
 		if(value > 0){
@@ -713,7 +718,7 @@ void geracao_Gantt(const void *args){
 				}
 			}
 			intToString(threads[0].status,buffer,32,10,0);
-			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*7, (sContext.psFont->ui8Height+2)*3, true);
+			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*8, (sContext.psFont->ui8Height+2)*3, true);
 			intToString(threads[1].status,buffer,32,10,0);
 			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*7, (sContext.psFont->ui8Height+2)*4, true);
 			intToString(threads[2].status,buffer,32,10,0);
