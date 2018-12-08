@@ -405,12 +405,14 @@ void fibonacci_thread(void const *args){
 
 void primo_thread(void const *args){
 	char primoChar[32];
-	struct_Gantt *pMailGantt = 0;
+	uint32_t tick;
 	uint32_t aux;
 	int div;
 	while(1){
-		osDelay(100);
 		osSignalWait(threads[0].signal, osWaitForever);
+		if((osKernelSysTick() - tick) > osKernelSysTickMicroSec(260000)){//1 segundo = 1e6 us
+					UARTprintstring("Master Fault!");
+				}
 		threads[0].status = RUNNING;
 		threads[0].prioridadeTemp = threads[0].prioridadeOrig;
 		div = 0;		
@@ -429,8 +431,9 @@ void primo_thread(void const *args){
 			osMutexRelease(mutex_display_id);
 		}
 		primo =  primo + 1;
-		osDelay(200);
+		osDelay(1);
 		threads[0].status = READY;
+		tick = osKernelSysTick();
 	}
 }osThreadDef(primo_thread, osPriorityNormal, 1, 0);
 
@@ -463,10 +466,15 @@ void UARTIntHandler(void){
 
 //geração de pontos
 void geracao_pontos(const void *args){
+	uint32_t tick;
 	char numero[32];
 	uint32_t aux = 0;
 	while(1){
+			threads[2].status = READY;
 			osSignalWait(threads[2].signal,osWaitForever);
+			if((osKernelSysTick() - tick) > osKernelSysTickMicroSec(500000)){//1 segundo = 1e6 us
+					//UARTprintstring("Secundary Fault!");
+				}
 			threads[2].status = RUNNING;
 			threads[2].prioridadeTemp = threads[2].prioridadeOrig;
 			osMutexWait(mutex_display_id,osWaitForever);
@@ -478,7 +486,7 @@ void geracao_pontos(const void *args){
 			osMutexRelease(mutex_display_id);		
 			aux++;
 			osDelay(100);
-			threads[2].status = READY;
+			tick = osKernelSysTick();
 	}
 }osThreadDef(geracao_pontos,osPriorityNormal,1,0);
 
@@ -595,7 +603,6 @@ void geracao_Gantt(const void *args){
 	osEvent evt;
 	osStatus status;
 	uint32_t stime;
-
 	struct_Gantt *pMail = 0;
 	
 	while(1){
@@ -666,32 +673,32 @@ void geracao_Gantt(const void *args){
 	
 	threads[0].id = osThreadCreate(osThread(primo_thread), NULL);
 	threads[0].prioridadeOrig = threads[0].prioridadeTemp = -100;
-	threads[0].deadline = 30;
-	threads[0].ticks = 30;
+	threads[0].deadline = osKernelSysTickMicroSec(60);
+	threads[0].ticks = osKernelSysTickMicroSec(200);
 	threads[0].signal = 0x001;
 	threads[0].status = READY;
 	threads[1].id = osThreadCreate(osThread(UART_t),NULL);
 	threads[1].prioridadeOrig = threads[1].prioridadeTemp = -30;
-	threads[1].deadline = 30;
-	threads[1].ticks = 30;
+	threads[1].deadline = osKernelSysTickMicroSec(100);
+	threads[1].ticks = osKernelSysTickMicroSec(1000);
 	threads[1].signal = 0x01;
 	threads[1].status = WAITING;
 	threads[2].id = osThreadCreate(osThread(geracao_pontos), NULL);
 	threads[2].prioridadeOrig = threads[2].prioridadeTemp = 10;
-	threads[2].deadline = 30;
-	threads[2].ticks = 30;
+	threads[2].deadline = osKernelSysTickMicroSec(260);
+	threads[2].ticks = osKernelSysTickMicroSec(260);
 	threads[2].signal = 0x02;
 	threads[2].status = READY;
 	threads[3].id = osThreadCreate(osThread(manipulacao), NULL);
 	threads[3].prioridadeOrig = threads[3].prioridadeTemp = 0;
-	threads[3].deadline = 30;
-	threads[3].ticks = 30;
+	threads[3].deadline = osKernelSysTickMicroSec(260);
+	threads[3].ticks = osKernelSysTickMicroSec(260);
 	threads[3].signal = 0x03;
 	threads[3].status = WAITING;
 	threads[4].id = osThreadCreate(osThread(fibonacci_thread), NULL);
 	threads[4].prioridadeOrig = threads[4].prioridadeTemp = 0;
-	threads[4].deadline = 30;
-	threads[4].ticks = 30;
+	threads[4].deadline = osKernelSysTickMicroSec(260);
+	threads[4].ticks = osKernelSysTickMicroSec(260);
 	threads[4].signal = 0x04;
 	threads[4].status = READY;
 	osThreadCreate(osThread(geracao_Gantt), NULL);	
@@ -699,17 +706,15 @@ void geracao_Gantt(const void *args){
 	
 	while(1){
 	osDelay(1);
-	value = osSemaphoreWait(escalonador,10);
+	value = osSemaphoreWait(escalonador,1);
 		//osSignalWait(0x10,1);
 		if(value > 0){
-			for(i = 0;i<5;i++){				
+			for(i = 0;i<5;i++){
 				if(prio >= threads[i].prioridadeTemp){
 						if(threads[i].status == READY){								
 								prioridadeMaxima = threads[i];
 								prio = threads[i].prioridadeTemp;
 								aux = i;
-						}else if(threads[i].status == WAITING){
-							threads[i].status = READY;
 						}
 				}else{
 					if(threads[i].status == READY){
