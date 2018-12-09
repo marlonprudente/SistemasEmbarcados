@@ -188,7 +188,6 @@ void posicao_inicial()
 //desenha circulo
 void desenha_circulo(void)
 {
-	struct_Gantt *pMailGantt = 0;
 	int i, auxR, auxX;
 	servo_writePosY(1500);
 	osDelay(5000);
@@ -311,15 +310,11 @@ void desenha_circulo(void)
 		auxX-= 280;
 		osDelay(5000);
 	}
-		pMailGantt = osMailAlloc(id_mail_Gantt,0);
-	pMailGantt->id = 4;
-	osMailPut(id_mail_Gantt, pMailGantt); 
 						
 }
 //desenha quadrado
 void desenha_quadrado(void)
 {
-	struct_Gantt *pMailGantt = 0;
 	servo_writePosY(8000);
 	servo_writePosX(7000);
 	servo_writeRot(25000);
@@ -337,15 +332,11 @@ void desenha_quadrado(void)
 	servo_writePosX(20000);
 	servo_writeRot(28000);
 	osDelay(10000);
-	pMailGantt = osMailAlloc(id_mail_Gantt,0);
-	pMailGantt->id = 4;
-	osMailPut(id_mail_Gantt, pMailGantt); 
 }
 
 //desenha losango
 void desenha_losango()
 {
-	struct_Gantt *pMailGantt = 0;
 	servo_writeRot(26000);
 	servo_writePosX(12000);
 	//servo_writePosY(7000);
@@ -365,9 +356,6 @@ void desenha_losango()
 	servo_writePosX(10500);
 	osDelay(10000);	
 	posicao_inicial();
-	pMailGantt = osMailAlloc(id_mail_Gantt,0);
-	pMailGantt->id = 4;
-	osMailPut(id_mail_Gantt, pMailGantt); 
 }
 
 /*----------------------------------------------------------------------------
@@ -385,7 +373,7 @@ void fibonacci_thread(void const *args){
 			while(num3 < fibonacci)
 				{
 						num1 = num2;
-						num2 = num3;
+						num2 = num3;	
 						num3 = num1 + num2;
 				}
 			if(num3 == fibonacci){
@@ -411,7 +399,7 @@ void primo_thread(void const *args){
 	while(1){
 		osSignalWait(threads[0].signal, osWaitForever);
 		if((osKernelSysTick() - tick) > osKernelSysTickMicroSec(260000)){//1 segundo = 1e6 us
-					UARTprintstring("Master Fault!");
+					UARTprintstring("Master Fault! ");
 				}
 		threads[0].status = RUNNING;
 		threads[0].prioridadeTemp = threads[0].prioridadeOrig;
@@ -427,7 +415,7 @@ void primo_thread(void const *args){
 			GrFlush(&sContext);
 			GrContextForegroundSet(&sContext, ClrWhite);
 			GrContextBackgroundSet(&sContext, ClrBlack);
-			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*6, (sContext.psFont->ui8Height+2)*0, true);
+			GrStringDraw(&sContext,(char*)primoChar, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*0, true);
 			osMutexRelease(mutex_display_id);
 		}
 		primo =  primo + 1;
@@ -478,11 +466,11 @@ void geracao_pontos(const void *args){
 			threads[2].status = RUNNING;
 			threads[2].prioridadeTemp = threads[2].prioridadeOrig;
 			osMutexWait(mutex_display_id,osWaitForever);
-			intToString(aux,numero,30,10,10);
+			intToString(aux,numero,32,10,0);
 			GrFlush(&sContext);
 			GrContextForegroundSet(&sContext, ClrWhite);
-			GrContextBackgroundSet(&sContext, ClrBlack);
-			GrStringDraw(&sContext,(char*)numero, -1, (sContext.psFont->ui8MaxWidth)*6, (sContext.psFont->ui8Height+2)*2, true);
+			GrContextBackgroundSet(&sContext, ClrBlack);	
+			GrStringDraw(&sContext,(char*)numero, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*2, true);
 			osMutexRelease(mutex_display_id);		
 			aux++;
 			osDelay(100);
@@ -640,6 +628,7 @@ void geracao_Gantt(const void *args){
  int main (void) {	 
 	int32_t value;
 	char buffer[32];
+	char prioridade[32];
 	uint8_t i;
 	uint8_t aux;
 	threads_struct prioridadeMaxima;
@@ -657,16 +646,16 @@ void geracao_Gantt(const void *args){
 	GrContextBackgroundSet(&sContext, ClrBlack);
 	 	
 	 //Escreve menu lateral:
-	GrStringDraw(&sContext,"Primo:"			, -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-	GrStringDraw(&sContext,"Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*1, true);	 
-	GrStringDraw(&sContext,"Gerador: "	, -1, 0, (sContext.psFont->ui8Height+2)*2, true);
+	GrStringDraw(&sContext,"Primo:"						, -1, 0, (sContext.psFont->ui8Height+2)*0, true);
+	GrStringDraw(&sContext,"Fibonacci:"				, -1, 0, (sContext.psFont->ui8Height+2)*1, true);	 
+	GrStringDraw(&sContext,"Gerador: "				, -1, 0, (sContext.psFont->ui8Height+2)*2, true);
 	 
-	GrStringDraw(&sContext,"T-Primo:"			, -1, 0, (sContext.psFont->ui8Height+2)*3, true);
-	GrStringDraw(&sContext,"T-UART:"			, -1, 0, (sContext.psFont->ui8Height+2)*4, true);
-	GrStringDraw(&sContext,"T-Pontos:"		, -1, 0, (sContext.psFont->ui8Height+2)*5, true);
-	GrStringDraw(&sContext,"T-Controle:"	, -1, 0, (sContext.psFont->ui8Height+2)*6, true); 
-	GrStringDraw(&sContext,"T-Fibonacci:"	, -1, 0, (sContext.psFont->ui8Height+2)*7, true);
-	GrStringDraw(&sContext,"Master Fault:"	, -1, 0, (sContext.psFont->ui8Height+2)*8, true);
+	GrStringDraw(&sContext,"T-Primo:"					, -1, 0, (sContext.psFont->ui8Height+2)*3, true);
+	GrStringDraw(&sContext,"T-UART:"					, -1, 0, (sContext.psFont->ui8Height+2)*4, true);
+	GrStringDraw(&sContext,"T-Pontos:"				, -1, 0, (sContext.psFont->ui8Height+2)*5, true);
+	GrStringDraw(&sContext,"T-Controle:"			, -1, 0, (sContext.psFont->ui8Height+2)*6, true); 
+	GrStringDraw(&sContext,"T-Fibonacci:"			, -1, 0, (sContext.psFont->ui8Height+2)*7, true);
+	GrStringDraw(&sContext,"Master Fault:"		, -1, 0, (sContext.psFont->ui8Height+2)*8, true);
 	GrStringDraw(&sContext,"Secundary Fault:"	, -1, 0, (sContext.psFont->ui8Height+2)*9, true);
 	
 	osThreadCreate(osThread(Console),NULL);
@@ -723,16 +712,25 @@ void geracao_Gantt(const void *args){
 				}
 			}
 			intToString(threads[0].status,buffer,32,10,0);
-			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*8, (sContext.psFont->ui8Height+2)*3, true);
+			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*13, (sContext.psFont->ui8Height+2)*3, true);
+			intToString(threads[0].prioridadeTemp,prioridade,32,10,0);
+			GrStringDraw(&sContext,(char*)prioridade, -1, (sContext.psFont->ui8MaxWidth)*16, (sContext.psFont->ui8Height+2)*3, true);
 			intToString(threads[1].status,buffer,32,10,0);
-			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*7, (sContext.psFont->ui8Height+2)*4, true);
+			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*13, (sContext.psFont->ui8Height+2)*4, true);
+			intToString(threads[1].prioridadeTemp,prioridade,32,10,0);
+			GrStringDraw(&sContext,(char*)prioridade, -1, (sContext.psFont->ui8MaxWidth)*16, (sContext.psFont->ui8Height+2)*4, true);
 			intToString(threads[2].status,buffer,32,10,0);
-			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*9, (sContext.psFont->ui8Height+2)*5, true);
+			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*13, (sContext.psFont->ui8Height+2)*5, true);
+			intToString(threads[2].prioridadeTemp,prioridade,32,10,0);
+			GrStringDraw(&sContext,(char*)prioridade, -1, (sContext.psFont->ui8MaxWidth)*16, (sContext.psFont->ui8Height+2)*5, true);
 			intToString(threads[3].status,buffer,32,10,0);
-			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*6, true);
+			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*13, (sContext.psFont->ui8Height+2)*6, true);
+			intToString(threads[3].prioridadeTemp,prioridade,32,10,0);
+			GrStringDraw(&sContext,(char*)prioridade, -1, (sContext.psFont->ui8MaxWidth)*16, (sContext.psFont->ui8Height+2)*6, true);
 			intToString(threads[4].status,buffer,32,10,0);
 			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*13, (sContext.psFont->ui8Height+2)*7, true);
-	
+			intToString(threads[4].prioridadeTemp,prioridade,32,10,0);
+			GrStringDraw(&sContext,(char*)prioridade, -1, (sContext.psFont->ui8MaxWidth)*16, (sContext.psFont->ui8Height+2)*7, true);
 			osSignalSet(prioridadeMaxima.id,prioridadeMaxima.signal);
 			osSemaphoreRelease(escalonador);
 		}

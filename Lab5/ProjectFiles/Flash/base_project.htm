@@ -3,9 +3,9 @@
 <title>Static Call Graph - [.\Flash\base_project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Flash\base_project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Dec 05 23:29:07 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sun Dec 09 13:00:26 2018
 <BR><P>
-<H3>Maximum Stack Usage =        200 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        232 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 main &rArr; init_all &rArr; cfaf128x128x16Init &rArr; cfaf128x128x16Clear &rArr; cfaf128x128x16ClearColor &rArr; cfaf128x128x16Rect &rArr; cfaf128x128x16SetWindow &rArr; cfaf128x128x16WriteData &rArr; cfaf128x128x16SsiTransfer
 <P>
@@ -432,7 +432,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[be]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 200 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 232 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; init_all &rArr; cfaf128x128x16Init &rArr; cfaf128x128x16Clear &rArr; cfaf128x128x16ClearColor &rArr; cfaf128x128x16Rect &rArr; cfaf128x128x16SetWindow &rArr; cfaf128x128x16WriteData &rArr; cfaf128x128x16SsiTransfer
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -469,7 +469,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlDelay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlDelay
-<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[185]"></a>rt_set_PSP</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, hal_cm4.o(.emb_text), UNUSED)
@@ -518,43 +518,37 @@ Global Symbols
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;manipulacao
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
 </UL>
 
-<P><STRONG><a name="[d4]"></a>desenha_circulo</STRONG> (Thumb, 658 bytes, Stack size 24 bytes, exemplotiva.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = desenha_circulo &rArr; osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
+<P><STRONG><a name="[d4]"></a>desenha_circulo</STRONG> (Thumb, 636 bytes, Stack size 24 bytes, exemplotiva.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = desenha_circulo
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_writeRot
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_writePosY
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_writePosX
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailPut
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailAlloc
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;manipulacao
 </UL>
 
-<P><STRONG><a name="[d7]"></a>desenha_quadrado</STRONG> (Thumb, 160 bytes, Stack size 16 bytes, exemplotiva.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = desenha_quadrado &rArr; osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
+<P><STRONG><a name="[d5]"></a>desenha_quadrado</STRONG> (Thumb, 132 bytes, Stack size 16 bytes, exemplotiva.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = desenha_quadrado
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_writeRot
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_writePosY
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_writePosX
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailPut
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailAlloc
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;manipulacao
 </UL>
 
-<P><STRONG><a name="[d8]"></a>desenha_losango</STRONG> (Thumb, 156 bytes, Stack size 16 bytes, exemplotiva.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = desenha_losango &rArr; osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
+<P><STRONG><a name="[d6]"></a>desenha_losango</STRONG> (Thumb, 140 bytes, Stack size 16 bytes, exemplotiva.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = desenha_losango &rArr; posicao_inicial
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_writeRot
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_writePosY
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_writePosX
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailPut
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailAlloc
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;posicao_inicial
 </UL>
@@ -564,35 +558,35 @@ Global Symbols
 <P><STRONG><a name="[99]"></a>fibonacci_thread</STRONG> (Thumb, 196 bytes, Stack size 48 bytes, exemplotiva.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = fibonacci_thread &rArr; intToString &rArr; __aeabi_ldivmod
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexWait
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexRelease
+<BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexWait
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexRelease
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GrStringDraw
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GrStringDraw
 <LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;intToString
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> exemplotiva.o(.constdata)
 </UL>
-<P><STRONG><a name="[9a]"></a>primo_thread</STRONG> (Thumb, 232 bytes, Stack size 48 bytes, exemplotiva.o(.text))
+<P><STRONG><a name="[9a]"></a>primo_thread</STRONG> (Thumb, 234 bytes, Stack size 48 bytes, exemplotiva.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = primo_thread &rArr; intToString &rArr; __aeabi_ldivmod
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexWait
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexRelease
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelSysTick
+<BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexWait
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexRelease
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelSysTick
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GrStringDraw
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GrStringDraw
 <LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;intToString
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> exemplotiva.o(.constdata)
 </UL>
-<P><STRONG><a name="[df]"></a>init_all</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, exemplotiva.o(.text))
+<P><STRONG><a name="[dd]"></a>init_all</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, exemplotiva.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = init_all &rArr; cfaf128x128x16Init &rArr; cfaf128x128x16Clear &rArr; cfaf128x128x16ClearColor &rArr; cfaf128x128x16Rect &rArr; cfaf128x128x16SetWindow &rArr; cfaf128x128x16WriteData &rArr; cfaf128x128x16SsiTransfer
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
-<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_UART
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_UART
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -601,21 +595,21 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = UARTIntHandler &rArr; osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printchar
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailPut
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailAlloc
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
+<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailPut
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailAlloc
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_tm4c129.o(RESET)
 </UL>
-<P><STRONG><a name="[9b]"></a>geracao_pontos</STRONG> (Thumb, 184 bytes, Stack size 48 bytes, exemplotiva.o(.text))
+<P><STRONG><a name="[9b]"></a>geracao_pontos</STRONG> (Thumb, 182 bytes, Stack size 48 bytes, exemplotiva.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = geracao_pontos &rArr; intToString &rArr; __aeabi_ldivmod
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexWait
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexRelease
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelSysTick
+<BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexWait
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexRelease
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelSysTick
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GrStringDraw
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GrStringDraw
 <LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;intToString
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> exemplotiva.o(.constdata)
@@ -630,24 +624,24 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> exemplotiva.o(.constdata)
 </UL>
 <P><STRONG><a name="[9d]"></a>manipulacao</STRONG> (Thumb, 114 bytes, Stack size 16 bytes, exemplotiva.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = manipulacao &rArr; desenha_circulo &rArr; osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = manipulacao &rArr; desenha_losango &rArr; posicao_inicial
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
+<BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_circulo
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;posicao_inicial
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> exemplotiva.o(.constdata)
 </UL>
-<P><STRONG><a name="[9e]"></a>UART_t</STRONG> (Thumb, 332 bytes, Stack size 24 bytes, exemplotiva.o(.text))
+<P><STRONG><a name="[9e]"></a>UART_t</STRONG> (Thumb, 376 bytes, Stack size 24 bytes, exemplotiva.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = UART_t &rArr; osMailGet &rArr; osMessageGet &rArr; isrMessageGet &rArr; isr_mbx_receive &rArr; rt_psq_enq
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
+<BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
 <LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailGet
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailFree
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> exemplotiva.o(.constdata)
 </UL>
@@ -656,14 +650,14 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailGet
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailFree
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelSysTick
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelSysTick
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
 <LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;intToString
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> exemplotiva.o(.constdata)
 </UL>
-<P><STRONG><a name="[a1]"></a>main</STRONG> (Thumb, 1356 bytes, Stack size 64 bytes, exemplotiva.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = main &rArr; init_all &rArr; cfaf128x128x16Init &rArr; cfaf128x128x16Clear &rArr; cfaf128x128x16ClearColor &rArr; cfaf128x128x16Rect &rArr; cfaf128x128x16SetWindow &rArr; cfaf128x128x16WriteData &rArr; cfaf128x128x16SsiTransfer
+<P><STRONG><a name="[a1]"></a>main</STRONG> (Thumb, 1540 bytes, Stack size 96 bytes, exemplotiva.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 232<LI>Call Chain = main &rArr; init_all &rArr; cfaf128x128x16Init &rArr; cfaf128x128x16Clear &rArr; cfaf128x128x16ClearColor &rArr; cfaf128x128x16Rect &rArr; cfaf128x128x16SetWindow &rArr; cfaf128x128x16WriteData &rArr; cfaf128x128x16SsiTransfer
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadCreate
 <LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalSet
@@ -675,10 +669,10 @@ Global Symbols
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelStart
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelInitialize
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GrStringDraw
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GrStringDraw
 <LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GrContextInit
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GrContextFontSet
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_all
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_all
 <LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;intToString
 <LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
@@ -689,7 +683,7 @@ Global Symbols
 <P><STRONG><a name="[e4]"></a>pag_ini_uart</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, uart_console_f.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = pag_ini_uart &rArr; UARTprintstring
 </UL>
-<BR>[Calls]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
+<BR>[Calls]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Console
 </UL>
@@ -738,7 +732,7 @@ Global Symbols
 <LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16WriteCommand
 </UL>
 <BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16ClearColor
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
 </UL>
 
 <P><STRONG><a name="[fe]"></a>cfaf128x128x16ClearColor</STRONG> (Thumb, 36 bytes, Stack size 16 bytes, cfaf128x128x16.o(.text))
@@ -755,7 +749,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16ClearColor
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
 </UL>
 
 <P><STRONG><a name="[100]"></a>InitSSICom</STRONG> (Thumb, 138 bytes, Stack size 32 bytes, cfaf128x128x16.o(.text))
@@ -763,10 +757,10 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockFreqSet
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
 </UL>
 
-<P><STRONG><a name="[e2]"></a>cfaf128x128x16Init</STRONG> (Thumb, 322 bytes, Stack size 16 bytes, cfaf128x128x16.o(.text))
+<P><STRONG><a name="[e0]"></a>cfaf128x128x16Init</STRONG> (Thumb, 322 bytes, Stack size 16 bytes, cfaf128x128x16.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = cfaf128x128x16Init &rArr; cfaf128x128x16Clear &rArr; cfaf128x128x16ClearColor &rArr; cfaf128x128x16Rect &rArr; cfaf128x128x16SetWindow &rArr; cfaf128x128x16WriteData &rArr; cfaf128x128x16SsiTransfer
 </UL>
 <BR>[Calls]<UL><LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitSSICom
@@ -776,15 +770,15 @@ Global Symbols
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16WriteData
 <LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16WriteCommand
 </UL>
-<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_all
+<BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_all
 </UL>
 
 <P><STRONG><a name="[d3]"></a>servo_writeRot</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, servo.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TimerMatchSet
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_circulo
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;posicao_inicial
 </UL>
@@ -792,9 +786,9 @@ Global Symbols
 <P><STRONG><a name="[d2]"></a>servo_writePosX</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, servo.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TimerMatchSet
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_circulo
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;posicao_inicial
 </UL>
@@ -802,14 +796,14 @@ Global Symbols
 <P><STRONG><a name="[d0]"></a>servo_writePosY</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, servo.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TimerMatchSet
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_circulo
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;posicao_inicial
 </UL>
 
-<P><STRONG><a name="[e1]"></a>servo_init</STRONG> (Thumb, 414 bytes, Stack size 32 bytes, servo.o(.text))
+<P><STRONG><a name="[df]"></a>servo_init</STRONG> (Thumb, 414 bytes, Stack size 32 bytes, servo.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = servo_init &rArr; GPIOPinTypeTimer &rArr; GPIOPadConfigSet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TimerUpdateMode
@@ -829,19 +823,19 @@ Global Symbols
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_writePosX
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_all
+<BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_all
 </UL>
 
-<P><STRONG><a name="[e0]"></a>init_UART</STRONG> (Thumb, 110 bytes, Stack size 0 bytes, uart.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_all
+<P><STRONG><a name="[de]"></a>init_UART</STRONG> (Thumb, 110 bytes, Stack size 0 bytes, uart.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_all
 </UL>
 
 <P><STRONG><a name="[e3]"></a>printchar</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, uart.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
+<BR><BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTprintstring
 <LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler
 </UL>
 
-<P><STRONG><a name="[dd]"></a>UARTprintstring</STRONG> (Thumb, 20 bytes, Stack size 4 bytes, uart.o(.text))
+<P><STRONG><a name="[db]"></a>UARTprintstring</STRONG> (Thumb, 20 bytes, Stack size 4 bytes, uart.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = UARTprintstring
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printchar
@@ -1865,7 +1859,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[104]"></a>GPIOPinConfigure</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, gpio.o(i.GPIOPinConfigure))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[105]"></a>GPIOPinTypeTimer</STRONG> (Thumb, 28 bytes, Stack size 12 bytes, gpio.o(i.GPIOPinTypeTimer))
@@ -1874,7 +1868,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPadConfigSet
 <LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIODirModeSet
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[ed]"></a>GrContextFontSet</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, string.o(i.GrContextFontSet))
@@ -1912,7 +1906,7 @@ Global Symbols
 <P><STRONG><a name="[a2]"></a>GrMapISO8859_1_Unicode</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, charmap.o(i.GrMapISO8859_1_Unicode))
 <BR>[Address Reference Count : 1]<UL><LI> context.o(.constdata)
 </UL>
-<P><STRONG><a name="[db]"></a>GrStringDraw</STRONG> (Thumb, 32 bytes, Stack size 16 bytes, string.o(i.GrStringDraw))
+<P><STRONG><a name="[d9]"></a>GrStringDraw</STRONG> (Thumb, 32 bytes, Stack size 16 bytes, string.o(i.GrStringDraw))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = GrStringDraw
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -1925,33 +1919,33 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = SysCtlClockFreqSet
 </UL>
 <BR>[Called By]<UL><LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitSSICom
-<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[103]"></a>SysCtlPeripheralEnable</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, sysctl.o(i.SysCtlPeripheralEnable))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[106]"></a>TimerClockSourceSet</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, timer.o(i.TimerClockSourceSet))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[107]"></a>TimerConfigure</STRONG> (Thumb, 88 bytes, Stack size 4 bytes, timer.o(i.TimerConfigure))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = TimerConfigure
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[108]"></a>TimerControlLevel</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, timer.o(i.TimerControlLevel))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[10c]"></a>TimerEnable</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, timer.o(i.TimerEnable))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[10b]"></a>TimerLoadSet</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, timer.o(i.TimerLoadSet))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[102]"></a>TimerMatchSet</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, timer.o(i.TimerMatchSet))
@@ -1961,11 +1955,11 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[10a]"></a>TimerPrescaleSet</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, timer.o(i.TimerPrescaleSet))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[109]"></a>TimerUpdateMode</STRONG> (Thumb, 42 bytes, Stack size 0 bytes, timer.o(i.TimerUpdateMode))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 </UL>
 
 <P><STRONG><a name="[152]"></a>_init_box</STRONG> (Thumb, 70 bytes, Stack size 8 bytes, rt_membox.o(i._init_box))
@@ -2061,14 +2055,14 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[d1]"></a>osDelay</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osDelay))
-<BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;servo_init
 <LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_t
 <LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geracao_pontos
 <LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;primo_thread
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fibonacci_thread
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_circulo
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;posicao_inicial
 </UL>
@@ -2089,21 +2083,18 @@ Global Symbols
 <LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[de]"></a>osKernelSysTick</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osKernelSysTick))
+<P><STRONG><a name="[dc]"></a>osKernelSysTick</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osKernelSysTick))
 <BR><BR>[Called By]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geracao_Gantt
 <LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geracao_pontos
 <LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;primo_thread
 </UL>
 
-<P><STRONG><a name="[d5]"></a>osMailAlloc</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMailAlloc))
+<P><STRONG><a name="[e1]"></a>osMailAlloc</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMailAlloc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = osMailAlloc &rArr; sysMailAlloc &rArr; rt_block &rArr; rt_put_dly
 </UL>
 <BR>[Calls]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sysMailAlloc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_circulo
 </UL>
 
 <P><STRONG><a name="[e9]"></a>osMailCreate</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMailCreate))
@@ -2132,15 +2123,12 @@ Global Symbols
 <LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_t
 </UL>
 
-<P><STRONG><a name="[d6]"></a>osMailPut</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMailPut))
+<P><STRONG><a name="[e2]"></a>osMailPut</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMailPut))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMessagePut
 </UL>
 <BR>[Called By]<UL><LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTIntHandler
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_losango
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_quadrado
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;desenha_circulo
 </UL>
 
 <P><STRONG><a name="[ea]"></a>osMessageCreate</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMessageCreate))
@@ -2166,16 +2154,16 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrMessagePut
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailPut
+<BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailPut
 </UL>
 
-<P><STRONG><a name="[dc]"></a>osMutexRelease</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMutexRelease))
+<P><STRONG><a name="[da]"></a>osMutexRelease</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMutexRelease))
 <BR><BR>[Called By]<UL><LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geracao_pontos
 <LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;primo_thread
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fibonacci_thread
 </UL>
 
-<P><STRONG><a name="[da]"></a>osMutexWait</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMutexWait))
+<P><STRONG><a name="[d8]"></a>osMutexWait</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osMutexWait))
 <BR><BR>[Called By]<UL><LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geracao_pontos
 <LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;primo_thread
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fibonacci_thread
@@ -2217,7 +2205,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d9]"></a>osSignalWait</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osSignalWait))
+<P><STRONG><a name="[d7]"></a>osSignalWait</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osSignalWait))
 <BR><BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_t
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;manipulacao
 <LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;geracao_pontos
@@ -2899,7 +2887,7 @@ Global Symbols
 <LI><a href="#[135]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_block
 <LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_alloc_box
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailAlloc
+<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailAlloc
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.osMailAlloc)
 </UL>
@@ -2987,7 +2975,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16SetOrientation
 <LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16SetWindow
 <LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16WriteRegister
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
 </UL>
 
 <P><STRONG><a name="[f4]"></a>cfaf128x128x16WriteData</STRONG> (Thumb, 70 bytes, Stack size 24 bytes, cfaf128x128x16.o(.text))
@@ -2998,7 +2986,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16SetOrientation
 <LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16SetWindow
 <LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16WriteRegister
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
 </UL>
 
 <P><STRONG><a name="[f5]"></a>cfaf128x128x16WriteRegister</STRONG> (Thumb, 16 bytes, Stack size 16 bytes, cfaf128x128x16.o(.text))
@@ -3007,7 +2995,7 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16WriteData
 <LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16WriteCommand
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
+<BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cfaf128x128x16Init
 </UL>
 
 <P><STRONG><a name="[f6]"></a>cfaf128x128x16SetWindow</STRONG> (Thumb, 192 bytes, Stack size 24 bytes, cfaf128x128x16.o(.text))
