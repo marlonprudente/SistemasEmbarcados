@@ -46,6 +46,8 @@ osMailQId id_mail_Gantt;
 
 
 int flag_desenho;
+uint32_t masterfault = 0;
+uint32_t secundaryfault = 0;
 //To print on the screen
 tContext sContext;
 uint32_t primo = 0;
@@ -364,9 +366,13 @@ void desenha_losango()
 
 void fibonacci_thread(void const *args){
 	uint32_t num1 = 0,num2 = 1,num3;
+	uint32_t tick;
 	char fibonacciChar[32];	
 	while(1){
 		osSignalWait(threads[4].signal,osWaitForever);
+				if((osKernelSysTick() - tick) > osKernelSysTickMicroSec(1500000)){//1 segundo = 1e6 us
+					secundaryfault++;
+				}
 		threads[4].status = RUNNING;
 		threads[4].prioridadeTemp = threads[4].prioridadeOrig;
 		num3 = num1 + num2;		
@@ -386,8 +392,9 @@ void fibonacci_thread(void const *args){
 			osMutexRelease(mutex_display_id);
 			}			
 			fibonacci++;
-			osDelay(1000);
+			osDelay(1);
 			threads[4].status = READY;
+			tick = osKernelSysTick();
 		}
 }osThreadDef(fibonacci_thread, osPriorityNormal, 1, 0);
 
@@ -399,7 +406,8 @@ void primo_thread(void const *args){
 	while(1){
 		osSignalWait(threads[0].signal, osWaitForever);
 		if((osKernelSysTick() - tick) > osKernelSysTickMicroSec(260000)){//1 segundo = 1e6 us
-					UARTprintstring("Master Fault! ");
+					masterfault++;
+					UARTprintstring("MF!");
 				}
 		threads[0].status = RUNNING;
 		threads[0].prioridadeTemp = threads[0].prioridadeOrig;
@@ -419,7 +427,7 @@ void primo_thread(void const *args){
 			osMutexRelease(mutex_display_id);
 		}
 		primo =  primo + 1;
-		osDelay(1);
+		osDelay(200);
 		threads[0].status = READY;
 		tick = osKernelSysTick();
 	}
@@ -461,7 +469,7 @@ void geracao_pontos(const void *args){
 			threads[2].status = READY;
 			osSignalWait(threads[2].signal,osWaitForever);
 			if((osKernelSysTick() - tick) > osKernelSysTickMicroSec(500000)){//1 segundo = 1e6 us
-					//UARTprintstring("Secundary Fault!");
+					secundaryfault++;
 				}
 			threads[2].status = RUNNING;
 			threads[2].prioridadeTemp = threads[2].prioridadeOrig;
@@ -473,7 +481,7 @@ void geracao_pontos(const void *args){
 			GrStringDraw(&sContext,(char*)numero, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*2, true);
 			osMutexRelease(mutex_display_id);		
 			aux++;
-			osDelay(100);
+			osDelay(1);
 			tick = osKernelSysTick();
 	}
 }osThreadDef(geracao_pontos,osPriorityNormal,1,0);
@@ -499,6 +507,9 @@ void manipulacao()
 	osStatus status;
 	while(1){
 		osSignalWait(threads[3].signal, osWaitForever);
+		if((osKernelSysTick() - threads[3].ticks) > osKernelSysTickMicroSec(170000)){//1 segundo = 1e6 us
+					secundaryfault++;
+		}
 		threads[3].status = RUNNING;
 		threads[3].prioridadeTemp = threads[3].prioridadeOrig;
 		if(flag_desenho == 1)
@@ -553,26 +564,31 @@ while(1){
 					UARTprintstring("1 - RETANGULO SELECIONADO (6 - p/ desenhar)\n\r"); 
 					flag_desenho = 1;
 					threads[3].status = READY;
+					threads[3].ticks = osKernelSysTick();
 					break;
 					case '2':
 					UARTprintstring("2 - LOSANGO SELECIONADO (6 - p/ desenhar)\n\r");
 					flag_desenho = 2;
 					threads[3].status = READY;
+					threads[3].ticks = osKernelSysTick();
 					break;
 					case '3':
 					UARTprintstring("3 - CIRCULO SELECIONADO (6 - p/ desenhar)\n\r");
 					flag_desenho = 3;
 					threads[3].status = READY;
+					threads[3].ticks = osKernelSysTick();
 						break;
 					case '4':
 						UARTprintstring("4 - BANDEIRA SELECIONADO (6 - p/ desenhar)\n\r");
 					flag_desenho = 4;
 					threads[3].status = READY;
+					threads[3].ticks = osKernelSysTick();
 						break;
 					case '5':
 						UARTprintstring("5 - PARANDO ANDAMENTO DO DESENHO...\n\r");
 					flag_desenho = 5;
 					threads[3].status = READY;
+					threads[3].ticks = osKernelSysTick();
 						break;	
 					default:
 						UARTprintstring("Entrada invalida\n\r");
@@ -732,6 +748,11 @@ void geracao_Gantt(const void *args){
 			intToString(threads[4].prioridadeTemp,prioridade,32,10,0);
 			GrStringDraw(&sContext,(char*)prioridade, -1, (sContext.psFont->ui8MaxWidth)*16, (sContext.psFont->ui8Height+2)*7, true);
 			osSignalSet(prioridadeMaxima.id,prioridadeMaxima.signal);
+			intToString(masterfault,prioridade,32,10,0);
+			GrStringDraw(&sContext,(char*)prioridade, -1, (sContext.psFont->ui8MaxWidth)*16, (sContext.psFont->ui8Height+2)*8, true);
+			intToString(secundaryfault,prioridade,32,10,0);
+			GrStringDraw(&sContext,(char*)prioridade, -1, (sContext.psFont->ui8MaxWidth)*16, (sContext.psFont->ui8Height+2)*9, true);
+			
 			osSemaphoreRelease(escalonador);
 		}
 	}
