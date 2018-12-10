@@ -392,7 +392,7 @@ void fibonacci_thread(void const *args){
 			osMutexRelease(mutex_display_id);
 			}			
 			fibonacci++;
-			osDelay(1);
+			osDelay(1000);
 			threads[4].status = READY;
 			tick = osKernelSysTick();
 		}
@@ -465,13 +465,16 @@ void geracao_pontos(const void *args){
 	uint32_t tick;
 	char numero[32];
 	uint32_t aux = 0;
-	while(1){
-			threads[2].status = READY;
+	while(1){			
 			osSignalWait(threads[2].signal,osWaitForever);
-			if((osKernelSysTick() - tick) > osKernelSysTickMicroSec(500000)){//1 segundo = 1e6 us
-					secundaryfault++;
-				}
 			threads[2].status = RUNNING;
+			threads[2].prioridadeTemp = threads[2].prioridadeOrig;
+			if((osKernelSysTick() - tick) > osKernelSysTickMicroSec(170000)){//1 segundo = 1e6 us
+					secundaryfault++;
+				threads[2].prioridadeTemp++;
+				}else{
+					threads[2].prioridadeTemp--;
+				}			
 			threads[2].prioridadeTemp = threads[2].prioridadeOrig;
 			osMutexWait(mutex_display_id,osWaitForever);
 			intToString(aux,numero,32,10,0);
@@ -481,7 +484,8 @@ void geracao_pontos(const void *args){
 			GrStringDraw(&sContext,(char*)numero, -1, (sContext.psFont->ui8MaxWidth)*11, (sContext.psFont->ui8Height+2)*2, true);
 			osMutexRelease(mutex_display_id);		
 			aux++;
-			osDelay(1);
+			osDelay(100);
+			threads[2].status = READY;
 			tick = osKernelSysTick();
 	}
 }osThreadDef(geracao_pontos,osPriorityNormal,1,0);
@@ -507,11 +511,15 @@ void manipulacao()
 	osStatus status;
 	while(1){
 		osSignalWait(threads[3].signal, osWaitForever);
+		threads[3].status = RUNNING;
+		threads[3].prioridadeTemp = threads[3].prioridadeOrig;		
 		if((osKernelSysTick() - threads[3].ticks) > osKernelSysTickMicroSec(170000)){//1 segundo = 1e6 us
 					secundaryfault++;
-		}
-		threads[3].status = RUNNING;
-		threads[3].prioridadeTemp = threads[3].prioridadeOrig;
+					threads[3].prioridadeTemp++;
+		}else{
+			threads[3].prioridadeTemp--;
+		}	
+		
 		if(flag_desenho == 1)
 		{
 			desenha_quadrado(); //desenha o quadrado
@@ -551,9 +559,7 @@ while(1){
 	osSignalWait(threads[1].signal,osWaitForever);
 	threads[1].status = RUNNING;
 	threads[1].prioridadeTemp = threads[1].prioridadeOrig;
-	//UARTprintstring("entrei - 1");
 	evento=osMailGet(mid_UART,osWaitForever);
-	//UARTprintstring("entrei - 2");
 	if(evento.status==osEventMail){
 		mail=evento.value.p;
 		if(mail){
@@ -723,10 +729,15 @@ void geracao_Gantt(const void *args){
 						}
 				}else{
 					if(threads[i].status == READY){
-					threads[i].prioridadeTemp = threads[i].prioridadeTemp + (-10);
+					threads[i].prioridadeTemp = threads[i].prioridadeTemp + (-5);
 					}
 				}
 			}
+			osMutexWait(mutex_display_id,osWaitForever);
+			GrFlush(&sContext);
+			GrContextFontSet(&sContext, g_psFontFixed6x8);
+			GrContextForegroundSet(&sContext, ClrWhite);
+			GrContextBackgroundSet(&sContext, ClrBlack);
 			intToString(threads[0].status,buffer,32,10,0);
 			GrStringDraw(&sContext,(char*)buffer, -1, (sContext.psFont->ui8MaxWidth)*13, (sContext.psFont->ui8Height+2)*3, true);
 			intToString(threads[0].prioridadeTemp,prioridade,32,10,0);
@@ -752,7 +763,7 @@ void geracao_Gantt(const void *args){
 			GrStringDraw(&sContext,(char*)prioridade, -1, (sContext.psFont->ui8MaxWidth)*16, (sContext.psFont->ui8Height+2)*8, true);
 			intToString(secundaryfault,prioridade,32,10,0);
 			GrStringDraw(&sContext,(char*)prioridade, -1, (sContext.psFont->ui8MaxWidth)*16, (sContext.psFont->ui8Height+2)*9, true);
-			
+			osMutexRelease(mutex_display_id);
 			osSemaphoreRelease(escalonador);
 		}
 	}
